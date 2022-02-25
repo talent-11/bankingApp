@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/primary_button.dart';
 import 'package:fotoc/components/wizard/footer.dart';
+import 'package:fotoc/components/wizard/text_input_field.dart';
 
-class LoginWithFingerPage extends StatefulWidget {
-  const LoginWithFingerPage({Key? key}) : super(key: key);
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginWithFingerPage> createState() => _LoginWithFingerPageState();
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class _LoginWithFingerPageState extends State<LoginWithFingerPage> {
-  void onPressedChangeLogin(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wizard/login/email');
-  }
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void onPressedSignup(BuildContext context) {
     Navigator.pushReplacementNamed(context, '/wizard/signup/0');
@@ -28,16 +27,15 @@ class _LoginWithFingerPageState extends State<LoginWithFingerPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(
-                width: deviceSize.width,
-                height: 388.0,
+            Expanded(
+                flex: 1,
                 child: Stack(
                   children: [
                     Container(
                       decoration: const BoxDecoration(
                           image: DecorationImage(
                               fit: BoxFit.fitWidth,
-                              image: AssetImage("assets/images/wizard02.png"))),
+                              image: AssetImage("assets/images/wizard03.png"))),
                     ),
                     Container(
                       decoration: BoxDecoration(
@@ -52,29 +50,37 @@ class _LoginWithFingerPageState extends State<LoginWithFingerPage> {
                     )
                   ],
                 )),
-            Expanded(
-                flex: 1,
+            SizedBox(
+                width: deviceSize.width,
+                height: 309.0,
                 child: Column(
                   children: [
                     Padding(
                         padding: const EdgeInsets.only(top: 40.0),
-                        child: Text("Sign in to your account",
+                        child: Text("Recover your password",
                             style: Theme.of(context).textTheme.headline1)),
-                    const Spacer(flex: 7),
-                    Image.asset("assets/images/fingerprint.png"),
                     Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: Text("Use Touch ID to Sign In",
-                          style: Theme.of(context).textTheme.headline5),
-                    ),
-                    const Spacer(flex: 5),
+                        padding: const EdgeInsets.only(top: 22.0),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Padding(
+                                  padding: EdgeInsets.only(top: 14.0),
+                                  child: TextInputField(
+                                    labelText: "Enter your email",
+                                    hintText:
+                                        "Enter your email for confirmation",
+                                  )),
+                            ],
+                          ),
+                        )),
+                    const Spacer(flex: 1),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
                       child: PrimaryButton(
-                          buttonText: "CHANGE LOGIN DETAILS",
-                          onPressed: () {
-                            onPressedChangeLogin(context);
-                          }),
+                          buttonText: "SIGN IN", onPressed: () {}),
                     ),
                     WizardFooter(
                         description: "Don't have an account?",
