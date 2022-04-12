@@ -13,6 +13,10 @@ class LoginWithEmailPage extends StatefulWidget {
 class _LoginWithEmailPageState extends State<LoginWithEmailPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  void onPressedLogin(BuildContext context) {
+    Navigator.pushReplacementNamed(context, '/wallet');
+  }
+
   void onPressedRecover(BuildContext context) {
     Navigator.pushReplacementNamed(context, '/wizard/login/recover');
   }
@@ -96,7 +100,10 @@ class _LoginWithEmailPageState extends State<LoginWithEmailPage> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
                       child: PrimaryButton(
-                          buttonText: "SIGN IN", onPressed: () {}),
+                          buttonText: "SIGN IN",
+                          onPressed: () {
+                            onPressedLogin(context);
+                          }),
                     ),
                     WizardFooter(
                         description: "Don't have an account?",

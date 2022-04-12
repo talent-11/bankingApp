@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fotoc/pages/wallet/wallet_tabs.dart';
 import 'package:fotoc/pages/wizard/forgot_password.dart';
 import 'pages/wizard/signup.dart';
 import 'pages/wizard/signup_step_2.dart';
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
       ),
       // home: const SignupPage(),
       routes: {
-        '/': (context) => const LoginWithFingerPage(),
+        '/': (context) => const WalletTabsPage(),
         '/wizard/login/fingerprint': (context) => const LoginWithFingerPage(),
         '/wizard/login/email': (context) => const LoginWithEmailPage(),
         '/wizard/login/recover': (context) => const ForgotPasswordPage(),
@@ -60,6 +61,7 @@ class MyApp extends StatelessWidget {
         '/wizard/signup/1': (context) => const Signup2Page(),
         '/wizard/signup/2': (context) => const Signup3Page(),
         '/wizard/signup/3': (context) => const Signup4Page(),
+        '/wallet': (context) => const WalletTabsPage(),
       },
     );
   }
