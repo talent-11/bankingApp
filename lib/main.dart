@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fotoc/pages/wallet/wallet_tabs.dart';
 import 'package:fotoc/pages/wizard/forgot_password.dart';
-import 'pages/wizard/signup.dart';
+import 'package:fotoc/pages/wizard/help.dart';
+import 'package:fotoc/pages/wizard/welcome.dart';
+import 'pages/wizard/signup_start.dart';
 import 'pages/wizard/signup_step_2.dart';
-import 'pages/wizard/signup_step_3.dart';
-import 'pages/wizard/signup_step_4.dart';
-import 'pages/wizard/login_with_email.dart';
-import 'pages/wizard/login_with_finger.dart';
+import 'pages/wizard/signup_main.dart';
+import 'pages/wizard/signup_almost.dart';
+import 'pages/wizard/login.dart';
+// import 'pages/wizard/login_with_finger.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,35 +34,44 @@ class MyApp extends StatelessWidget {
         // primarySwatch: Colors.blue,
         textTheme: const TextTheme(
           headline1: TextStyle(
-              fontSize: 20.0,
-              color: Color(0xff252631),
-              fontWeight: FontWeight.w400),
+            fontSize: 20.0,
+            color: Color(0xff252631),
+            fontWeight: FontWeight.w400
+          ),
           headline4: TextStyle(
-              fontSize: 14.0, color: Colors.white, fontWeight: FontWeight.w500),
+            fontSize: 14.0, 
+            color: Colors.white, 
+            fontWeight: FontWeight.w500
+          ),
           headline5: TextStyle(
-              fontSize: 15.0,
-              color: Color(0xff252631),
-              fontWeight: FontWeight.w400),
+            fontSize: 15.0,
+            height: 1.4,
+            color: Color(0xff252631),
+            fontWeight: FontWeight.w400
+          ),
           headline6: TextStyle(
-              fontSize: 14.0,
-              color: Color(0xff252631),
-              fontWeight: FontWeight.w500),
+            fontSize: 14.0,
+            color: Color(0xff252631),
+            fontWeight: FontWeight.w500
+          ),
           bodyText1: TextStyle(fontSize: 14.0, color: Color(0xff98a9bc)),
           bodyText2: TextStyle(fontSize: 12.0, color: Color(0xff98a9bc)),
         ),
         textSelectionTheme:
-            const TextSelectionThemeData(cursorColor: Color(0xff5d10f6)),
+          const TextSelectionThemeData(cursorColor: Color(0xff5d10f6)),
       ),
       // home: const SignupPage(),
       routes: {
-        '/': (context) => const WalletTabsPage(),
-        '/wizard/login/fingerprint': (context) => const LoginWithFingerPage(),
-        '/wizard/login/email': (context) => const LoginWithEmailPage(),
-        '/wizard/login/recover': (context) => const ForgotPasswordPage(),
-        '/wizard/signup/0': (context) => const SignupPage(),
+        '/': (context) => const WelcomePage(),
+        '/wizard/welcome': (context) => const WelcomePage(),
+        '/wizard/help': (context) => const HelpPage(),
+        // '/wizard/login/fingerprint': (context) => const LoginWithFingerPage(),
+        '/wizard/login': (context) => const LoginPage(),
+        '/wizard/recover': (context) => const ForgotPasswordPage(),
+        '/wizard/signup': (context) => const SignupStartPage(),
         '/wizard/signup/1': (context) => const Signup2Page(),
-        '/wizard/signup/2': (context) => const Signup3Page(),
-        '/wizard/signup/3': (context) => const Signup4Page(),
+        '/wizard/signup/main': (context) => const SignupMainPage(),
+        '/wizard/signup/almost': (context) => const SignupAlmostPage(),
         '/wallet': (context) => const WalletTabsPage(),
       },
     );

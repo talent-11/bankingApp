@@ -36,7 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   dots_indicator: ^2.1.0
   line_awesome_flutter: ^2.0.0
-  
+  flutter_svg: ^1.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -69,6 +70,8 @@ flutter:
     - assets/images/wizard06.png
     - assets/images/wizard07.png
     - assets/images/fingerprint.png
+    - assets/images/logo.png
+    - assets/svgs/cc.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

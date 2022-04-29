@@ -4,21 +4,30 @@ import 'package:fotoc/components/primary_button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/footer.dart';
 
-class Signup4Page extends StatefulWidget {
-  const Signup4Page({Key? key}) : super(key: key);
+const description = "Get your Test Account here:\nProvide us with your name and email address and you will instantly receive (cc) 100.00 to spend.";
+
+class SignupStartPage extends StatefulWidget {
+  const SignupStartPage({Key? key}) : super(key: key);
 
   @override
-  State<Signup4Page> createState() => _Signup4PageState();
+  State<SignupStartPage> createState() => _SignupStartPageState();
 }
 
-class _Signup4PageState extends State<Signup4Page> {
+class _SignupStartPageState extends State<SignupStartPage> {
+  void onPressedGetStarted(BuildContext context) {
+    Navigator.pushNamed(context, '/wizard/signup/main');
+  }
+
   void onPressedSignin(BuildContext context) {
-    Navigator.pushNamed(context, '/');
+    // Navigator.pushNamed(context, '/');
+    Navigator.pushReplacementNamed(context, '/wizard/login');
   }
 
   @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
+    var imageNum = 4;
+    var imageSrc = "assets/images/wizard0$imageNum.png";
 
     return Scaffold(
       body: Container(
@@ -31,35 +40,39 @@ class _Signup4PageState extends State<Signup4Page> {
                 child: Stack(
                   children: [
                     Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                           image: DecorationImage(
                               fit: BoxFit.fitWidth,
-                              image: AssetImage("assets/images/wizard07.png"))),
+                              image: AssetImage(imageSrc))),
                     ),
                     const GradientRectangle()
                   ],
                 )),
             SizedBox(
                 width: deviceSize.width,
-                height: 388.0,
+                height: 308,
                 child: Column(
                   children: [
                     Padding(
-                        padding: const EdgeInsets.only(top: 36.0),
-                        child: Text("Unlock with fingerprint",
+                        padding: const EdgeInsets.only(top: 40.0),
+                        child: Text("Create your account",
                             style: Theme.of(context).textTheme.headline1)),
-                    const Spacer(flex: 7),
-                    Image.asset("assets/images/fingerprint.png"),
+                    const Spacer(flex: 1),
                     Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: Text("Press Touch ID to Proceed",
-                          style: Theme.of(context).textTheme.headline5),
-                    ),
-                    const Spacer(flex: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: Text(
+                          description,
+                          style: Theme.of(context).textTheme.bodyText1,
+                          textAlign: TextAlign.center,
+                        )),
+                    const Spacer(flex: 1),
                     PrimaryButton(
-                        buttonText: "GO TO DASHBOARD", onPressed: () {}),
+                        buttonText: "GET STARTED",
+                        onPressed: () {
+                          onPressedGetStarted(context);
+                        }),
                     const Dots(
-                      selectedIndex: 2.0,
+                      selectedIndex: 0,
                     ),
                     WizardFooter(
                         description: "Do you have an account?",

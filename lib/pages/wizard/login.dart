@@ -3,31 +3,31 @@ import 'package:fotoc/components/primary_button.dart';
 import 'package:fotoc/components/wizard/footer.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
 
-class LoginWithEmailPage extends StatefulWidget {
-  const LoginWithEmailPage({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginWithEmailPage> createState() => _LoginWithEmailPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginWithEmailPageState extends State<LoginWithEmailPage> {
+class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void onPressedLogin(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wallet');
+    Navigator.pushReplacementNamed(context, '/wizard/login');
   }
 
   void onPressedRecover(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wizard/login/recover');
+    Navigator.pushReplacementNamed(context, '/wizard/recover');
   }
 
   void onPressedSignup(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wizard/signup/0');
+    Navigator.pushReplacementNamed(context, '/wizard/signup');
   }
 
   @override
   Widget build(BuildContext context) {
-    var deviceSize = MediaQuery.of(context).size;
+    Size deviceSize = MediaQuery.of(context).size;
 
     return Scaffold(
       body: Container(
