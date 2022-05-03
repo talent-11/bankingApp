@@ -4,8 +4,8 @@ class FotocButton extends StatelessWidget {
   const FotocButton(
     {
       Key? key,
-      this.buttonColor = Colors.transparent,
-      this.textColor = Colors.transparent,
+      this.buttonColor,
+      this.textColor,
       required this.buttonText,
       this.outline = false,
       required this.onPressed
@@ -15,13 +15,13 @@ class FotocButton extends StatelessWidget {
   final String buttonText;
   final Function onPressed;
   final bool outline;
-  final Color buttonColor;
-  final Color textColor;
+  final Color? buttonColor;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
-    Color mainColor = buttonColor == Colors.transparent ? Theme.of(context).primaryColor : buttonColor;
-    Color tColor = outline ? textColor == Colors.transparent ? mainColor : textColor : Colors.white;
+    Color? mainColor = buttonColor ?? Theme.of(context).primaryColor;
+    Color? tColor = outline ? textColor ?? mainColor : Colors.white;
     Color bColor = outline ? Colors.transparent : mainColor;
 
     return TextButton(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/text_spans.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
 
@@ -15,25 +15,10 @@ class _HelpPageState extends State<HelpPage> {
     Navigator.pop(context);
   }
 
-  Widget header(BuildContext context) => Stack(
-    alignment: const Alignment(-0.9, -0.64),
-    children: [
-      Container(
-        width: MediaQuery.of(context).size.width,
-        height: 216.0,
-        alignment: Alignment.bottomCenter,
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-        decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-        child: Image.asset("assets/images/logo.png"),
-      ),
-      IconButton(
-        icon: const Icon(Icons.arrow_back_ios, size: 32.0),
-        onPressed: () {
-          onPressedBack(context);
-        },
-        color: Colors.white,
-      ),
-    ],
+  IconButton backButton(BuildContext context) => IconButton(
+    icon: const Icon(Icons.arrow_back_ios, size: 32.0),
+    onPressed: () => onPressedBack(context), 
+    color: Colors.white,
   );
   
   final fotocSpans = <String, Function?>{
@@ -69,7 +54,6 @@ class _HelpPageState extends State<HelpPage> {
     padding: const EdgeInsets.only(bottom: 16),
     child: RichText(
       text: TextSpan(
-        style: const TextStyle(height: 1.4),
         children: decorateArticle(context, text)
       )
     )
@@ -119,7 +103,7 @@ class _HelpPageState extends State<HelpPage> {
         color: Colors.white,
         child: Column(
           children: <Widget>[
-            header(context),
+            LogoBar(iconButton: backButton(context)),
             body(context)
           ],
         ),

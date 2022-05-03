@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/text_spans.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
@@ -27,25 +28,10 @@ class _WelcomePageState extends State<WelcomePage> {
     Navigator.pushReplacementNamed(context, '/wizard/signup');
   }
 
-  Widget header(BuildContext context) => Stack(
-    alignment: const Alignment(-0.9, -0.64),
-    children: [
-      Container(
-        width: MediaQuery.of(context).size.width,
-        height: 216.0,
-        alignment: Alignment.bottomCenter,
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-        decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-        child: Image.asset("assets/images/logo.png"),
-      ),
-      IconButton(
-        icon: const Icon(LineAwesomeIcons.bars, size: 32.0),
-        onPressed: () {
-          onPressedBar(context);
-        },
-        color: Colors.white,
-      ),
-    ],
+  IconButton menuButton(BuildContext context) => IconButton(
+    icon: const Icon(LineAwesomeIcons.bars, size: 32.0),
+    onPressed: () => onPressedBar(context), 
+    color: Colors.white,
   );
 
   Widget titleText(BuildContext context) => Text(
@@ -57,7 +43,6 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget bodyText(BuildContext context) => RichText(
     textAlign: TextAlign.center,
     text: TextSpan(
-      style: const TextStyle(height: 1.4), 
       children: [
         TextSpan(
           text: "The currency within FOTOC’s Banking System are digital Constitutional Coins ",
@@ -134,15 +119,7 @@ class _WelcomePageState extends State<WelcomePage> {
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: bodyText(context),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-          child: buttons(context),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-          child: tipText(context),
-        ),
+        )
       ],
     )
   );
@@ -156,8 +133,16 @@ class _WelcomePageState extends State<WelcomePage> {
         color: Colors.white,
         child: Column(
           children: <Widget>[
-            header(context),
-            body(context)
+            LogoBar(iconButton: menuButton(context)),
+            body(context),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
+              child: buttons(context),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(32, 24, 32, 12),
+              child: tipText(context),
+            )
           ],
         ),
       ),

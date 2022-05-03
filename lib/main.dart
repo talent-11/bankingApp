@@ -54,15 +54,15 @@ class MyApp extends StatelessWidget {
             color: Color(0xff252631),
             fontWeight: FontWeight.w500
           ),
-          bodyText1: TextStyle(fontSize: 14.0, color: Color(0xff98a9bc)),
-          bodyText2: TextStyle(fontSize: 12.0, color: Color(0xff98a9bc)),
+          bodyText1: TextStyle(fontSize: 14.0, color: Color(0xff98a9bc), height: 1.4),
+          bodyText2: TextStyle(fontSize: 12.0, color: Color(0xff98a9bc), height: 1.2),
         ),
         textSelectionTheme:
           const TextSelectionThemeData(cursorColor: Color(0xff5d10f6)),
       ),
       // home: const SignupPage(),
       routes: {
-        '/': (context) => const WelcomePage(),
+        '/': (context) => const SignupStartPage(),
         '/wizard/welcome': (context) => const WelcomePage(),
         '/wizard/help': (context) => const HelpPage(),
         // '/wizard/login/fingerprint': (context) => const LoginWithFingerPage(),
