@@ -84,7 +84,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
   Widget footer(BuildContext context) => Column(
     children: [
       PrimaryButton(
-        buttonText: "GET STARTED",
+        buttonText: "NEXT",
         onPressed: () {
           onPressedNext(context);
         }
