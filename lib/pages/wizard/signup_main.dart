@@ -29,7 +29,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
     var widgets = <Widget>[];
     widgets.add(
       Padding(
-        padding: const EdgeInsets.only(top: 24.0),
+        padding: const EdgeInsets.only(top: 24.0, bottom: 16),
         child: Text(
           "Account details",
           style: Theme.of(context).textTheme.headline1,
@@ -39,7 +39,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
     );
     widgets.add(
       const Padding(
-        padding: EdgeInsets.only(top: 16.0),
+        padding: EdgeInsets.only(top: 0.0),
         child: TextInputField(
           // labelText: "Your name",
           hintText: "Enter your full name",
@@ -48,7 +48,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
     );
     widgets.add(
       const Padding(
-        padding: EdgeInsets.only(top: 8.0),
+        padding: EdgeInsets.only(top: 0.0),
         child: TextInputField(
           // labelText: "Your account",
           hintText: "Enter your email",
@@ -57,25 +57,13 @@ class _SignupMainPageState extends State<SignupMainPage> {
     );
     widgets.add(
       const Padding(
-        padding: EdgeInsets.only(top: 8.0),
+        padding: EdgeInsets.only(top: 0.0),
         child: TextInputField(
           // labelText: "Create password",
           hintText: "Enter your password",
         )
       )
     );
-    // widgets.add(
-    //   const Padding(
-    //     padding: EdgeInsets.only(top: 8.0),
-    //     child: TextInputField(
-    //       labelText: "Enter the Individual's code who referred you to FOTOC Bank",
-    //       hintText: "Enter a code",
-    //     )
-    //   )
-    // );
-    // widgets.add(
-    //   const Spacer(flex: 1)
-    // );
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(left: 4.0, right: 20.0),
@@ -90,49 +78,46 @@ class _SignupMainPageState extends State<SignupMainPage> {
         )
       )
     );
-    // widgets.add(
-    //   const Spacer(flex: 1)
-    // );
-    widgets.add(
-      Padding(
-        padding: const EdgeInsets.only(top: 16),
-        child: PrimaryButton(
-          buttonText: "NEXT",
-          onPressed: () => onPressedNext(context)
-        ),
-      )
-    );
-    widgets.add(
-      const Dots(selectedIndex: 1.0)
-    );
-    widgets.add(
-      WizardFooter(
-        description: "Do you have an account?",
-        buttonText: "Sign in here",
-        onPressed: () => onPressedSignin(context)
-      )
-    );
     return widgets;
   }
 
+  Widget footer(BuildContext context) => Column(
+    children: [
+      PrimaryButton(
+        buttonText: "GET STARTED",
+        onPressed: () {
+          onPressedNext(context);
+        }
+      ),
+      const Dots(selectedIndex: 1),
+      WizardFooter(
+        description: "Do you have an account?",
+        buttonText: "Sign in here",
+        onPressed: () {
+          onPressedSignin(context);
+        }
+      )
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
+    var deviceSize = MediaQuery.of(context).size;
+
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        color: Colors.white,
-        child: Column(
-          children: <Widget>[
-            const LogoBar(),
-            Expanded(
-              flex: 1,
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: decorate(context),
-              )
-            ),
-          ],
-        ),
+      body: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const LogoBar(),
+          SizedBox(
+            height: (deviceSize.height - 148.4 - 216),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: decorate(context),
+            )
+          ),
+          footer(context),
+        ],
       ),
     );
   }
