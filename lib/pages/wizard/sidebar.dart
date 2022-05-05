@@ -18,7 +18,7 @@ class SideBar extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           SizedBox(
-            height: 224.0,
+            height: 176.0,
             child: DrawerHeader(
               child: Center(
                 child: Image.asset("assets/images/logo.png"),

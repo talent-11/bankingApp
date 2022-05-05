@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
-import 'package:fotoc/components/wizard/text_spans.dart';
+import 'package:fotoc/components/wizard/bullet_row.dart';
+import 'package:fotoc/components/wizard/text_with_cc.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
 
 class HelpPage extends StatefulWidget {
@@ -20,56 +21,15 @@ class _HelpPageState extends State<HelpPage> {
     onPressed: () => onPressedBack(context), 
     color: Colors.white,
   );
-  
-  final fotocSpans = <String, Function?>{
-    'c': (BuildContext context, String text) => clickableTextSpan(context, text),
-    'u': (BuildContext context, String text) => underlinedTextSpan(context, text),
-    's': (BuildContext context, String text) => symbolSpan(18),
-    'z': (BuildContext context, String text) => defaultTextSpan(context, text),
-  };
-  
-  List<InlineSpan> decorateArticle(BuildContext context, String article) {
-    var children = <InlineSpan>[];
-    
-    article.split('{{').forEach((element) {
-      if (element.contains('}}')) {
-        final key = element.split('}}')[0].substring(0, 1);
-        final mainText = element.split('}}')[0].substring(1);
-        InlineSpan widget = fotocSpans[key]!(context, mainText);
-
-        children.add(widget);
-
-        if (!element.endsWith('}}')) {
-          children.add(fotocSpans['z']!(context, element.split('}}')[1]));
-        }
-      } else {
-        children.add(fotocSpans['z']!(context, element));
-      }
-    });
-
-    return children;
-  }
 
   Padding commonRow(BuildContext context, String text) => Padding(
     padding: const EdgeInsets.only(bottom: 16),
-    child: RichText(
-      text: TextSpan(
-        children: decorateArticle(context, text)
-      )
-    )
+    child: TextWithCC(text: text)
   );
 
-  Widget bulletRow(BuildContext context, String text) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Padding(
-        padding: const EdgeInsets.only(top: 2.5),
-        child: Text("•  ", style: Theme.of(context).textTheme.bodyText1),
-      ),
-      Expanded(
-        child: commonRow(context, text)
-      )
-    ],
+  Widget bulletRow(BuildContext context, String text) => Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: BulletRow(text: text),
   );
 
   Widget body(BuildContext context) => Expanded(

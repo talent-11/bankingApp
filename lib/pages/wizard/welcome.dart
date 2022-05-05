@@ -48,7 +48,7 @@ class _WelcomePageState extends State<WelcomePage> {
           text: "The currency within FOTOC’s Banking System are digital Constitutional Coins ",
           style: Theme.of(context).textTheme.bodyText1,
         ),
-        symbolSpan(18),
+        symbolSpan(height: 18),
         TextSpan(
           text: " (CC) authorized by the interim Constitutional Government (FOTOC), the original Constitution, and the People’s signatures on the Declaration of Restoration.",
           style: Theme.of(context).textTheme.bodyText1,

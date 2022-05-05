@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fotoc/components/gradient_rectangle.dart';
 import 'package:fotoc/components/primary_button.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/dots.dart';
@@ -110,7 +109,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
         children: [
           const LogoBar(),
           SizedBox(
-            height: (deviceSize.height - 148.4 - 216),
+            height: (deviceSize.height - 148.4 - logoHeight),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: decorate(context),

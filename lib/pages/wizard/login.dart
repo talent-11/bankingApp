@@ -14,7 +14,7 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void onPressedLogin(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wizard/login');
+    Navigator.pushReplacementNamed(context, '/free/dashboard');
   }
 
   void onPressedRecover(BuildContext context) {

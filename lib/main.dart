@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fotoc/pages/wallet/wallet_tabs.dart';
-import 'package:fotoc/pages/wizard/forgot_password.dart';
-import 'package:fotoc/pages/wizard/help.dart';
-import 'package:fotoc/pages/wizard/welcome.dart';
+import 'pages/free/free_dashboard.dart';
+import 'pages/wallet/wallet_tabs.dart';
+import 'pages/wizard/forgot_password.dart';
+import 'pages/wizard/help.dart';
+import 'pages/wizard/welcome.dart';
 import 'pages/wizard/signup_start.dart';
 import 'pages/wizard/signup_step_2.dart';
 import 'pages/wizard/signup_main.dart';
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
       ),
       // home: const SignupPage(),
       routes: {
-        '/': (context) => const SignupStartPage(),
+        '/': (context) => const WelcomePage(),
         '/wizard/welcome': (context) => const WelcomePage(),
         '/wizard/help': (context) => const HelpPage(),
         // '/wizard/login/fingerprint': (context) => const LoginWithFingerPage(),
@@ -73,6 +74,7 @@ class MyApp extends StatelessWidget {
         '/wizard/signup/main': (context) => const SignupMainPage(),
         '/wizard/signup/almost': (context) => const SignupAlmostPage(),
         '/wallet': (context) => const WalletTabsPage(),
+        '/free/dashboard': (context) => const FreeDashboardPage(),
       },
     );
   }
