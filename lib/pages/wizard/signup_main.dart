@@ -1,10 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:fotoc/components/primary_button.dart';
+import 'package:fotoc/components/ui/error_dialog.dart';
+import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/footer.dart';
 import 'package:fotoc/components/wizard/labeled_checkbox.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
+import 'package:fotoc/constants.dart';
+import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/pages/wizard/login.dart';
+import 'package:fotoc/services/api_service.dart';
+import 'package:fotoc/services/validation_service.dart';
+import 'package:http/http.dart';
+import 'package:fotoc/providers/account_provider.dart';
+import 'package:provider/provider.dart';
 
 class SignupMainPage extends StatefulWidget {
   const SignupMainPage({Key? key}) : super(key: key);
@@ -14,10 +25,52 @@ class SignupMainPage extends StatefulWidget {
 }
 
 class _SignupMainPageState extends State<SignupMainPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final app = AppState(false, AccountModel());
+
   bool agreed = false;
+  late String userName, userEmail, userPassword, referralId;
+
+  Future<void> _signup(BuildContext context) async {
+    if (app.loading) return;
+
+    setState(() => app.loading = true);
+    String params = jsonEncode(<String, dynamic>{
+      'name': userName,
+      'email': userEmail,
+      'password': userPassword,
+      'friend_id': referralId,
+      'country': 'US',
+    });
+    Response? response = await ApiService().post(ApiConstants.signup, '', params);
+    setState(() => app.loading = false);
+
+    if (response == null) {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          return const ErrorDialog(text: "Please check your network connection");
+        }
+      );
+    } else if (response.statusCode == 200) {
+      Navigator.pushNamed(context, '/wizard/signup/almost');
+    } else if (response.statusCode == 400) {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          dynamic res = json.decode(response.body);
+          String text = res["message"];
+          return ErrorDialog(text: text);
+        }
+      );
+    }
+  }
 
   void onPressedNext(BuildContext context) {
-    Navigator.pushNamed(context, '/wizard/signup/almost');
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      _signup(context);
+    }
   }
 
   void onPressedSignin(BuildContext context) {
@@ -37,29 +90,57 @@ class _SignupMainPageState extends State<SignupMainPage> {
       )
     );
     widgets.add(
-      const Padding(
-        padding: EdgeInsets.only(top: 0.0),
+      Padding(
+        padding: const EdgeInsets.only(top: 0.0),
         child: TextInputField(
           // labelText: "Your name",
+          enabled: !app.loading,
           hintText: "Enter your full name",
+          onSaved: (val) => userName = val!,
+          validator: (value) {
+            if (value == null) {
+              return 'Please enter your full name';
+            }
+            return null;
+          },
         )
       )
     );
     widgets.add(
-      const Padding(
-        padding: EdgeInsets.only(top: 0.0),
+      Padding(
+        padding: const EdgeInsets.only(top: 0.0),
         child: TextInputField(
           // labelText: "Your account",
+          enabled: !app.loading,
           hintText: "Enter your email",
+          onSaved: (val) => userEmail = val!,
+          validator: (value) {
+            if (value == null) {
+              return 'Please enter email';
+            } else if (!value.isValidEmail) {
+              return 'Please enter valid email';
+            }
+            return null;
+          },
         )
       )
     );
     widgets.add(
-      const Padding(
-        padding: EdgeInsets.only(top: 0.0),
+      Padding(
+        padding: const EdgeInsets.only(top: 0.0),
         child: TextInputField(
           // labelText: "Create password",
+          enabled: !app.loading,
           hintText: "Enter your password",
+          onSaved: (val) => userPassword = val!,
+          validator: (value) {
+            if (value == null) {
+              return 'Please enter password';
+            } else if (!value.isValidPassword) {
+              return 'Please enter valid password(At least a letter and a number)';
+            }
+            return null;
+          },
         )
       )
     );
@@ -83,6 +164,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
   Widget footer(BuildContext context) => Column(
     children: [
       PrimaryButton(
+        loading: app.loading,
         buttonText: "NEXT",
         onPressed: () {
           onPressedNext(context);
@@ -102,6 +184,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
   @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
+    referralId = context.watch<CurrentAccount>().account.friendId!;
 
     return Scaffold(
       body: ListView(
@@ -110,9 +193,12 @@ class _SignupMainPageState extends State<SignupMainPage> {
           const LogoBar(),
           SizedBox(
             height: (deviceSize.height - 148.4 - logoHeight),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: decorate(context),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: decorate(context),
+              )
             )
           ),
           footer(context),

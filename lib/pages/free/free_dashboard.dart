@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fotoc/components/primary_button.dart';
+import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/ui/icon_button.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/bullet_row.dart';

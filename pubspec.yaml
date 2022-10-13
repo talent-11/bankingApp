@@ -38,6 +38,7 @@ dependencies:
   line_awesome_flutter: ^2.0.0
   flutter_svg: ^1.0.3
   http: ^0.13.5
+  provider: ^6.0.4
 
 dev_dependencies:
   flutter_test:

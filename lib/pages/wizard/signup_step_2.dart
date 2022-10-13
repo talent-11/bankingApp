@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/gradient_rectangle.dart';
-import 'package:fotoc/components/primary_button.dart';
+import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/footer.dart';
 

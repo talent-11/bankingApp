@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'pages/free/free_dashboard.dart';
-import 'pages/wallet/wallet_tabs.dart';
-import 'pages/wizard/forgot_password.dart';
-import 'pages/wizard/help.dart';
-import 'pages/wizard/welcome.dart';
-import 'pages/wizard/signup_start.dart';
-import 'pages/wizard/signup_step_2.dart';
-import 'pages/wizard/signup_main.dart';
-import 'pages/wizard/signup_almost.dart';
-import 'pages/wizard/login.dart';
-// import 'pages/wizard/login_with_finger.dart';
+import 'package:fotoc/providers/account_provider.dart';
+import 'package:fotoc/routes.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CurrentAccount>(create: (_) => CurrentAccount()),
+      ],
+      child: const MyApp()
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -62,20 +61,7 @@ class MyApp extends StatelessWidget {
           const TextSelectionThemeData(cursorColor: Color(0xff5d10f6)),
       ),
       // home: const SignupPage(),
-      routes: {
-        '/': (context) => const WelcomePage(),
-        '/wizard/welcome': (context) => const WelcomePage(),
-        '/wizard/help': (context) => const HelpPage(),
-        // '/wizard/login/fingerprint': (context) => const LoginWithFingerPage(),
-        '/wizard/login': (context) => const LoginPage(),
-        '/wizard/recover': (context) => const ForgotPasswordPage(),
-        '/wizard/signup': (context) => const SignupStartPage(),
-        '/wizard/signup/1': (context) => const Signup2Page(),
-        '/wizard/signup/main': (context) => const SignupMainPage(),
-        '/wizard/signup/almost': (context) => const SignupAlmostPage(),
-        '/wallet': (context) => const WalletTabsPage(),
-        '/free/dashboard': (context) => const FreeDashboardPage(),
-      },
+      routes: routes,
     );
   }
 }

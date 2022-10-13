@@ -1,35 +1,45 @@
 import 'dart:convert';
 
-List<AccountModel> userModelFromJson(String str) =>
-    List<AccountModel>.from(json.decode(str).map((x) => AccountModel.fromJson(x)));
+List<AccountModel> userModelFromJson(String str) => List<AccountModel>.from(
+    json.decode(str).map((x) => AccountModel.fromJson(x)));
 
 String userModelToJson(List<AccountModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class AccountModel {
   AccountModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.token,
+    this.id,
+    this.name,
+    this.email,
+    this.phone,
+    this.token,
     this.verifiedId,
     this.referralId,
     this.friendId,
-    this.address,
+    this.street,
+    this.suite,
+    this.city,
+    this.zipcode,
+    this.state,
+    this.country,
     // required this.website,
     // required this.company,
   });
 
-  int id;
-  String name;
-  String email;
-  String phone;
-  String token;
+  int? id;
+  String? name;
+  String? email;
+  String? phone;
+  String? token;
   String? verifiedId;
   String? referralId;
   String? friendId;
-  Address? address;
+  String? street;
+  String? suite;
+  String? city;
+  String? zipcode;
+  String? state;
+  String? country;
   // String website;
   // Company company;
 
@@ -37,12 +47,17 @@ class AccountModel {
         id: json["id"],
         name: json["name"],
         email: json["email"],
-        address: Address.fromJson(json["address"]),
         phone: json["phone"],
         token: json["token"],
         verifiedId: json["verifiedId"],
         referralId: json["referralId"],
         friendId: json["friendId"],
+        street: json["street"],
+        suite: json["suite"],
+        city: json["city"],
+        zipcode: json["zipcode"],
+        state: json["state"],
+        country: json["country"],
         // website: json["website"],
         // company: Company.fromJson(json["company"]),
       );
@@ -51,45 +66,18 @@ class AccountModel {
         "id": id,
         "name": name,
         "email": email,
-        "address": address!.toJson(),
         "phone": phone,
         "verifiedId": verifiedId,
         "referralId": referralId,
         "friendId": friendId,
-        // "website": website,
-        // "company": company.toJson(),
-      };
-}
-
-class Address {
-  Address({
-    required this.street,
-    required this.suite,
-    required this.city,
-    required this.zipcode,
-    required this.geo,
-  });
-
-  String street;
-  String suite;
-  String city;
-  String zipcode;
-  Geo geo;
-
-  factory Address.fromJson(Map<String, dynamic> json) => Address(
-        street: json["street"],
-        suite: json["suite"],
-        city: json["city"],
-        zipcode: json["zipcode"],
-        geo: Geo.fromJson(json["geo"]),
-      );
-
-  Map<String, dynamic> toJson() => {
         "street": street,
         "suite": suite,
         "city": city,
         "zipcode": zipcode,
-        "geo": geo.toJson(),
+        "state": state,
+        "country": country,
+        // "website": website,
+        // "company": company.toJson(),
       };
 }
 

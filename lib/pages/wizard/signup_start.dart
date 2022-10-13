@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:fotoc/components/primary_button.dart';
+import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/footer.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
+import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/providers/account_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:fotoc/services/validation_service.dart';
 
 const description = "Provide us with your name and email address and you will instantly receive (cc) 100.00 to spend.";
 
@@ -15,8 +19,17 @@ class SignupStartPage extends StatefulWidget {
 }
 
 class _SignupStartPageState extends State<SignupStartPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  late String _friendReferralId;
+
+
   void onPressedGetStarted(BuildContext context) {
-    Navigator.pushNamed(context, '/wizard/signup/main');
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      context.read<CurrentAccount>().changeAccount(AccountModel(friendId: _friendReferralId));
+      Navigator.pushNamed(context, '/wizard/signup/main');
+    }
   }
 
   void onPressedSignin(BuildContext context) {
@@ -38,11 +51,23 @@ class _SignupStartPageState extends State<SignupStartPage> {
           textAlign: TextAlign.center,
         )
       ),
-      const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24),
-        child: TextInputField(
-          labelText: "Enter the Individual's code who referred you to FOTOC Bank",
-          hintText: "Enter a code",
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Form(
+          key: _formKey,
+          child: TextInputField(
+            labelText: "Enter the Individual's code who referred you to FOTOC Bank",
+            hintText: "Enter a code",
+            onSaved: (val) => _friendReferralId = val!,
+            validator: (value) {
+              if (value == null) {
+                return null;
+              } else if (!value.isValidReferralId) {
+                return 'Please enter valid your friend\'s referral id';
+              }
+              return null;
+            },
+          )
         )
       ),
     ],

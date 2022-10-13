@@ -1,7 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:fotoc/components/primary_button.dart';
+import 'package:fotoc/components/ui/error_dialog.dart';
+import 'package:fotoc/services/api_service.dart';
+import 'package:fotoc/services/validation_service.dart';
+import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/wizard/footer.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
+import 'package:fotoc/constants.dart';
+import 'package:fotoc/models/account_model.dart';
+import 'package:http/http.dart';
+
+class AppState {
+  bool loading;
+  AccountModel user;
+
+  AppState(this.loading, this.user);
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -11,10 +26,48 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final app = AppState(false, AccountModel());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  late String userEmail, userPassword;
+
+  Future<void> _login() async {
+    if (app.loading) return;
+
+    setState(() => app.loading = true);
+    String params = jsonEncode(<String, dynamic>{
+      'email': userEmail,
+      'password': userPassword
+    });
+    Response? response = await ApiService().post(ApiConstants.login, '', params);
+    setState(() => app.loading = false);
+
+    if (response == null) {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          return const ErrorDialog(text: "Please check your network connection");
+        }
+      );
+    } else if (response.statusCode == 200) {
+      Navigator.pushReplacementNamed(context, '/free/dashboard');
+    } else if (response.statusCode == 400) {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          dynamic res = json.decode(response.body);
+          String text = res["message"];
+          return ErrorDialog(text: text);
+        }
+      );
+    }
+  }
+
   void onPressedLogin(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/free/dashboard');
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      _login();
+    }
   }
 
   void onPressedRecover(BuildContext context) {
@@ -73,18 +126,39 @@ class _LoginPageState extends State<LoginPage> {
                           key: _formKey,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Padding(
-                                  padding: EdgeInsets.only(top: 14.0),
+                                  padding: const EdgeInsets.only(top: 14.0),
                                   child: TextInputField(
+                                    enabled: !app.loading,
                                     labelText: "Your account",
-                                    hintText: "Enter your email or phone",
+                                    hintText: "Enter your email",
+                                    onSaved: (val) => userEmail = val!,
+                                    validator: (value) {
+                                      if (value == null) {
+                                        return 'Please enter email';
+                                      } else if (!value.isValidEmail) {
+                                        return 'Please enter valid email';
+                                      }
+                                      return null;
+                                    },
                                   )),
                               Padding(
-                                  padding: EdgeInsets.only(top: 14.0),
+                                  padding: const EdgeInsets.only(top: 14.0),
                                   child: TextInputField(
+                                    enabled: !app.loading,
                                     labelText: "Password",
                                     hintText: "Enter your password",
+                                    obscureText: true,
+                                    onSaved: (val) => userPassword = val!,
+                                    validator: (value) {
+                                      if (value == null) {
+                                        return 'Please enter password';
+                                      } else if (!value.isValidPassword) {
+                                        return 'Please enter valid password(At least a letter and a number)';
+                                      }
+                                      return null;
+                                    },
                                   )),
                             ],
                           ),
@@ -100,6 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
                       child: PrimaryButton(
+                          loading: app.loading,
                           buttonText: "SIGN IN",
                           onPressed: () {
                             onPressedLogin(context);

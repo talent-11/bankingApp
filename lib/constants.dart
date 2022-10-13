@@ -1,4 +1,5 @@
 class ApiConstants {
-  static String baseUrl = 'http://localhost:8000';
-  static String loginEndpoint = '/account/login';
+  static String baseUrl = 'http://api.fotocbank.org';
+  static String login = '/account/login';
+  static String signup = '/account/register';
 }
