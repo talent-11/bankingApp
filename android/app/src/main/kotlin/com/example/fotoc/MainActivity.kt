@@ -1,4 +1,4 @@
-package com.example.fotoc
+package com.bank.fotoc
 
 import io.flutter.embedding.android.FlutterActivity
 

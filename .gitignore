@@ -45,3 +45,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Signed Key file
+/android/app/fotoc.jks
+/android/key.properties
