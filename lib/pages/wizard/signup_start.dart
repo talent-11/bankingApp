@@ -60,7 +60,7 @@ class _SignupStartPageState extends State<SignupStartPage> {
             hintText: "Enter a code",
             onSaved: (val) => _friendReferralId = val!,
             validator: (value) {
-              if (value == null) {
+              if (value == null || value.isEmpty) {
                 return null;
               } else if (!value.isValidReferralId) {
                 return 'Please enter valid your friend\'s referral id';

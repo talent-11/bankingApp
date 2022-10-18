@@ -10,12 +10,18 @@ import 'package:fotoc/components/wizard/labeled_checkbox.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
-import 'package:fotoc/pages/wizard/login.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/services/validation_service.dart';
 import 'package:http/http.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:provider/provider.dart';
+
+class AppState {
+  bool loading;
+  AccountModel user;
+
+  AppState(this.loading, this.user);
+}
 
 class SignupMainPage extends StatefulWidget {
   const SignupMainPage({Key? key}) : super(key: key);
@@ -33,6 +39,16 @@ class _SignupMainPageState extends State<SignupMainPage> {
 
   Future<void> _signup(BuildContext context) async {
     if (app.loading) return;
+
+    if (!agreed) {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          return const ErrorDialog(text: "You must agree with terms and conditions");
+        }
+      );
+      return;
+    }
 
     setState(() => app.loading = true);
     String params = jsonEncode(<String, dynamic>{
@@ -98,7 +114,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
           hintText: "Enter your full name",
           onSaved: (val) => userName = val!,
           validator: (value) {
-            if (value == null) {
+            if (value == null || value.isEmpty) {
               return 'Please enter your full name';
             }
             return null;
@@ -115,7 +131,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
           hintText: "Enter your email",
           onSaved: (val) => userEmail = val!,
           validator: (value) {
-            if (value == null) {
+            if (value == null || value.isEmpty) {
               return 'Please enter email';
             } else if (!value.isValidEmail) {
               return 'Please enter valid email';
@@ -134,10 +150,10 @@ class _SignupMainPageState extends State<SignupMainPage> {
           hintText: "Enter your password",
           onSaved: (val) => userPassword = val!,
           validator: (value) {
-            if (value == null) {
+            if (value == null || value.isEmpty) {
               return 'Please enter password';
             } else if (!value.isValidPassword) {
-              return 'Please enter valid password(At least a letter and a number)';
+              return 'Please enter valid password(At least a letter and a number, and 8 characters)';
             }
             return null;
           },
@@ -151,9 +167,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
           labelText: "I agree with terms & conditions",
           checked: agreed,
           valueChanged: (bool? value) {
-            setState(() {
-              agreed = value!;
-            });
+            setState(() => agreed = value!);
           }
         )
       )

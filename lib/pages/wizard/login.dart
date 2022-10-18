@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                                     hintText: "Enter your email",
                                     onSaved: (val) => userEmail = val!,
                                     validator: (value) {
-                                      if (value == null) {
+                                      if (value == null || value.isEmpty) {
                                         return 'Please enter email';
                                       } else if (!value.isValidEmail) {
                                         return 'Please enter valid email';
@@ -152,10 +152,10 @@ class _LoginPageState extends State<LoginPage> {
                                     obscureText: true,
                                     onSaved: (val) => userPassword = val!,
                                     validator: (value) {
-                                      if (value == null) {
+                                      if (value == null || value.isEmpty) {
                                         return 'Please enter password';
                                       } else if (!value.isValidPassword) {
-                                        return 'Please enter valid password(At least a letter and a number)';
+                                        return 'Please enter valid password(At least a letter and a number, and 8 characters)';
                                       }
                                       return null;
                                     },
