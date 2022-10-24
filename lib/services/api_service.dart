@@ -34,4 +34,19 @@ class ApiService {
       return null;
     }
   }
+
+  Future<http.Response?> put(String endpoint, String? token, String params) async {
+    try {
+      var url = Uri.parse(ApiConstants.baseUrl + endpoint);
+      var headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: token!.isNotEmpty ? token  : '',
+      };
+      // var headers = token!.isNotEmpty ? { HttpHeaders.authorizationHeader: token } : null;
+      return await http.put(url, headers: headers, body: params);
+    } catch (e) {
+      log(e.toString());
+      return null;
+    }
+  }
 }

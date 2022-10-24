@@ -111,6 +111,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
   @override
   Widget build(BuildContext context) {
     AccountModel me = context.watch<CurrentAccount>().account;
+    
     return Scaffold(
       body: Column(
         children: [

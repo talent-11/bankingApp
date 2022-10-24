@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton(
-      {Key? key, required this.buttonText, this.loading, required this.onPressed})
+      {Key? key, required this.buttonText, this.loading = false, required this.onPressed})
       : super(key: key);
 
   final String buttonText;
-  final bool? loading;
+  final bool loading;
   final Function onPressed;
 
-  List<Widget> children(BuildContext context) {
-    var widget = <Widget>[];
+  List<Widget> decorateContents(BuildContext context) {
+    var widgets = <Widget>[];
 
-    if (loading != null && loading == true) {
-      widget.add(const CircularProgressIndicator(color: Colors.white, strokeWidth: 3));
-      widget.add(const SizedBox(width: 8));
+    if (loading) {
+      widgets.add(const CircularProgressIndicator(color: Colors.white, strokeWidth: 3));
+      widgets.add(const SizedBox(width: 8));
     }
 
-    widget.add(Text(buttonText, style: Theme.of(context).textTheme.headline4));
+    widgets.add(Text(buttonText, style: Theme.of(context).textTheme.headline4));
 
-    return widget;
+    return widgets;
   }
 
   @override
@@ -36,7 +36,7 @@ class PrimaryButton extends StatelessWidget {
         child: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: children(context),
+            children: decorateContents(context),
           )
         )
       ),
@@ -49,8 +49,7 @@ class PrimaryButton extends StatelessWidget {
             if (states.contains(MaterialState.pressed)) {
               return Theme.of(context).primaryColor.withOpacity(0.9);
             }
-            return Theme.of(context)
-                .primaryColor; // Use the component's default.
+            return Theme.of(context).primaryColor; // Use the component's default.
           },
         )
       )

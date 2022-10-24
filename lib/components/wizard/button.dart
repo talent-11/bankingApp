@@ -8,15 +8,36 @@ class FotocButton extends StatelessWidget {
       this.textColor,
       required this.buttonText,
       this.outline = false,
-      required this.onPressed
+      required this.onPressed,
+      this.loading = false,
     }
   ) : super(key: key);
      
   final String buttonText;
   final Function onPressed;
   final bool outline;
+  final bool loading;
   final Color? buttonColor;
   final Color? textColor;
+
+  List<Widget> decorateContents(BuildContext context, Color tColor) {
+    var widgets = <Widget>[];
+
+    if (loading) {
+      widgets.add(
+        const SizedBox(
+          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2,),
+          height: 20.0,
+          width: 20.0,
+        )
+      );
+      widgets.add(const SizedBox(width: 8));
+    }
+
+    widgets.add(Text(buttonText, style: TextStyle(fontSize: 14.0, color: tColor, fontWeight: FontWeight.w500)));
+
+    return widgets;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +53,9 @@ class FotocButton extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         child: Center(
-          child: Text(
-            buttonText,
-            style: TextStyle(
-              fontSize: 14.0, 
-              color: tColor, 
-              fontWeight: FontWeight.w500
-            )
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: decorateContents(context, tColor)
           )
         )
       ),

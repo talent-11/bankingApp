@@ -3,14 +3,16 @@ import 'dart:convert';
 import 'package:country_list_pick/country_list_pick.dart';
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
-import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
+import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:http/http.dart';
+import 'package:provider/provider.dart';
 
 class AppState {
   bool loading;
@@ -30,21 +32,21 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final app = AppState(false, AccountModel());
 
-  late String address, city, state, zipcode, country = 'US';
+  late String suite, city, state, zipcode, country = 'US';
 
   
-  void _update(BuildContext context) async {
+  void _update(BuildContext context, String token) async {
     if (app.loading) return;
 
     setState(() => app.loading = true);
     String params = jsonEncode(<String, dynamic>{
-      'address': address,
+      'suite': suite,
       'city': city,
       'state': state,
       'zipcode': zipcode,
       'country': country,
     });
-    Response? response = await ApiService().post(ApiConstants.profile, '', params);
+    Response? response = await ApiService().put(ApiConstants.profile, token, params);
     setState(() => app.loading = false);
 
     if (response == null) {
@@ -68,15 +70,19 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
     }
   }
 
-  void onPressedNext(BuildContext context) {
-    // if (_formKey.currentState!.validate()) {
-    //   _formKey.currentState!.save();
-    //   _update(context);
-    // }
-    Navigator.pushNamed(context, '/free/verify/2');
+  void onPressedNext(BuildContext context, String token) {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      _update(context, token);
+    }
+    // Navigator.pushNamed(context, '/free/verify/2');
   }
 
-  List<Widget> decorate(BuildContext context) {
+  void onPressedCancel(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  List<Widget> decorateBody(BuildContext context, AccountModel user) {
     var widgets = <Widget>[];
     widgets.add(const LogoBar());
     widgets.add(
@@ -105,7 +111,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         child: TextInputField(
           enabled: !app.loading,
           hintText: "Enter your house number and street name",
-          onSaved: (val) => address = val!,
+          onSaved: (val) => suite = val!,
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your address';
@@ -212,7 +218,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
           showEnglishName: true,
         ),
         // Set default value
-        initialSelection: 'US',
+        initialSelection: user.country,
         onChanged: (countryCode) => country = countryCode!.code!,
         // Whether to allow the widget to set a custom UI overlay
         useUiOverlay: true,
@@ -223,14 +229,41 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
     return widgets;
   }
 
-  Widget footer(BuildContext context) => Column(
+  Widget footer(BuildContext context, String token) => Column(
     children: [
-      PrimaryButton(
-        loading: app.loading,
-        buttonText: "NEXT",
-        onPressed: () {
-          onPressedNext(context);
-        }
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: SizedBox(
+                height: 48,
+                child: FotocButton(
+                  outline: true,
+                  buttonText: "Cancel",
+                  onPressed: () {
+                    onPressedCancel(context);
+                  },
+                ),
+              )
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              flex: 1,
+              child: SizedBox(
+                height: 48,
+                child: FotocButton(
+                  loading: app.loading,
+                  buttonText: "Next",
+                  onPressed: () {
+                    onPressedNext(context, token);
+                  },
+                ),
+              )
+            ),
+          ]
+        ),
       ),
       const Dots(selectedIndex: 0),
     ],
@@ -238,17 +271,22 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
 
   @override
   Widget build(BuildContext context) {
+    AccountModel me = context.watch<CurrentAccount>().account;
+
     return Scaffold(
       body: Column(
         children: [
           Expanded(
             child: SingleChildScrollView(
-              child: Column(
-                children: decorate(context)
-              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: decorateBody(context, me)
+                ),
+              )
             )
           ),
-          footer(context)
+          footer(context, me.token!)
         ],
       )
     );

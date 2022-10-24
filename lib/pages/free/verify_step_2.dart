@@ -1,7 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
-import 'package:fotoc/components/ui/primary_button.dart';
+import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/pages/camera/take_picture.dart';
 
@@ -37,6 +37,10 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
   void onPressedUpload(BuildContext context) {
     Navigator.pushNamed(context, '/free/verify/3');
   }
+
+  void onPressedCancel(BuildContext context) {
+    Navigator.pop(context);
+  }
   
   Widget footer(BuildContext context) => Column(
     children: const [
@@ -58,14 +62,38 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
               textAlign: TextAlign.center,
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 40.0),
-              child: PrimaryButton(
-                buttonText: "Take a picture",
-                onPressed: () {
-                  onPressedTakePicture(context);
-                }
+              padding: const EdgeInsets.only(top: 40.0, left: 16.0, right: 16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: SizedBox(
+                      height: 48,
+                      child: FotocButton(
+                        outline: true,
+                        buttonText: "Cancel",
+                        onPressed: () {
+                          onPressedCancel(context);
+                        },
+                      ),
+                    )
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    flex: 1,
+                    child: SizedBox(
+                      height: 48,
+                      child: FotocButton(
+                        buttonText: "Take a picture",
+                        onPressed: () {
+                          onPressedTakePicture(context);
+                        },
+                      ),
+                    )
+                  ),
+                ]
               ),
-            )
+            ),
           ]
         ),
       )
