@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
+import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/services/validation_service.dart';
 import 'package:fotoc/components/ui/primary_button.dart';
@@ -10,6 +11,7 @@ import 'package:fotoc/components/wizard/text_input_field.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
 import 'package:http/http.dart';
+import 'package:provider/provider.dart';
 
 class AppState {
   bool loading;
@@ -50,6 +52,12 @@ class _LoginPageState extends State<LoginPage> {
         }
       );
     } else if (response.statusCode == 200) {
+      dynamic result = json.decode(response.body);
+      AccountModel user = AccountModel.fromJson(result['me']);
+      user.token = result['token'];
+      context.read<CurrentAccount>().changeAccount(user);
+      context.read<CurrentAccount>().login();
+
       Navigator.pushReplacementNamed(context, '/free/dashboard');
     } else if (response.statusCode == 400) {
       showDialog(

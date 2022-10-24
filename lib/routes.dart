@@ -15,7 +15,7 @@ import 'package:fotoc/pages/wizard/welcome.dart';
 // import 'pages/wizard/login_with_finger.dart';
 
 final routes = {
-  '/': (BuildContext context) => const FreeDashboardPage(),
+  '/': (BuildContext context) => const WelcomePage(),
   '/wizard/welcome': (BuildContext context) => const WelcomePage(),
   '/wizard/help': (BuildContext context) => const HelpPage(),
   // '/wizard/login/fingerprint': (context) => const LoginWithFingerPage(),

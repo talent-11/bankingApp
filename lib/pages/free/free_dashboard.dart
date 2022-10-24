@@ -11,6 +11,8 @@ import 'package:fotoc/components/wizard/bullet_row.dart';
 import 'package:fotoc/components/wizard/text_with_cc.dart';
 import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/pages/qr/show_qr_code.dart';
+import 'package:fotoc/providers/account_provider.dart';
+import 'package:provider/provider.dart';
 class AppState {
   AccountModel me;
   AccountModel seller;
@@ -108,6 +110,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    AccountModel me = context.watch<CurrentAccount>().account;
     return Scaffold(
       body: Column(
         children: [
@@ -176,7 +179,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Lindsey Eberhard", 
+                            me.name!, 
                             style: TextStyle(
                               color: Theme.of(context).primaryColor, 
                               decoration: TextDecoration.underline, 
@@ -185,10 +188,10 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
                               fontWeight: FontWeight.w500
                             )
                           ),
-                          Text(
-                            "@LindseyEb",
-                            style: Theme.of(context).textTheme.headline6,
-                          )
+                          // Text(
+                          //   "@LindseyEb",
+                          //   style: Theme.of(context).textTheme.headline6,
+                          // )
                         ],
                       )
                     ]
