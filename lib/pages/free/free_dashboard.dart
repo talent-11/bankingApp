@@ -15,7 +15,7 @@ class FreeDashboardPage extends StatefulWidget {
 
 class _FreeDashboardPageState extends State<FreeDashboardPage> {
   void onPressedGetFullAccount(BuildContext context) {
-    // Navigator.pushNamed(context, '/wizard/signup/main');
+    Navigator.pushNamed(context, '/free/verify/1');
   }
 
   void onPressedMore(BuildContext context) {
