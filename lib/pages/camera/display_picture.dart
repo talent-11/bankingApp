@@ -12,10 +12,10 @@ class DisplayPictureScreen extends StatefulWidget {
   const DisplayPictureScreen({Key? key, required this.imagePath, required this.actionText, required this.action}) : super(key: key);
 
   @override
-  DisplayPictureScreenState createState() => DisplayPictureScreenState();
+  _DisplayPictureScreenState createState() => _DisplayPictureScreenState();
 }
 
-class DisplayPictureScreenState extends State<DisplayPictureScreen> {
+class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
 
   void retake() {
     Navigator.of(context).pop();

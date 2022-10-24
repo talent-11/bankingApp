@@ -1,10 +1,22 @@
+import 'dart:convert';
+
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/ui/icon_text_button.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/bullet_row.dart';
 import 'package:fotoc/components/wizard/text_with_cc.dart';
+import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/pages/qr/show_qr_code.dart';
+class AppState {
+  AccountModel me;
+  AccountModel seller;
+
+  AppState(this.me, this.seller);
+}
 
 class FreeDashboardPage extends StatefulWidget {
   const FreeDashboardPage({Key? key}) : super(key: key);
@@ -14,6 +26,8 @@ class FreeDashboardPage extends StatefulWidget {
 }
 
 class _FreeDashboardPageState extends State<FreeDashboardPage> {
+  final app = AppState(AccountModel(), AccountModel());
+
   void onPressedGetFullAccount(BuildContext context) {
     Navigator.pushNamed(context, '/free/verify/1');
   }
@@ -21,10 +35,38 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
   void onPressedMore(BuildContext context) {
   }
 
+  void onPressedQrCode(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const ShowQrCodeScreen(dataString: 'test')));
+  }
+
   void onPressedPay(BuildContext context) {
   }
 
   void onPressedScan(BuildContext context) {
+    // Navigator.push(context, MaterialPageRoute(builder: (_) => const ScanQrCodeScreen()));
+    scan();
+  }
+
+  Future scan() async {
+    try {
+      ScanResult barcode = await BarcodeScanner.scan();
+      dynamic seller = json.decode(barcode.rawContent);
+      if (seller.containsKey('verified_id')) {
+        setState(() {
+          app.seller = AccountModel.fromJson(seller);
+        });
+      }
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.cameraAccessDenied) {
+        // setState(() => barcode = 'The user did not grant the camera permission!');
+      } else {
+        // setState(() => barcode = 'Unknown error: $e');
+      }
+    } on FormatException{
+      // setState(() => barcode = 'null (User returned using the "back"-button before scanning anything. Result)');
+    } catch (e) {
+      // setState(() => barcode = 'Unknown error: $e');
+    }
   }
 
   Widget buttons(BuildContext context) => Row(
@@ -125,7 +167,10 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
                             ),
                           ],
                         ),
-                        child: const Icon(Icons.qr_code, size: 48, color: Colors.white),
+                        child: IconButton(
+                          icon: const Icon(Icons.qr_code, size: 48, color: Colors.white),
+                          onPressed: () => onPressedQrCode(context),
+                        ),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

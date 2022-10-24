@@ -43,6 +43,9 @@ dependencies:
   camera: ^0.10.0+1
   path_provider:
   path:
+  barcode_scan: ^3.0.1
+  qr_flutter: ^4.0.0
+
 
 dev_dependencies:
   flutter_test:

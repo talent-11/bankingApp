@@ -9,10 +9,10 @@ class TakePictureScreen extends StatefulWidget {
   final Function action;
 
   @override
-  TakePictureScreenState createState() => TakePictureScreenState();
+  _TakePictureScreenState createState() => _TakePictureScreenState();
 }
 
-class TakePictureScreenState extends State<TakePictureScreen> {
+class _TakePictureScreenState extends State<TakePictureScreen> {
   late CameraController _controller;
 
   @override
