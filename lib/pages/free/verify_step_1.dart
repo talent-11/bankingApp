@@ -33,7 +33,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
   late String address, city, state, zipcode, country = 'US';
 
   
-  Future<void> _update(BuildContext context) async {
+  void _update(BuildContext context) async {
     if (app.loading) return;
 
     setState(() => app.loading = true);
@@ -73,7 +73,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
     //   _formKey.currentState!.save();
     //   _update(context);
     // }
-    Navigator.pushNamed(context, '/free/verify/3');
+    Navigator.pushNamed(context, '/free/verify/2');
   }
 
   List<Widget> decorate(BuildContext context) {
@@ -227,7 +227,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
     children: [
       PrimaryButton(
         loading: app.loading,
-        buttonText: "NEXT & UPLOAD YOUR I.D.",
+        buttonText: "NEXT",
         onPressed: () {
           onPressedNext(context);
         }

@@ -6,8 +6,7 @@ import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
   runApp(
     MultiProvider(
@@ -57,8 +56,7 @@ class MyApp extends StatelessWidget {
           bodyText1: TextStyle(fontSize: 14.0, color: Color(0xff98a9bc), height: 1.4),
           bodyText2: TextStyle(fontSize: 12.0, color: Color(0xff98a9bc), height: 1.2),
         ),
-        textSelectionTheme:
-          const TextSelectionThemeData(cursorColor: Color(0xff5d10f6)),
+        textSelectionTheme: const TextSelectionThemeData(cursorColor: Color(0xff5d10f6)),
       ),
       // home: const SignupPage(),
       routes: routes,

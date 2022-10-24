@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fotoc/components/ui/primary_button.dart';
-import 'package:fotoc/components/ui/icon_button.dart';
+import 'package:fotoc/components/ui/icon_text_button.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/bullet_row.dart';
 import 'package:fotoc/components/wizard/text_with_cc.dart';
@@ -34,7 +34,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
         flex: 1,
         child: SizedBox(
           height: 46,
-          child: FotocIconButton(
+          child: FotocIconTextButton(
             icon: Icon(Icons.qr_code, size: 20, color: Theme.of(context).primaryColor),
             outline: true,
             buttonText: "Scan",
@@ -49,7 +49,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
         flex: 1,
         child: SizedBox(
           height: 46,
-          child: FotocIconButton(
+          child: FotocIconTextButton(
             icon: SvgPicture.asset(
               "assets/svgs/cc.svg",
               width: 20 * 0.379412,
