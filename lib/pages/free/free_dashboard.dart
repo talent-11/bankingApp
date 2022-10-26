@@ -4,20 +4,21 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/ui/icon_text_button.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/bullet_row.dart';
 import 'package:fotoc/components/wizard/text_with_cc.dart';
 import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/pages/free/pay.dart';
 import 'package:fotoc/pages/qr/show_qr_code.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:provider/provider.dart';
 class AppState {
   AccountModel me;
-  AccountModel seller;
 
-  AppState(this.me, this.seller);
+  AppState(this.me);
 }
 
 class FreeDashboardPage extends StatefulWidget {
@@ -28,7 +29,7 @@ class FreeDashboardPage extends StatefulWidget {
 }
 
 class _FreeDashboardPageState extends State<FreeDashboardPage> {
-  final app = AppState(AccountModel(), AccountModel());
+  final app = AppState(AccountModel());
 
   void onPressedGetFullAccount(BuildContext context) {
     Navigator.pushNamed(context, '/free/verify/1');
@@ -45,18 +46,26 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
   }
 
   void onPressedScan(BuildContext context) {
-    // Navigator.push(context, MaterialPageRoute(builder: (_) => const ScanQrCodeScreen()));
     scan();
   }
 
   Future scan() async {
     try {
       ScanResult barcode = await BarcodeScanner.scan();
-      dynamic seller = json.decode(barcode.rawContent);
-      if (seller.containsKey('verified_id')) {
-        setState(() {
-          app.seller = AccountModel.fromJson(seller);
-        });
+      dynamic sellerJson = json.decode(barcode.rawContent);
+      if (sellerJson.containsKey('verified_id')) {
+        AccountModel seller = AccountModel.fromJson(sellerJson);
+        if (seller.verifiedId == app.me.verifiedId) {
+          showDialog(
+            context: context, 
+            builder: (context) {
+              return const ErrorDialog(text: "You are trying to pay to you.");
+            }
+          );
+
+          return;
+        }
+        Navigator.push(context, MaterialPageRoute(builder: (_) => PayPage(seller: seller, buyer: app.me)));
       }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
@@ -72,12 +81,12 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
   }
 
   Widget buttons(BuildContext context) => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
       Expanded(
         flex: 1,
         child: SizedBox(
-          height: 46,
+          height: 48,
           child: FotocIconTextButton(
             icon: Icon(Icons.qr_code, size: 20, color: Theme.of(context).primaryColor),
             outline: true,
@@ -92,7 +101,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
       Expanded(
         flex: 1,
         child: SizedBox(
-          height: 46,
+          height: 48,
           child: FotocIconTextButton(
             icon: SvgPicture.asset(
               "assets/svgs/cc.svg",
@@ -111,6 +120,9 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
   @override
   Widget build(BuildContext context) {
     AccountModel me = context.watch<CurrentAccount>().account;
+    setState(() {
+      app.me = me;
+    });
     
     return Scaffold(
       body: Column(
@@ -151,7 +163,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
                 ),
                 const Divider(height: 1, thickness: 1, color: Colors.black26),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.only(top: 16, bottom: 24),
                   child: Row(
                     children: [
                       Container(
@@ -228,7 +240,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.only(top: 32),
                   child: buttons(context),
                 )
               ],

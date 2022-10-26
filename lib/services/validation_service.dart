@@ -12,10 +12,10 @@ extension ValidationService on String {
   }
 
   bool get isValidPassword{
-    // final passwordRegExp = RegExp(r'^(?=.*\d)(?=.*[a-zA-Z]).{8,}$');
+    final passwordRegExp = RegExp(r'^(?=.*\d)(?=.*[a-zA-Z]).{8,}$');
     // final passwordRegExp = RegExp(r'^(?=.*\d){6,}$');
-    // return passwordRegExp.hasMatch(this);
-    return true;
+    return passwordRegExp.hasMatch(this);
+    // return true;
   }
 
   bool get isNotNull{
@@ -30,6 +30,11 @@ extension ValidationService on String {
   bool get isValidReferralId{
     final referralIdRegExp = RegExp(r"^[a-zA-Z0-9]{6}$");
     return referralIdRegExp.hasMatch(this);
+  }
+
+  bool get isValidCurrency{
+    final nameRegExp = RegExp(r"^\$?(([1-9]\d{0,2}(,\d{3})*)|0)?\.\d{1,2}$");
+    return nameRegExp.hasMatch(this);
   }
 
 }

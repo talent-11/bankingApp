@@ -31,7 +31,8 @@ class _LoginPageState extends State<LoginPage> {
   final app = AppState(false, AccountModel());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  late String userEmail, userPassword;
+  // late String userEmail, userPassword;
+  late String userEmail='syed@gmail.com', userPassword='123456';
 
   Future<void> _login() async {
     if (app.loading) return;
@@ -72,10 +73,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void onPressedLogin(BuildContext context) {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      _login();
-    }
+    // if (_formKey.currentState!.validate()) {
+    //   _formKey.currentState!.save();
+    //   _login();
+    // }
+    _login();
   }
 
   void onPressedRecover(BuildContext context) {
@@ -141,6 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                                     enabled: !app.loading,
                                     labelText: "Your account",
                                     hintText: "Enter your email",
+                                    keyboardType: TextInputType.emailAddress,
                                     onSaved: (val) => userEmail = val!,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
@@ -161,9 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                                     onSaved: (val) => userPassword = val!,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Please enter password';
-                                      } else if (!value.isValidPassword) {
-                                        return 'Please enter valid password(At least a letter and a number, and 8 characters)';
+                                        return 'Please enter your password';
                                       }
                                       return null;
                                     },

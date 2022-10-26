@@ -34,7 +34,6 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
 
   late String suite, city, state, zipcode, country = 'US';
 
-  
   void _update(BuildContext context, String token) async {
     if (app.loading) return;
 
