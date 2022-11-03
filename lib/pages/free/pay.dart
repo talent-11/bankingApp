@@ -1,10 +1,20 @@
+import 'dart:convert';
+
+import 'package:http/http.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
+import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
-import 'package:intl/intl.dart';
+import 'package:fotoc/services/api_service.dart';
+import 'package:fotoc/providers/account_provider.dart';
+
 
 class AppState {
   bool loading;
@@ -29,11 +39,67 @@ class _PayPageState extends State<PayPage> {
   final app = AppState(false);
   String amount = "0.00";
 
-  void onPressedNext(BuildContext context) {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-    }
+  Future<void> _pay() async {
+    if (app.loading) return;
+
+    setState(() => app.loading = true);
+    String params = jsonEncode(<String, dynamic>{
+      'seller': widget.seller.id,
+      'price': amount
+    });
+    Response? response = await ApiService().post(ApiConstants.pay, widget.buyer.token, params);
+    setState(() => app.loading = false);
     // Navigator.pushNamed(context, '/free/verify/2');
+
+    if (response == null) {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          return const ErrorDialog(text: "Please check your network connection");
+        }
+      );
+    } else if (response.statusCode == 200) {
+      const snackBar = SnackBar(
+        content: Text('Paid successfully'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      AccountModel me = widget.buyer;
+      me.bank!.checking -= double.parse(formatCurrency.format(double.parse(amount) * 1.02));
+      context.read<CurrentAccount>().changeAccount(me);
+
+      Navigator.pop(context);
+    } else if (response.statusCode == 400) {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          dynamic res = json.decode(response.body);
+          String text = res["message"];
+          return ErrorDialog(text: text);
+        }
+      );
+    }
+  }
+
+  void onPressedNext(BuildContext context) {
+    String error = "";
+
+    if (amount.isEmpty || double.parse(amount) == 0) {
+      error = 'Please enter amount';
+    } else if (double.parse(amount) < 0) {
+      error = 'Can not input negative';
+    }
+
+    if (error.isEmpty) {
+      _pay();
+    } else {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          return ErrorDialog(text: error);
+        }
+      );
+    }
   }
 
   void onPressedCancel(BuildContext context) {
@@ -158,7 +224,7 @@ class _PayPageState extends State<PayPage> {
   Widget footer(BuildContext context) => Column(
     children: [
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         child: Row(
           children: [
             Expanded(
@@ -181,7 +247,7 @@ class _PayPageState extends State<PayPage> {
                 height: 48,
                 child: FotocButton(
                   loading: app.loading,
-                  buttonText: "Continue",
+                  buttonText: "Pay",
                   onPressed: () {
                     onPressedNext(context);
                   },
@@ -191,7 +257,7 @@ class _PayPageState extends State<PayPage> {
           ]
         ),
       ),
-      const Dots(selectedIndex: 0, dots: 2),
+      // const Dots(selectedIndex: 0, dots: 2),
     ],
   );
 

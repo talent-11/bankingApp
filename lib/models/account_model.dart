@@ -11,6 +11,7 @@ class AccountModel {
     this.id,
     this.name,
     this.email,
+    this.username,
     this.phone,
     this.token,
     this.verifiedId,
@@ -22,6 +23,7 @@ class AccountModel {
     this.zipcode,
     this.state,
     this.country,
+    this.bank,
     // required this.website,
     // required this.company,
   });
@@ -29,6 +31,7 @@ class AccountModel {
   int? id;
   String? name;
   String? email;
+  String? username;
   String? phone;
   String? token;
   String? verifiedId;
@@ -40,13 +43,13 @@ class AccountModel {
   String? zipcode;
   String? state;
   String? country;
-  // String website;
-  // Company company;
+  Bank? bank;
 
   factory AccountModel.fromJson(Map<String, dynamic> json) => AccountModel(
     id: json["id"],
     name: json["name"],
     email: json["email"],
+    username: json["username"],
     phone: json["phone"],
     token: json["token"],
     verifiedId: json["verified_id"],
@@ -58,8 +61,7 @@ class AccountModel {
     zipcode: json["zipcode"],
     state: json["state"],
     country: json["country"],
-    // website: json["website"],
-    // company: Company.fromJson(json["company"]),
+    bank: Bank.fromJson(json["bank"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -76,8 +78,7 @@ class AccountModel {
     "zipcode": zipcode,
     "state": state,
     "country": country,
-    // "website": website,
-    // "company": company.toJson(),
+    "bank": bank!.toJson(),
   };
 }
 
@@ -91,36 +92,32 @@ class Geo {
   String lng;
 
   factory Geo.fromJson(Map<String, dynamic> json) => Geo(
-        lat: json["lat"],
-        lng: json["lng"],
-      );
+    lat: json["lat"],
+    lng: json["lng"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "lat": lat,
-        "lng": lng,
-      };
+    "lat": lat,
+    "lng": lng,
+  };
 }
 
-class Company {
-  Company({
-    required this.name,
-    required this.catchPhrase,
-    required this.bs,
+class Bank {
+  Bank({
+    required this.checking,
+    required this.saving,
   });
 
-  String name;
-  String catchPhrase;
-  String bs;
+  double checking;
+  double saving;
 
-  factory Company.fromJson(Map<String, dynamic> json) => Company(
-        name: json["name"],
-        catchPhrase: json["catchPhrase"],
-        bs: json["bs"],
-      );
+  factory Bank.fromJson(Map<String, dynamic> json) => Bank(
+    checking: double.parse(json["checking"]),
+    saving: double.parse(json["saving"]),
+  );
 
   Map<String, dynamic> toJson() => {
-        "name": name,
-        "catchPhrase": catchPhrase,
-        "bs": bs,
-      };
+    "checking": checking,
+    "saving": saving,
+  };
 }

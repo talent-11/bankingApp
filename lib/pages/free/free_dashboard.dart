@@ -14,12 +14,15 @@ import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/pages/free/pay.dart';
 import 'package:fotoc/pages/qr/show_qr_code.dart';
 import 'package:fotoc/providers/account_provider.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 class AppState {
   AccountModel me;
 
   AppState(this.me);
 }
+
+final formatCurrency = NumberFormat.currency(locale: "en_US", symbol: "");
 
 class FreeDashboardPage extends StatefulWidget {
   const FreeDashboardPage({Key? key}) : super(key: key);
@@ -53,9 +56,10 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
     try {
       ScanResult barcode = await BarcodeScanner.scan();
       dynamic sellerJson = json.decode(barcode.rawContent);
-      if (sellerJson.containsKey('verified_id')) {
-        AccountModel seller = AccountModel.fromJson(sellerJson);
-        if (seller.verifiedId == app.me.verifiedId) {
+      if (sellerJson.containsKey('id') && sellerJson.containsKey('name')) {
+        AccountModel seller = AccountModel(id: int.parse(sellerJson["id"]), name: sellerJson["name"]);
+
+        if (seller.id == app.me.id) {
           showDialog(
             context: context, 
             builder: (context) {
@@ -201,10 +205,10 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
                               fontWeight: FontWeight.w500
                             )
                           ),
-                          // Text(
-                          //   "@LindseyEb",
-                          //   style: Theme.of(context).textTheme.headline6,
-                          // )
+                          Text(
+                            me.username!,
+                            style: Theme.of(context).textTheme.headline6,
+                          )
                         ],
                       )
                     ]
@@ -230,7 +234,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const TextWithCC(text: "{{s}} 100.00", fontSize: 20, color: Colors.black, lineHeight: 1.0,),
+                        TextWithCC(text: ("{{s}}" + formatCurrency.format(me.bank!.checking)), fontSize: 20, color: Colors.black, lineHeight: 1.0,),
                         Text(
                           "Test Account Balance", 
                           style: Theme.of(context).textTheme.headline6,

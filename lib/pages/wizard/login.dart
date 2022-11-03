@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // late String userEmail, userPassword;
-  late String userEmail='syed@gmail.com', userPassword='123456';
+  late String userEmail='syed@gmail.com', userPassword='Asdf1234';
 
   Future<void> _login() async {
     if (app.loading) return;
