@@ -28,7 +28,6 @@ class _PayPageState extends State<PayPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final app = AppState(false);
   String amount = "0.00";
-  String password = "";
 
   void onPressedNext(BuildContext context) {
     if (_formKey.currentState!.validate()) {
@@ -135,30 +134,6 @@ class _PayPageState extends State<PayPage> {
             ),
           )
         ]
-      )
-    );
-  }
-
-  Widget decoratePasswordRow(BuildContext context) {
-    return decorateRow(
-      context, 
-      const Text('Password', style: TextStyle(color: Colors.black54, fontSize: 15)), 
-      SizedBox(
-        width: 200,
-        height: 24,
-        child: TextFormField(
-          enabled: !app.loading,
-          decoration: inputDecoration(context),
-          obscureText: true,
-          // onSaved: (val) => amount = val!,
-          // onChanged: (val) => setState(() => amount = val),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter your password';
-            }
-            return null;
-          },
-        ),
       )
     );
   }

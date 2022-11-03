@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class TextInputField extends StatelessWidget {
   const TextInputField(
-      {Key? key, this.enabled, this.labelText, this.hintText, this.obscureText, this.keyboardType, this.validator, this.onSaved})
+      {Key? key, this.enabled, this.labelText, this.hintText, this.obscureText, this.keyboardType, this.validator, this.onSaved, this.onChanged})
       : super(key: key);
 
   final bool? enabled;
@@ -12,6 +12,7 @@ class TextInputField extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final String? Function(String?)? onSaved;
+  final void Function(String?)? onChanged;
 
   List<Widget> decorate(BuildContext context) {
     var widget = <Widget>[];
@@ -28,6 +29,7 @@ class TextInputField extends StatelessWidget {
       keyboardType: keyboardType,
       validator: validator,
       onSaved: onSaved,
+      onChanged: onChanged,
       decoration: InputDecoration(
           hintText: hintText,
           hintStyle: Theme.of(context).textTheme.bodyText1,

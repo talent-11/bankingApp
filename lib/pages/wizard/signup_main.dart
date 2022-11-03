@@ -35,7 +35,8 @@ class _SignupMainPageState extends State<SignupMainPage> {
   final app = AppState(false, AccountModel());
 
   bool agreed = false;
-  late String userName, userEmail, userPassword, referralId;
+  String name = "";
+  late String email, username, newPassword, rePassword, referralId;
 
   Future<void> _signup(BuildContext context) async {
     if (app.loading) return;
@@ -52,11 +53,11 @@ class _SignupMainPageState extends State<SignupMainPage> {
 
     setState(() => app.loading = true);
     String params = jsonEncode(<String, dynamic>{
-      'name': userName,
-      'email': userEmail,
-      'password': userPassword,
+      'name': name,
+      'email': email,
+      'username': username,
+      'password': newPassword,
       'friend_id': referralId,
-      'country': 'US',
     });
     Response? response = await ApiService().post(ApiConstants.signup, '', params);
     setState(() => app.loading = false);
@@ -84,7 +85,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
 
   void onPressedNext(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+      // _formKey.currentState!.save();
       _signup(context);
     }
   }
@@ -111,8 +112,12 @@ class _SignupMainPageState extends State<SignupMainPage> {
         child: TextInputField(
           // labelText: "Your name",
           enabled: !app.loading,
+          keyboardType: TextInputType.name,
           hintText: "Enter your full name",
-          onSaved: (val) => userName = val!,
+          // onSaved: (val) => name = val!,
+          onChanged: (val) {
+            setState(() => name = val!);
+          },
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your full name';
@@ -129,7 +134,11 @@ class _SignupMainPageState extends State<SignupMainPage> {
           // labelText: "Your account",
           enabled: !app.loading,
           hintText: "Enter your email",
-          onSaved: (val) => userEmail = val!,
+          keyboardType: TextInputType.emailAddress,
+          onChanged: (val) {
+            setState(() => email = val!);
+          },
+          // onSaved: (val) => email = val!,
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter email';
@@ -145,15 +154,62 @@ class _SignupMainPageState extends State<SignupMainPage> {
       Padding(
         padding: const EdgeInsets.only(top: 0.0),
         child: TextInputField(
+          // labelText: "Your account",
+          enabled: !app.loading,
+          hintText: "Enter your username",
+          onChanged: (val) {
+            setState(() => username = val!);
+          },
+          // onSaved: (val) => username = val!,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter username';
+            }
+            return null;
+          },
+        )
+      )
+    );
+    widgets.add(
+      Padding(
+        padding: const EdgeInsets.only(top: 0.0),
+        child: TextInputField(
           // labelText: "Create password",
           enabled: !app.loading,
+          obscureText: true,
           hintText: "Enter your password",
-          onSaved: (val) => userPassword = val!,
+          onChanged: (val) {
+            setState(() => newPassword = val!);
+          },
+          // onSaved: (val) => newPassword = val!,
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter password';
             } else if (!value.isValidPassword) {
               return 'Please enter valid password(At least a letter and a number, and 8 characters)';
+            }
+            return null;
+          },
+        )
+      )
+    );
+    widgets.add(
+      Padding(
+        padding: const EdgeInsets.only(top: 0.0),
+        child: TextInputField(
+          // labelText: "Create password",
+          enabled: !app.loading,
+          obscureText: true,
+          hintText: "Confirm your password",
+          onChanged: (val) {
+            setState(() => rePassword = val!);
+          },
+          // onSaved: (val) => rePassword = val!,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please reenter your password';
+            } else if (value != newPassword) {
+              return 'Confirm password doesn\'t match';
             }
             return null;
           },
@@ -184,7 +240,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
           onPressedNext(context);
         }
       ),
-      const Dots(selectedIndex: 1),
+      const Dots(selectedIndex: 2, dots: 4,),
       WizardFooter(
         description: "Do you have an account?",
         buttonText: "Sign in here",

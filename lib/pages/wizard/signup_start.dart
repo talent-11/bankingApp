@@ -81,7 +81,7 @@ class _SignupStartPageState extends State<SignupStartPage> {
           onPressedGetStarted(context);
         }
       ),
-      const Dots(selectedIndex: 0),
+      const Dots(selectedIndex: 1, dots: 4,),
       WizardFooter(
         description: "Do you have an account?",
         buttonText: "Sign in here",

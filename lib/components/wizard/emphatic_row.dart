@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fotoc/components/wizard/text_spans.dart';
+import 'package:fotoc/components/wizard/text_with_cc.dart';
 
-class TextWithCC extends StatelessWidget {
-  const TextWithCC(
+class EmphaticRow extends StatelessWidget {
+  const EmphaticRow(
     {
       Key? key,
       required this.text,
@@ -21,9 +21,10 @@ class TextWithCC extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        children: decorateArticle(context, text, fontSize: fontSize, fontWeight: fontWeight, color: color, lineHeight: lineHeight)
+    return Padding(
+      padding: const EdgeInsets.only(left: 10), 
+      child: Expanded(
+        child: TextWithCC(text: text, fontSize: fontSize, fontWeight: fontWeight, color: color, lineHeight: lineHeight)
       )
     );
   }

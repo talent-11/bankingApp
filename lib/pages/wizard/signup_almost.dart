@@ -70,7 +70,8 @@ class _SignupAlmostPageState extends State<SignupAlmostPage> {
                     ),
                     const Spacer(flex: 1),
                     const Dots(
-                      selectedIndex: 2.0,
+                      selectedIndex: 3,
+                      dots: 4,
                     ),
                     WizardFooter(
                       description: "Do you have an account?",
