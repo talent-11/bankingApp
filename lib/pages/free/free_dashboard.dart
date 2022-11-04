@@ -4,6 +4,9 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
 import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/ui/icon_text_button.dart';
@@ -11,11 +14,12 @@ import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/bullet_row.dart';
 import 'package:fotoc/components/wizard/text_with_cc.dart';
 import 'package:fotoc/models/account_model.dart';
-import 'package:fotoc/pages/free/pay.dart';
+import 'package:fotoc/pages/free/people.dart';
+import 'package:fotoc/pages/free/scan_pay.dart';
 import 'package:fotoc/pages/qr/show_qr_code.dart';
 import 'package:fotoc/providers/account_provider.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import 'package:fotoc/pages/free/manual_pay.dart';
+
 class AppState {
   AccountModel me;
 
@@ -42,10 +46,15 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
   }
 
   void onPressedQrCode(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const ShowQrCodeScreen(dataString: 'test')));
+    String params = jsonEncode(<String, dynamic>{
+      'id': app.me.id,
+      'name': app.me.name
+    });
+    Navigator.push(context, MaterialPageRoute(builder: (_) => ShowQrCodeScreen(dataString: params)));
   }
 
   void onPressedPay(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => ManualPayPage(buyer: app.me)));
   }
 
   void onPressedScan(BuildContext context) {
@@ -69,7 +78,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
 
           return;
         }
-        Navigator.push(context, MaterialPageRoute(builder: (_) => PayPage(seller: seller, buyer: app.me)));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ScanPayPage(seller: seller, buyer: app.me)));
       }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
@@ -206,7 +215,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
                             )
                           ),
                           Text(
-                            me.username!,
+                            "@" + me.username!,
                             style: Theme.of(context).textTheme.headline6,
                           )
                         ],

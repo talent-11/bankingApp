@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:fotoc/components/ui/primary_button.dart';
+import 'package:fotoc/pages/free/people.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +11,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
-import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/services/api_service.dart';
@@ -18,25 +19,25 @@ import 'package:fotoc/providers/account_provider.dart';
 
 class AppState {
   bool loading;
+  AccountModel seller;
 
-  AppState(this.loading);
+  AppState(this.loading, this.seller);
 }
 
 final formatCurrency = NumberFormat.currency(locale: "en_US", symbol: "");
 
-class PayPage extends StatefulWidget {
-  const PayPage({Key? key, required this.seller, required this.buyer}) : super(key: key);
+class ManualPayPage extends StatefulWidget {
+  const ManualPayPage({Key? key, required this.buyer}) : super(key: key);
 
-  final AccountModel seller;
   final AccountModel buyer;
 
   @override
-  State<PayPage> createState() => _PayPageState();
+  State<ManualPayPage> createState() => _ManualPayPageState();
 }
 
-class _PayPageState extends State<PayPage> {
+class _ManualPayPageState extends State<ManualPayPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final app = AppState(false);
+  final app = AppState(false, AccountModel(name: ""));
   String amount = "0.00";
 
   Future<void> _pay() async {
@@ -44,7 +45,7 @@ class _PayPageState extends State<PayPage> {
 
     setState(() => app.loading = true);
     String params = jsonEncode(<String, dynamic>{
-      'seller': widget.seller.id,
+      'seller': app.seller.id,
       'price': amount
     });
     Response? response = await ApiService().post(ApiConstants.pay, widget.buyer.token, params);
@@ -88,6 +89,8 @@ class _PayPageState extends State<PayPage> {
       error = 'Please enter amount';
     } else if (double.parse(amount) < 0) {
       error = 'Can not input negative';
+    } else if (app.seller == null || app.seller.id == null) {
+      error = 'Please choose a person to pay';
     }
 
     if (error.isEmpty) {
@@ -104,6 +107,26 @@ class _PayPageState extends State<PayPage> {
 
   void onPressedCancel(BuildContext context) {
     Navigator.pop(context);
+  }
+
+  void onPressedSeller(BuildContext context) async {
+    final result = await Navigator.push(context, MaterialPageRoute(builder: (_) => PeoplePage(me: widget.buyer)));
+
+    if (!mounted) return;
+
+    if (result != null) {
+      setState(() => app.seller = result as AccountModel);
+    }
+  }
+
+  Widget decorateSellerButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16), 
+      child: PrimaryButton(
+        buttonText: "Choose a seller", 
+        onPressed: () => onPressedSeller(context)
+      )
+    );
   }
 
   Widget decorateRow(BuildContext context, Widget w1, Widget w2) {
@@ -189,14 +212,6 @@ class _PayPageState extends State<PayPage> {
               keyboardType: TextInputType.number,
               initialValue: amount,
               onChanged: (val) => setState(() => amount = val),
-              // validator: (value) {
-              //   if (value == null || value.isEmpty || double.parse(value) == 0) {
-              //     return 'Please enter amount';
-              //   } else if (double.parse(value) < 0) {
-              //     return 'Can not input negative';
-              //   }
-              //   return null;
-              // },
             ),
           )
         ]
@@ -211,8 +226,9 @@ class _PayPageState extends State<PayPage> {
 
     var widgets = <Widget>[];
     widgets.add(const LogoBar());
+    widgets.add(decorateSellerButton(context));
     widgets.add(decorateStaticValues(context, "Pay From", widget.buyer.name!));
-    widgets.add(decorateStaticValues(context, "Pay To", widget.seller.name!));
+    widgets.add(decorateStaticValues(context, "Pay To", app.seller == null ? '' : app.seller.name!));
     widgets.add(decorateAmountRow(context));
     widgets.add(decorateStaticCCValues(context, "SG Contribution (1.5%)", sg));
     widgets.add(decorateStaticCCValues(context, "CG Contribution (0.5%)", cg));
@@ -224,7 +240,7 @@ class _PayPageState extends State<PayPage> {
   Widget footer(BuildContext context) => Column(
     children: [
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 32),
         child: Row(
           children: [
             Expanded(
