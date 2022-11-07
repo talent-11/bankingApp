@@ -5,7 +5,6 @@ import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/text_spans.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -20,15 +19,6 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  static const String oneSignalAppId = "7f7aafc5-5077-4804-8656-5f42b6d2aa7d";
-  Future<void> initPlatformState() async {
-    OneSignal.shared.setAppId(oneSignalAppId);
-    OneSignal.shared
-      .promptUserForPushNotificationPermission()
-      .then((accepted) {});
   }
 
   void onPressedBar(BuildContext context) {
