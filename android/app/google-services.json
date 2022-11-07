@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "817712129679",
+    "project_id": "fotoc-cb569",
+    "storage_bucket": "fotoc-cb569.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817712129679:android:19827d25491fe17b56f2fa",
+        "android_client_info": {
+          "package_name": "com.fotocbank.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "817712129679-bvi9osc3h46v95m0dsqlhfagjnqki101.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fotocbank.app",
+            "certificate_hash": "0d01a84bed7b321d006d6669d15df6c81e23b369"
+          }
+        },
+        {
+          "client_id": "817712129679-e33sg312lsgvrrpfgd6kdg1o2q8k5kln.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaZjRiLLFWkenro-T8ZV0quEMpU4Z-pI8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "817712129679-e33sg312lsgvrrpfgd6kdg1o2q8k5kln.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
