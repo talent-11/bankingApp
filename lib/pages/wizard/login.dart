@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
+import 'package:fotoc/pages/wizard/signup_almost.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/services/validation_service.dart';
@@ -71,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       );
     } else if (response.statusCode == 403) {
-      Navigator.pushReplacementNamed(context, '/wizard/signup/almost');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SignupAlmostPage(from: 'login', email: userEmail)));
     }
   }
 
