@@ -31,16 +31,17 @@ class _LoginPageState extends State<LoginPage> {
   final app = AppState(false, AccountModel());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  late String userEmail, userPassword;
-  // late String userEmail='syed@gmail.com', userPassword='Asdf1234';
+  late String userEmail, userPassword, fcmToken;
+  // late String userEmail='lisa@gmail.com', userPassword='Asdf1234', fcmToken;
 
   Future<void> _login() async {
     if (app.loading) return;
 
     setState(() => app.loading = true);
     String params = jsonEncode(<String, dynamic>{
-      'email': userEmail,
-      'password': userPassword
+      'email': userEmail.toLowerCase(),
+      'password': userPassword,
+      'fcm_token': fcmToken
     });
     Response? response = await ApiService().post(ApiConstants.login, '', params);
     setState(() => app.loading = false);
@@ -69,15 +70,17 @@ class _LoginPageState extends State<LoginPage> {
           return ErrorDialog(text: text);
         }
       );
+    } else if (response.statusCode == 403) {
+      Navigator.pushReplacementNamed(context, '/wizard/signup/almost');
     }
   }
 
   void onPressedLogin(BuildContext context) {
-    // if (_formKey.currentState!.validate()) {
-    //   _formKey.currentState!.save();
-    //   _login();
-    // }
-    _login();
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      _login();
+    }
+    // _login();
   }
 
   void onPressedRecover(BuildContext context) {
@@ -91,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
+    fcmToken = context.watch<CurrentAccount>().fcmToken;
 
     return Scaffold(
       body: Container(
@@ -99,104 +103,114 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-                flex: 1,
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.fitWidth,
-                              image: AssetImage("assets/images/wizard01.png"))),
+              flex: 1,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.fitWidth,
+                        image: AssetImage("assets/images/wizard01.png")
+                      )
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
                         begin: FractionalOffset.bottomRight,
                         end: FractionalOffset.topLeft,
                         colors: [
                           const Color(0xff2a14f6).withOpacity(0.6),
                           const Color(0xffe409f9).withOpacity(0.6)
                         ],
-                      )),
-                    )
-                  ],
-                )),
-            SizedBox(
-                width: deviceSize.width,
-                height: 428.0,
-                child: Column(
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.only(top: 40.0),
-                        child: Text("Sign in to your account",
-                            style: Theme.of(context).textTheme.headline1)),
-                    Padding(
-                        padding: const EdgeInsets.only(top: 22.0),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                  padding: const EdgeInsets.only(top: 14.0),
-                                  child: TextInputField(
-                                    enabled: !app.loading,
-                                    labelText: "Your account",
-                                    hintText: "Enter your email",
-                                    keyboardType: TextInputType.emailAddress,
-                                    onSaved: (val) => userEmail = val!,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter email';
-                                      } else if (!value.isValidEmail) {
-                                        return 'Please enter valid email';
-                                      }
-                                      return null;
-                                    },
-                                  )),
-                              Padding(
-                                  padding: const EdgeInsets.only(top: 14.0),
-                                  child: TextInputField(
-                                    enabled: !app.loading,
-                                    labelText: "Password",
-                                    hintText: "Enter your password",
-                                    obscureText: true,
-                                    onSaved: (val) => userPassword = val!,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter your password';
-                                      }
-                                      return null;
-                                    },
-                                  )),
-                            ],
-                          ),
-                        )),
-                    const Spacer(flex: 1),
-                    TextButton(
-                        onPressed: () {
-                          onPressedRecover(context);
-                        },
-                        child: Text("Recover password",
-                            style: Theme.of(context).textTheme.headline6)),
-                    const Spacer(flex: 1),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
-                      child: PrimaryButton(
-                          loading: app.loading,
-                          buttonText: "SIGN IN",
-                          onPressed: () {
-                            onPressedLogin(context);
-                          }),
+                      )
                     ),
-                    WizardFooter(
-                        description: "Don't have an account?",
-                        buttonText: "Sign up here",
-                        onPressed: () {
-                          onPressedSignup(context);
-                        })
-                  ],
-                ))
+                  )
+                ],
+              )
+            ),
+            SizedBox(
+              width: deviceSize.width,
+              height: 428.0,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40.0),
+                    child: Text("Sign in to your account", style: Theme.of(context).textTheme.headline1)
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 22.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 14.0),
+                            child: TextInputField(
+                              enabled: !app.loading,
+                              labelText: "Your account",
+                              hintText: "Enter your email",
+                              keyboardType: TextInputType.emailAddress,
+                              onSaved: (val) => userEmail = val!,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter email';
+                                } else if (!value.isValidEmail) {
+                                  return 'Please enter valid email';
+                                }
+                                return null;
+                              },
+                            )
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 14.0),
+                            child: TextInputField(
+                              enabled: !app.loading,
+                              labelText: "Password",
+                              hintText: "Enter your password",
+                              obscureText: true,
+                              onSaved: (val) => userPassword = val!,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your password';
+                                }
+                                return null;
+                              },
+                            )
+                          ),
+                        ],
+                      ),
+                    )
+                  ),
+                  const Spacer(flex: 1),
+                  TextButton(
+                    onPressed: () {
+                      onPressedRecover(context);
+                    },
+                    child: Text("Recover password", style: Theme.of(context).textTheme.headline6)
+                  ),
+                  const Spacer(flex: 1),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+                    child: PrimaryButton(
+                      loading: app.loading,
+                      buttonText: "SIGN IN",
+                      onPressed: () {
+                        onPressedLogin(context);
+                      }
+                    ),
+                  ),
+                  WizardFooter(
+                    description: "Don't have an account?",
+                    buttonText: "Sign up here",
+                    onPressed: () {
+                      onPressedSignup(context);
+                    }
+                  )
+                ],
+              )
+            )
           ],
         ),
       ),

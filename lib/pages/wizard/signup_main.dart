@@ -36,7 +36,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
 
   bool agreed = false;
   String name = "";
-  late String email, username, newPassword, rePassword, referralId;
+  late String email, username, newPassword, rePassword, referralId, fcmToken;
 
   Future<void> _signup(BuildContext context) async {
     if (app.loading) return;
@@ -54,10 +54,11 @@ class _SignupMainPageState extends State<SignupMainPage> {
     setState(() => app.loading = true);
     String params = jsonEncode(<String, dynamic>{
       'name': name,
-      'email': email,
-      'username': username,
+      'email': email.toLowerCase(),
+      'username': username.toLowerCase(),
       'password': newPassword,
       'friend_id': referralId,
+      'fcm_token': fcmToken,
     });
     Response? response = await ApiService().post(ApiConstants.signup, '', params);
     setState(() => app.loading = false);
@@ -255,6 +256,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
     referralId = context.watch<CurrentAccount>().account.friendId!;
+    fcmToken = context.watch<CurrentAccount>().fcmToken;
 
     return Scaffold(
       body: ListView(
