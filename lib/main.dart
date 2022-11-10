@@ -2,12 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:fotoc/constants.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/routes.dart';
-import 'package:fotoc/services/fcm_service.dart';
+
+
+class PushNotification {
+  PushNotification({
+    this.title,
+    this.body,
+    this.data,
+
+  });
+  String? title;
+  String? body;
+  Map<String, dynamic>? data;
+}
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,11 +69,26 @@ class MyApp extends StatelessWidget {
         PushNotification notification = PushNotification(
           title: message.notification?.title,
           body: message.notification?.body,
+          data: message.data,
         );
         showSimpleNotification(
-          Text(notification.title!),
+          Text(notification.body!),
+          background: Colors.purple,
           position: NotificationPosition.top,
+          autoDismiss: false,
+          trailing: Builder(builder: (context) {
+            return TextButton(
+              onPressed: () {
+                OverlaySupportEntry.of(context)?.dismiss();
+              },
+              child: const Text('Dismiss'));
+            }
+          ),
         );
+        if (notification.data!["type"] == Notifications.transaction) {
+          double checking = double.parse(notification.data!["balance"]);
+          context.read<CurrentAccount>().updateAccountBank(checking);
+        }
       });
 
       FirebaseMessaging.onMessageOpenedApp.listen((message) {

@@ -32,8 +32,8 @@ class _LoginPageState extends State<LoginPage> {
   final app = AppState(false, AccountModel());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  late String userEmail, userPassword, fcmToken;
-  // late String userEmail='lisa@gmail.com', userPassword='Asdf1234', fcmToken;
+  // late String userEmail, userPassword, fcmToken;
+  late String userEmail='syedraharoontesting@gmail.com', userPassword='Asdf1234', fcmToken;
 
   Future<void> _login() async {
     if (app.loading) return;
@@ -58,8 +58,8 @@ class _LoginPageState extends State<LoginPage> {
       dynamic result = json.decode(response.body);
       AccountModel user = AccountModel.fromJson(result['me']);
       user.token = result['token'];
-      context.read<CurrentAccount>().changeAccount(user);
-      context.read<CurrentAccount>().login();
+      context.read<CurrentAccount>().setAccount(user);
+      context.read<CurrentAccount>().login(true);
 
       Navigator.pushReplacementNamed(context, '/free/dashboard');
     } else if (response.statusCode == 400) {
@@ -77,11 +77,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void onPressedLogin(BuildContext context) {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      _login();
-    }
-    // _login();
+    // if (_formKey.currentState!.validate()) {
+    //   _formKey.currentState!.save();
+    //   _login();
+    // }
+    _login();
   }
 
   void onPressedRecover(BuildContext context) {

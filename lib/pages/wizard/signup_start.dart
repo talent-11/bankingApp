@@ -27,7 +27,7 @@ class _SignupStartPageState extends State<SignupStartPage> {
   void onPressedGetStarted(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      context.read<CurrentAccount>().changeAccount(AccountModel(friendId: _friendReferralId));
+      context.read<CurrentAccount>().setAccount(AccountModel(friendId: _friendReferralId));
       Navigator.pushNamed(context, '/wizard/signup/main');
     }
   }

@@ -67,7 +67,7 @@ class _ManualPayPageState extends State<ManualPayPage> {
 
       AccountModel me = widget.buyer;
       me.bank!.checking -= double.parse(formatCurrency.format(double.parse(amount) * 1.02));
-      context.read<CurrentAccount>().changeAccount(me);
+      context.read<CurrentAccount>().setAccount(me);
 
       Navigator.pop(context);
     } else if (response.statusCode == 400) {

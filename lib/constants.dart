@@ -8,3 +8,8 @@ class ApiConstants {
   static String profile = '/account/update';
   static String pay = '/transaction/pay';
 }
+
+class Notifications {
+  static String transaction = "transaction";
+  
+}

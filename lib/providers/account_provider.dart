@@ -1,28 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fotoc/models/account_model.dart';
 
-enum AuthState { LOGGED_IN, LOGGED_OUT }
-
 class CurrentAccount with ChangeNotifier {
   late AccountModel _account;
-  late AuthState _status;
+  bool _loggedIn = false;
   late String _fcmToken;
 
   AccountModel get account => _account;
+  bool get loggedIn => _loggedIn;
   String get fcmToken => _fcmToken;
 
-  void login() {
-    _status = AuthState.LOGGED_IN;
+  void login(bool loggedIn) {
+    _loggedIn = loggedIn;
     notifyListeners();
   }
 
-  void logout() {
-    _status = AuthState.LOGGED_OUT;
-    notifyListeners();
-  }
-
-  void changeAccount(AccountModel account) {
+  void setAccount(AccountModel account) {
     _account = account;
+    notifyListeners();
+  }
+
+  void updateAccountBank(double checking) {
+    if (!_loggedIn) return;
+    _account.bank!.checking = checking;
     notifyListeners();
   }
 
