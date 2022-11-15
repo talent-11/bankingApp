@@ -17,7 +17,7 @@ class PrimaryButton extends StatelessWidget {
       widgets.add(const SizedBox(width: 8));
     }
 
-    widgets.add(Text(buttonText, style: Theme.of(context).textTheme.headline4));
+    widgets.add(Text(buttonText, style: Theme.of(context).textTheme.headline3));
 
     return widgets;
   }

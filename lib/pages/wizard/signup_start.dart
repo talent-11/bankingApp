@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:fotoc/services/validation_service.dart';
 
 const description = "Provide us with your name and email address and you will instantly receive (cc) 100.00 to spend.";
+const description1 = "Test accounts are only for spending money. A test account cannot receive money.";
 
 class SignupStartPage extends StatefulWidget {
   const SignupStartPage({Key? key}) : super(key: key);
@@ -43,13 +44,25 @@ class _SignupStartPageState extends State<SignupStartPage> {
         "Get your Test Account here",
         style: Theme.of(context).textTheme.headline1
       ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30.0),
-        child: Text(
-          description,
-          style: Theme.of(context).textTheme.bodyText1,
-          textAlign: TextAlign.center,
-        )
+      Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+            child: Text(
+              description,
+              style: Theme.of(context).textTheme.bodyText1,
+              textAlign: TextAlign.center,
+            )
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+            child: Text(
+              description1,
+              style: Theme.of(context).textTheme.bodyText1,
+              textAlign: TextAlign.center,
+            )
+          )
+        ],
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),

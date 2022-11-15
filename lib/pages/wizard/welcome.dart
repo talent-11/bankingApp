@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
+import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/text_spans.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+
+const titles = [
+  "FOTOC Bank is the Monetary System for all the People and all of the Constitutional Governments throughout the world, authorized by We the People.",
+  "Where you buy, sell & bank outside of the FEDERAL RESERVE BANKING (FBR) SYSTEM."
+];
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -25,6 +30,10 @@ class _WelcomePageState extends State<WelcomePage> {
     _scaffoldState.currentState?.openDrawer();
   }
 
+  void onPressedTest(BuildContext context) {
+    Navigator.pushReplacementNamed(context, '/wizard/signup');
+  }
+
   void onPressedLogin(BuildContext context) {
     Navigator.pushReplacementNamed(context, '/wizard/login');
   }
@@ -34,18 +43,18 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   IconButton menuButton(BuildContext context) => IconButton(
-    icon: const Icon(LineAwesomeIcons.bars, size: 32.0),
+    icon: const Icon(Icons.menu, size: 32.0),
     onPressed: () => onPressedBar(context), 
     color: Colors.white,
   );
 
-  Widget titleText(BuildContext context) => Text(
-    "Buy, sell & bank outside of the Federal Reserve Banking (FRB) System.",
-    style: Theme.of(context).textTheme.headline1,
+  Widget titleText(BuildContext context, String str) => Text(
+    str,
+    style: Theme.of(context).textTheme.headline5,
     textAlign: TextAlign.center,
   );
 
-  Widget bodyText(BuildContext context) => RichText(
+  Widget descriptionText(BuildContext context) => RichText(
     textAlign: TextAlign.center,
     text: TextSpan(
       children: [
@@ -62,6 +71,40 @@ class _WelcomePageState extends State<WelcomePage> {
     )
   );
 
+  Widget titleText1(BuildContext context) => RichText(
+    textAlign: TextAlign.center,
+    text: TextSpan(
+      children: [
+        TextSpan(
+          text: "We will give you ",
+          style: Theme.of(context).textTheme.headline5,
+        ),
+        symbolSpan(height: 18, color: const Color(0xff252631)),
+        TextSpan(
+          text: "100 (CC) to spend just to take FOTOC Bank out for a \"test drive.\"",
+          style: Theme.of(context).textTheme.headline5,
+        ),
+      ]
+    )
+  );
+
+  Widget titleText2(BuildContext context) => RichText(
+    textAlign: TextAlign.center,
+    text: TextSpan(
+      children: [
+        TextSpan(
+          text: "Open a fully verified account and receive ",
+          style: Theme.of(context).textTheme.headline5,
+        ),
+        symbolSpan(height: 18, color: const Color(0xff252631)),
+        TextSpan(
+          text: "10,000 CC.",
+          style: Theme.of(context).textTheme.headline5,
+        ),
+      ]
+    )
+  );
+
   Widget buttons(BuildContext context) => Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
@@ -70,9 +113,8 @@ class _WelcomePageState extends State<WelcomePage> {
         child: SizedBox(
           height: 46,
           child: FotocButton(
-            outline: true,
-            buttonText: "LOG IN",
-            onPressed: () => onPressedLogin(context),
+            buttonText: "SIGN UP",
+            onPressed: () => onPressedSignup(context),
           )
         )
       ),
@@ -84,11 +126,12 @@ class _WelcomePageState extends State<WelcomePage> {
         child: SizedBox(
           height: 46,
           child: FotocButton(
-            buttonText: "SIGN UP",
-            onPressed: () => onPressedSignup(context),
+            outline: true,
+            buttonText: "LOG IN",
+            onPressed: () => onPressedLogin(context),
           )
         )
-      )
+      ),
     ],
   );
 
@@ -112,18 +155,66 @@ class _WelcomePageState extends State<WelcomePage> {
     ],
   );
 
+  Widget descriptionText1(BuildContext context) => RichText(
+    textAlign: TextAlign.center,
+    text: TextSpan(
+      children: [
+        TextSpan(
+          text: "Every time you refer someone to sign up for a fully verified account with your referral code, you will receive ",
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
+        symbolSpan(height: 18),
+        TextSpan(
+          text: " 1,000 CC.",
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
+      ]
+    )
+  );
+
   Widget body(BuildContext context) => Expanded(
     flex: 1,
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    child: ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-          child: titleText(context),
+          padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
+          child: titleText(context, titles[0]),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: bodyText(context),
+          padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+          child: titleText(context, titles[1]),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+          child: descriptionText(context),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+          child: tipText(context),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+          child: titleText1(context),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 20, 8, 20),
+          child: PrimaryButton(
+            buttonText: "Get Test Account", 
+            onPressed: () => onPressedTest(context)
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+          child: titleText2(context),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 20, 8, 20),
+          child: buttons(context),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+          child: descriptionText1(context),
         )
       ],
     )
@@ -140,14 +231,6 @@ class _WelcomePageState extends State<WelcomePage> {
           children: <Widget>[
             LogoBar(iconButton: menuButton(context)),
             body(context),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-              child: buttons(context),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(32, 24, 32, 12),
-              child: tipText(context),
-            )
           ],
         ),
       ),

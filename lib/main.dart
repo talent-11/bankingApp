@@ -58,48 +58,53 @@ class MyApp extends StatelessWidget {
       sound: true,
     );
     
-    String? token = await fcm.getToken();
-    context.read<CurrentAccount>().setFcmToken(token!);
+    try {
+      String? token = await fcm.getToken();
+      context.read<CurrentAccount>().setFcmToken(token!);
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      // print('User granted permission');
-      
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        // Parse the message received
-        PushNotification notification = PushNotification(
-          title: message.notification?.title,
-          body: message.notification?.body,
-          data: message.data,
-        );
-        showSimpleNotification(
-          Text(notification.body!),
-          background: Colors.purple,
-          position: NotificationPosition.top,
-          autoDismiss: false,
-          trailing: Builder(builder: (context) {
-            return TextButton(
-              onPressed: () {
-                OverlaySupportEntry.of(context)?.dismiss();
-              },
-              child: const Text('Dismiss'));
-            }
-          ),
-        );
-        if (notification.data!["type"] == Notifications.transaction) {
-          double checking = double.parse(notification.data!["balance"]);
-          context.read<CurrentAccount>().updateAccountBank(checking);
-        }
-      });
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        // print('User granted permission');
+        
+        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+          // Parse the message received
+          PushNotification notification = PushNotification(
+            title: message.notification?.title,
+            body: message.notification?.body,
+            data: message.data,
+          );
+          showSimpleNotification(
+            Text(notification.body!),
+            background: Colors.purple,
+            position: NotificationPosition.top,
+            autoDismiss: false,
+            trailing: Builder(builder: (context) {
+              return TextButton(
+                onPressed: () {
+                  OverlaySupportEntry.of(context)?.dismiss();
+                },
+                child: const Text('Dismiss'));
+              }
+            ),
+          );
+          if (notification.data!["type"] == Notifications.transaction) {
+            double checking = double.parse(notification.data!["balance"]);
+            context.read<CurrentAccount>().updateAccountBank(checking);
+          }
+        });
 
-      FirebaseMessaging.onMessageOpenedApp.listen((message) {
-        print('Message clicked!');
-      });
+        FirebaseMessaging.onMessageOpenedApp.listen((message) {
+          print('Message clicked!');
+        });
 
-      // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+        // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    } else {
-      print('User declined or has not accepted permission');
+      } else {
+        print('User declined or has not accepted permission');
+      }
+    } catch (e) {
+      print(e);
     }
+    
   }
 
   @override
@@ -117,6 +122,8 @@ class MyApp extends StatelessWidget {
           // primarySwatch: Colors.blue,
           textTheme: const TextTheme(
             headline1: TextStyle(fontSize: 20.0, color: Color(0xff252631), fontWeight: FontWeight.w400),
+            headline2: TextStyle(fontSize: 18.0, color: Color(0xff252631), fontWeight: FontWeight.w400),
+            headline3: TextStyle(fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.bold),
             headline4: TextStyle(fontSize: 14.0, color: Colors.white, fontWeight: FontWeight.w500),
             headline5: TextStyle(fontSize: 15.0, height: 1.4, color: Color(0xff252631), fontWeight: FontWeight.w400),
             headline6: TextStyle(fontSize: 14.0, color: Color(0xff252631), fontWeight: FontWeight.w500),
