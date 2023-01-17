@@ -5,26 +5,21 @@ import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/footer.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
 import 'package:fotoc/models/account_model.dart';
-import 'package:fotoc/pages/wizard/signup_main.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:fotoc/services/validation_service.dart';
 
-const descriptions = [
-  "Provide us with your name and email address and you will instantly receive (cc) 100.00 to spend.",
-  "Test accounts are only for spending money. A test account cannot receive money.",
-];
+const description = "Provide us with your name and email address and you will instantly receive (cc) 100.00 to spend.";
+const description1 = "Test accounts are only for spending money. A test account cannot receive money.";
 
-class SignupStartPage extends StatefulWidget {
-  const SignupStartPage({Key? key, this.from}) : super(key: key);
-
-  final String? from;
+class SignupReadPage extends StatefulWidget {
+  const SignupReadPage({Key? key}) : super(key: key);
 
   @override
-  State<SignupStartPage> createState() => _SignupStartPageState();
+  State<SignupReadPage> createState() => _SignupReadPageState();
 }
 
-class _SignupStartPageState extends State<SignupStartPage> {
+class _SignupReadPageState extends State<SignupReadPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   late String _friendReferralId;
@@ -34,7 +29,7 @@ class _SignupStartPageState extends State<SignupStartPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       context.read<CurrentAccount>().setAccount(AccountModel(friendId: _friendReferralId));
-      Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupMainPage(from: "verify")));
+      Navigator.pushNamed(context, '/wizard/signup/main');
     }
   }
 
@@ -42,11 +37,22 @@ class _SignupStartPageState extends State<SignupStartPage> {
     Navigator.pushReplacementNamed(context, '/wizard/login');
   }
 
+  Widget noteRow(BuildContext context, int index) {
+    List<InlineSpan> noteSpans = [];
+
+    return RichText(
+      text: TextSpan(
+        text: (index + 1).toString() + ". ",
+        children: noteSpans
+      ),
+    );
+  }
+
   Widget body(BuildContext context) => Column(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
       Text(
-        "Get your Test Account here",
+        "Please prepare followings;",
         style: Theme.of(context).textTheme.headline1
       ),
       Column(
@@ -54,7 +60,7 @@ class _SignupStartPageState extends State<SignupStartPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
             child: Text(
-              descriptions[0],
+              description,
               style: Theme.of(context).textTheme.bodyText1,
               textAlign: TextAlign.center,
             )
@@ -62,7 +68,7 @@ class _SignupStartPageState extends State<SignupStartPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
             child: Text(
-              descriptions[1],
+              description1,
               style: Theme.of(context).textTheme.bodyText1,
               textAlign: TextAlign.center,
             )
@@ -99,7 +105,7 @@ class _SignupStartPageState extends State<SignupStartPage> {
           onPressedGetStarted(context);
         }
       ),
-      widget.from == 'verify' ? const Dots(selectedIndex: 0, dots: 6) : const Dots(selectedIndex: 0, dots: 3),
+      const Dots(selectedIndex: 1, dots: 4,),
       WizardFooter(
         description: "Do you have an account?",
         buttonText: "Sign in here",

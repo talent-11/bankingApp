@@ -42,7 +42,7 @@ dependencies:
   camera: ^0.10.0+1
   path_provider:
   path:
-  barcode_scan: ^3.0.1
+  barcode_scan2: 4.2.1
   qr_flutter: ^4.0.0
   intl: ^0.17.0
   firebase_core: ^1.13.1

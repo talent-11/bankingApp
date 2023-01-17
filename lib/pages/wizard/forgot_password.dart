@@ -14,7 +14,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void onPressedSignup(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wizard/signup');
+    Navigator.pushReplacementNamed(context, '/wizard/signup/start');
   }
 
   @override

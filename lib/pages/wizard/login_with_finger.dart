@@ -15,7 +15,7 @@ class _LoginWithFingerPageState extends State<LoginWithFingerPage> {
   }
 
   void onPressedSignup(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wizard/signup');
+    Navigator.pushReplacementNamed(context, '/wizard/signup/main');
   }
 
   @override

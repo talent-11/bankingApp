@@ -35,7 +35,7 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
   }
 
   void onPressedUpload(BuildContext context) {
-    Navigator.pushNamed(context, '/free/verify/3');
+    Navigator.pushNamed(context, '/wizard/signup/agree');
   }
 
   void onPressedCancel(BuildContext context) {
@@ -44,7 +44,7 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
   
   Widget footer(BuildContext context) => Column(
     children: const [
-      Dots(selectedIndex: 1),
+      Dots(selectedIndex: 3, dots: 6),
     ],
   );
 

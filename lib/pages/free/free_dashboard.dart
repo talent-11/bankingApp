@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:barcode_scan/barcode_scan.dart';
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -31,11 +31,6 @@ class AppState {
 }
 
 final formatCurrency = NumberFormat.currency(locale: "en_US", symbol: "");
-// final TRANSACTIONS = [
-//   TransactionModel(name: "Jenny Bloye", date: 'Nov 2', amount: "25.00"),
-//   TransactionModel(name: "Brad Erickson", date: 'Oct 24', amount: "40.00"),
-//   TransactionModel(name: "Rose C", date: 'Oct 18', amount: "8.00"),
-// ];
 
 class FreeDashboardPage extends StatefulWidget {
   const FreeDashboardPage({Key? key}) : super(key: key);
@@ -47,14 +42,12 @@ class FreeDashboardPage extends StatefulWidget {
 class _FreeDashboardPageState extends State<FreeDashboardPage> {
   final app = AppState(AccountModel(), false);
   List<TransactionModel> transactions = [];
-  // List<TransactionModel> transactions = TRANSACTIONS;
 
   @override
   void initState() {
     super.initState();
     
     Future.delayed(const Duration(milliseconds: 10), _getTransactions);
-    // _getTransactions();
   }
 
   _getTransactions() async {
@@ -101,7 +94,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
   }
 
   void onPressedGetFullAccount(BuildContext context) {
-    Navigator.pushNamed(context, '/free/verify/1');
+    Navigator.pushNamed(context, '/free/verify/0');
   }
 
   void onPressedMore(BuildContext context) {

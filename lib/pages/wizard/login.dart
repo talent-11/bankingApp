@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void onPressedSignup(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wizard/signup');
+    Navigator.pushReplacementNamed(context, '/wizard/signup/start');
   }
 
   @override

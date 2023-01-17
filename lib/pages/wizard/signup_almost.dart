@@ -30,6 +30,10 @@ class _SignupAlmostPageState extends State<SignupAlmostPage> {
   void onPressedSignin(BuildContext context) {
     Navigator.pushReplacementNamed(context, '/wizard/login');
   }
+ 
+  // void onPressedVerify(BuildContext context) {
+  //   Navigator.pushReplacementNamed(context, '/free/verify/0');
+  // }
 
   void onPressedResend(BuildContext context) async {
     if (loading) return;
@@ -71,13 +75,20 @@ class _SignupAlmostPageState extends State<SignupAlmostPage> {
       widgets.add(PrimaryButton(loading: loading, buttonText: 'Resend Email', onPressed: () => onPressedResend(context)));
       widgets.add(const Spacer(flex: 1));
     } else {
-      widgets.add(Text(description, style: Theme.of(context).textTheme.headline5, textAlign: TextAlign.center));
-      widgets.add(
-        TextButton(
-          onPressed: () {},
-          child: Text(link, style: Theme.of(context).textTheme.headline6),
-        )
-      );
+      // widgets.add(Text(description, style: Theme.of(context).textTheme.headline5, textAlign: TextAlign.center));
+      // widgets.add(
+      //   TextButton(
+      //     onPressed: () {
+      //       onPressedVerify(context);
+      //     },
+      //     child: Text(link, style: TextStyle(
+      //       decoration: TextDecoration.underline,
+      //       fontSize: 14,
+      //       color: Theme.of(context).primaryColor,
+      //       fontWeight: FontWeight.w500,
+      //     )),
+      //   )
+      // );
       widgets.add(
         Padding(
           padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
@@ -89,7 +100,7 @@ class _SignupAlmostPageState extends State<SignupAlmostPage> {
         )
       );
       widgets.add(const Spacer(flex: 1));
-      widgets.add(const Dots(selectedIndex: 3, dots: 4));
+      widgets.add(const Dots(selectedIndex: 2, dots: 3));
     }
     widgets.add(
       WizardFooter(
@@ -119,9 +130,11 @@ class _SignupAlmostPageState extends State<SignupAlmostPage> {
                 children: [
                   Container(
                     decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fitWidth,
-                          image: AssetImage("assets/images/wizard07.png"))),
+                      image: DecorationImage(
+                        fit: BoxFit.fitWidth,
+                        image: AssetImage("assets/images/wizard07.png")
+                      )
+                    ),
                   ),
                   const GradientRectangle()
                 ],

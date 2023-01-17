@@ -1,7 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/gradient_rectangle.dart';
+import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
-import 'package:fotoc/components/wizard/footer.dart';
+// import 'package:fotoc/components/wizard/footer.dart';
 
 const description = "Review";
 const link = "Verified Account Holder:";
@@ -15,8 +17,12 @@ class VerifyStep3Page extends StatefulWidget {
 }
 
 class _VerifyStep3PageState extends State<VerifyStep3Page> {
-  void onPressedHome(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/free/dashboard');
+  void onPressedYes(BuildContext context) {
+    Navigator.pushNamed(context, '/statement/information');
+  }
+
+  void onPressedLater(BuildContext context) {
+    Navigator.pushReplacementNamed(context, '/free/main');
   }
 
   @override
@@ -30,46 +36,109 @@ class _VerifyStep3PageState extends State<VerifyStep3Page> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-                flex: 1,
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.fitWidth,
-                            image: AssetImage("assets/images/wizard07.png"))),
+              flex: 1,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.fitWidth,
+                        image: AssetImage("assets/images/wizard07.png")
+                      )
                     ),
-                    const GradientRectangle()
-                  ],
-                )),
+                  ),
+                  const GradientRectangle()
+                ],
+              )
+            ),
             SizedBox(
-                width: deviceSize.width,
-                height: 388.0,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 36.0),
-                      child: Text("Almost Done!", style: Theme.of(context).textTheme.headline1)),
-                    const Spacer(flex: 1),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
-                      child: Text(
-                        notify,
-                        style: Theme.of(context).textTheme.headline5,
-                        textAlign: TextAlign.center),
+              width: deviceSize.width,
+              height: 388.0,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 36.0),
+                    child: Text(
+                      "Congratulations! You have successfully opened your verified account.", 
+                      style: Theme.of(context).textTheme.headline1,
+                      textAlign: TextAlign.center,
                     ),
-                    const Spacer(flex: 1),
-                    const Dots(
-                      selectedIndex: 2.0,
+                  ),
+                  const Spacer(flex: 3),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
+                    child: Text(
+                      notify,
+                      style: Theme.of(context).textTheme.headline5,
+                      textAlign: TextAlign.center),
+                  ),
+                  const Spacer(flex: 3),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
+                    child: Text(
+                      "Do you want to match your funds now?",
+                      style: Theme.of(context).textTheme.headline5,
+                      textAlign: TextAlign.center),
+                  ),
+                  const Spacer(flex: 1),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          width: 120,
+                          child: FotocButton(
+                            buttonText: "Yes",
+                            onPressed: () {
+                              onPressedYes(context);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        SizedBox(
+                          width: 120,
+                          height: 40,
+                          child: FotocButton(
+                            outline: true,
+                            buttonText: "Later",
+                            onPressed: () {
+                              onPressedLater(context);
+                            },
+                          ),
+                        )
+                      ]
                     ),
-                    WizardFooter(
-                      description: "",
-                      buttonText: "Go to home page",
-                      onPressed: () {
-                        onPressedHome(context);
-                      })
-                  ],
-                ))
+                  ),
+                  const Spacer(flex: 1),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Learn More",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          decoration: TextDecoration.underline
+                        ),
+                        recognizer: TapGestureRecognizer()..onTap = () => {
+                          onPressedYes(context)
+                        },
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const Spacer(flex: 1),
+                  const Dots(selectedIndex: 5, dots: 6),
+                  // WizardFooter(
+                  //   description: "",
+                  //   buttonText: "Go to home page",
+                  //   onPressed: () {
+                  //     onPressedHome(context);
+                  //   })
+                ],
+              )
+            )
           ],
         ),
       ),

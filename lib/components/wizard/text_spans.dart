@@ -33,7 +33,7 @@ TextSpan clickableTextSpan(
   recognizer: TapGestureRecognizer()..onTap = () => {},
   style: TextStyle(
     fontSize: fontSize ?? 14.0, 
-    color: color ?? const Color(0xff252631), 
+    color: color ?? Theme.of(context).primaryColor, 
     height: lineHeight ?? 1.4,
     fontWeight: fontWeight ?? FontWeight.w500,
   ),

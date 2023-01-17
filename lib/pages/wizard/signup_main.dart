@@ -12,8 +12,8 @@ import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/services/validation_service.dart';
-import 'package:http/http.dart';
 import 'package:fotoc/providers/account_provider.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class AppState {
@@ -24,7 +24,9 @@ class AppState {
 }
 
 class SignupMainPage extends StatefulWidget {
-  const SignupMainPage({Key? key}) : super(key: key);
+  const SignupMainPage({Key? key, this.from}) : super(key: key);
+
+  final String? from;
 
   @override
   State<SignupMainPage> createState() => _SignupMainPageState();
@@ -57,7 +59,8 @@ class _SignupMainPageState extends State<SignupMainPage> {
       'email': email.toLowerCase(),
       'username': username.toLowerCase(),
       'password': newPassword,
-      'friend_id': referralId,
+      // 'friend_id': referralId,
+      'friend_id': "",
       'fcm_token': fcmToken,
     });
     Response? response = await ApiService().post(ApiConstants.signup, '', params);
@@ -71,7 +74,14 @@ class _SignupMainPageState extends State<SignupMainPage> {
         }
       );
     } else if (response.statusCode == 200) {
-      Navigator.pushNamed(context, '/wizard/signup/almost');
+      if (widget.from == "verify") {
+        dynamic result = json.decode(response.body);
+        context.read<CurrentAccount>().setAccountToken(result['token']);
+        Navigator.popUntil(context, (route) => route.isFirst);
+        // Navigator.pop(context);
+      } else {
+        Navigator.pushNamed(context, '/wizard/signup/almost');
+      }
     } else if (response.statusCode == 400) {
       showDialog(
         context: context, 
@@ -232,39 +242,49 @@ class _SignupMainPageState extends State<SignupMainPage> {
     return widgets;
   }
 
-  Widget footer(BuildContext context) => Column(
-    children: [
+  List<Widget> decorateFooter(BuildContext context) {
+    var widgets = <Widget>[];
+    widgets.add(
       PrimaryButton(
         loading: app.loading,
         buttonText: "NEXT",
         onPressed: () {
           onPressedNext(context);
         }
-      ),
-      const Dots(selectedIndex: 2, dots: 4,),
-      WizardFooter(
-        description: "Do you have an account?",
-        buttonText: "Sign in here",
-        onPressed: () {
-          onPressedSignin(context);
-        }
       )
-    ],
+    );
+    if (widget.from != "verify") {
+      widgets.add(
+        WizardFooter(
+          description: "Do you have an account?",
+          buttonText: "Sign in here",
+          onPressed: () {
+            onPressedSignin(context);
+          }
+        )
+      );
+      widgets.add(const Dots(selectedIndex: 1, dots: 3));
+    } else {
+      widgets.add(const Dots(selectedIndex: 1, dots: 6));
+    }
+    return widgets;
+  }
+
+  Widget footer(BuildContext context) => Column(
+    children: decorateFooter(context),
   );
 
   @override
   Widget build(BuildContext context) {
-    var deviceSize = MediaQuery.of(context).size;
-    referralId = context.watch<CurrentAccount>().account.friendId!;
+    // referralId = context.watch<CurrentAccount>().account.friendId!;
     fcmToken = context.watch<CurrentAccount>().fcmToken;
 
     return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.zero,
+      body: Column(
         children: [
           const LogoBar(),
-          SizedBox(
-            height: (deviceSize.height - 148.4 - logoHeight),
+          Expanded(
+            child: SingleChildScrollView(
             child: Form(
               key: _formKey,
               child: Column(
@@ -272,6 +292,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
                 children: decorate(context),
               )
             )
+          )
           ),
           footer(context),
         ],

@@ -18,7 +18,8 @@ class SignupAgreePage extends StatefulWidget {
 
 class _SignupAgreePageState extends State<SignupAgreePage> {
   void onPressedNext(BuildContext context) {
-    Navigator.pushNamed(context, '/wizard/signup/start');
+    // Navigator.pushNamed(context, '/wizard/signup/start');
+    Navigator.pushNamed(context, '/free/verify/3');
   }
 
   void onPressedCancel(BuildContext context) {
@@ -123,7 +124,7 @@ class _SignupAgreePageState extends State<SignupAgreePage> {
             ]
           ),
         ),
-        const Dots(selectedIndex: 0, dots: 4,),
+        const Dots(selectedIndex: 4, dots: 6),
       ],
     ),
   );

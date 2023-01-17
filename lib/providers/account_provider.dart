@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:fotoc/models/account_model.dart';
 
 class CurrentAccount with ChangeNotifier {
-  late AccountModel _account;
+  AccountModel _account = AccountModel();
   bool _loggedIn = false;
   late String _fcmToken;
 
@@ -16,7 +16,16 @@ class CurrentAccount with ChangeNotifier {
   }
 
   void setAccount(AccountModel account) {
+    String? token = _account.token;
     _account = account;
+    if (account.token == null) {
+      _account.token = token;
+    }
+    notifyListeners();
+  }
+
+  void setAccountToken(String token) {
+    _account.token = token;
     notifyListeners();
   }
 
