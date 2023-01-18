@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/text_spans.dart';
+import 'package:fotoc/pages/statement/statement_notify.dart';
 
 const titles = [
   "How do I get the money I have now into FOTOC Bank?",
@@ -28,7 +29,7 @@ class _StatementInformationPageState extends State<StatementInformationPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void onPressedMatch(BuildContext context) {
-    
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const StatementNotifyPage()));
   }
 
   void onPressedAboutCash(BuildContext context) {

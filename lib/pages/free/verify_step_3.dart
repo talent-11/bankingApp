@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fotoc/components/gradient_rectangle.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
+import 'package:fotoc/pages/statement/statement_Information.dart';
 // import 'package:fotoc/components/wizard/footer.dart';
 
 const description = "Review";
@@ -18,7 +19,7 @@ class VerifyStep3Page extends StatefulWidget {
 
 class _VerifyStep3PageState extends State<VerifyStep3Page> {
   void onPressedYes(BuildContext context) {
-    Navigator.pushNamed(context, '/statement/information');
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const StatementInformationPage()));
   }
 
   void onPressedLater(BuildContext context) {

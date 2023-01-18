@@ -112,10 +112,10 @@ class Bank {
   double saving;
 
   factory Bank.fromJson(Map<String, dynamic> json) => Bank(
-    // checking: double.parse(json["checking"]),
-    // saving: double.parse(json["saving"]),
-    checking: json["checking"].toDouble(),
-    saving: json["saving"].toDouble(),
+    checking: double.parse(json["checking"]),
+    saving: double.parse(json["saving"]),
+    // checking: json["checking"].toDouble(),
+    // saving: json["saving"].toDouble(),
   );
 
   Map<String, dynamic> toJson() => {

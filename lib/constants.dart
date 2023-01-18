@@ -6,6 +6,7 @@ class ApiConstants {
   static String signup = '/account/register';
   static String reVerify = '/account/re-verify';
   static String profile = '/account/update';
+  static String statement = '/account/statement';
   static String transaction = '/transaction';
   static String pay = '/transaction/pay';
 }

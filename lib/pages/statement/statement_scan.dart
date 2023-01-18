@@ -2,51 +2,36 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
-import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/pages/camera/take_picture.dart';
+import 'package:fotoc/pages/statement/statement_preview.dart';
 
-class AppState {
-  bool loading;
-  String imagePath;
-
-  AppState(this.loading, this.imagePath);
-}
-
-class VerifyStep2Page extends StatefulWidget {
-  const VerifyStep2Page({Key? key}) : super(key: key);
+class StatementScanPage extends StatefulWidget {
+  const StatementScanPage({Key? key}) : super(key: key);
 
   @override
-  State<VerifyStep2Page> createState() => _VerifyStep2PageState();
+  State<StatementScanPage> createState() => _StatementScanPageState();
 }
 
-class _VerifyStep2PageState extends State<VerifyStep2Page> {
-  final app = AppState(false, "");
-
+class _StatementScanPageState extends State<StatementScanPage> {
   void uploadImage() {
 
   }
 
   void onPressedTakePicture(BuildContext context) async {
     await availableCameras().then((cameras) => 
-      // Navigator.push(context, MaterialPageRoute(builder: (_) => TakePictureScreen(cameras: cameras))));
       Navigator.push(context, MaterialPageRoute(builder: (_) => 
-        TakePictureScreen(camera: cameras.first, action: () { onPressedUpload(context); },))));
+        TakePictureScreen(camera: cameras.first, action: () { onPressedUpload(context); }))));
   }
 
   void onPressedUpload(BuildContext context) {
-    Navigator.pushNamed(context, '/wizard/signup/agree');
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const StatementPreviewPage()));
   }
 
   void onPressedCancel(BuildContext context) {
-    Navigator.pop(context);
+    // Navigator.pop(context);
+    Navigator.popUntil(context, (route) => route.isFirst);
   }
   
-  Widget footer(BuildContext context) => Column(
-    children: const [
-      Dots(selectedIndex: 3, dots: 6),
-    ],
-  );
-
   List<Widget> decorateBody(BuildContext context) {
     var widgets = <Widget>[];
     widgets.add(const LogoBar());
@@ -56,7 +41,7 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Please take your I.D./Passport/Driver License picture.",
+              "Please take your bank statement picture.",
               style: Theme.of(context).textTheme.bodyText1,
               textAlign: TextAlign.center,
             ),
@@ -97,7 +82,6 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
         ),
       )
     );
-    widgets.add(footer(context));
     return widgets;
   }
   

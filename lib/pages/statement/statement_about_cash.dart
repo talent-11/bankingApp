@@ -25,14 +25,6 @@ class StatementAboutCashPage extends StatefulWidget {
 class _StatementAboutCashPageState extends State<StatementAboutCashPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void onPressedMatch(BuildContext context) {
-    
-  }
-
-  void onPressedAboutCash(BuildContext context) {
-    
-  }
-
   void onPressedBack(BuildContext context) {
     Navigator.pop(context);
   }
