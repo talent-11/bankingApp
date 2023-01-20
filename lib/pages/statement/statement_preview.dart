@@ -40,6 +40,22 @@ class StatementPreviewPage extends StatefulWidget {
 
 class _StatementPreviewPageState extends State<StatementPreviewPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    Future.delayed(const Duration(milliseconds: 10), _getOcrData);
+  }
+
+  void _getOcrData() async {
+    setState(() {
+      _loading = true;
+    });
+
+    // Provider.of<CurrentAccount>(context, listen: false).uploadedFilename
+  }
 
   void onPressedAnother(BuildContext context) {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const StatementScanPage()));

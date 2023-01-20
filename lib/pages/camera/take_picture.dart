@@ -1,19 +1,36 @@
+import 'dart:convert';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/pages/camera/display_picture.dart';
+import 'package:fotoc/providers/account_provider.dart';
+import 'package:fotoc/services/api_service.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
+
+class AppState {
+  bool loading;
+  AccountModel user;
+
+  AppState(this.loading, this.user);
+}
 
 class TakePictureScreen extends StatefulWidget {
-  const TakePictureScreen({Key? key, required this.camera, required this.action}) : super(key: key);
+  const TakePictureScreen({Key? key, required this.camera, required this.action, this.folder = ""}) : super(key: key);
   
   final CameraDescription camera;
   final Function action;
+  final String folder;
 
   @override
   _TakePictureScreenState createState() => _TakePictureScreenState();
 }
 
 class _TakePictureScreenState extends State<TakePictureScreen> {
+  final app = AppState(false, AccountModel());
   late CameraController _controller;
+  late XFile _image;
 
   @override
   void initState() {
@@ -28,6 +45,18 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
     _controller.dispose();
     super.dispose();
   }
+
+  
+  Future<void> onPressedUpload(BuildContext context) async {
+    StreamedResponse? response = await ApiService().uploadFile(app.user.token!, _image.path, foldername: widget.folder);
+    if (response!.statusCode == 200) {
+      String respStr = await response.stream.bytesToString();
+      dynamic result = json.decode(respStr);
+      context.read<CurrentAccount>().setUploadedFilename(result['filename']);
+    }
+    widget.action();
+  }
+
   
   Future initCamera(CameraDescription cameraDescription) async {
     // To display the current output from the Camera,
@@ -57,6 +86,9 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
       await _controller.setFlashMode(FlashMode.off);
 
       XFile image = await _controller.takePicture();
+      setState(() {
+        _image = image;
+      });
 
       if (!mounted) return;
 
@@ -67,7 +99,9 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
             // the DisplayPictureScreen widget.
             imagePath: image.path,
             actionText: "Upload",
-            action: widget.action,
+            action: () {
+              onPressedUpload(context);
+            }
           ),
         ),
       );
@@ -79,6 +113,9 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AccountModel me = context.watch<CurrentAccount>().account;
+    app.user = me;
+    
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(

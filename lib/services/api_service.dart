@@ -49,4 +49,22 @@ class ApiService {
       return null;
     }
   }
+
+  Future<http.StreamedResponse?> uploadFile(String token, String filename, {String foldername = ""}) async {
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(ApiConstants.baseUrl + ApiConstants.upload));
+      request.files.add(await http.MultipartFile.fromPath('file', filename));
+
+      Map<String, String> headers = { 'Content-Type': 'application/json; charset=UTF-8', 'Authorization': token };
+      request.headers.addAll(headers);
+
+      Map<String, String> fields = { 'folder': foldername };
+      request.fields.addAll(fields);
+
+      return await request.send();
+    } catch (e) {
+      log(e.toString());
+      return null;
+    }
+  }
 }

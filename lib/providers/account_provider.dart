@@ -5,10 +5,12 @@ class CurrentAccount with ChangeNotifier {
   AccountModel _account = AccountModel();
   bool _loggedIn = false;
   late String _fcmToken;
+  late String _uploadedFilename;
 
   AccountModel get account => _account;
   bool get loggedIn => _loggedIn;
   String get fcmToken => _fcmToken;
+  String get uploadedFilename => _uploadedFilename;
 
   void login(bool loggedIn) {
     _loggedIn = loggedIn;
@@ -37,5 +39,11 @@ class CurrentAccount with ChangeNotifier {
 
   void setFcmToken(String fcmToken) {
     _fcmToken = fcmToken;
+    notifyListeners();
+  }
+
+  void setUploadedFilename(String filename) {
+    _uploadedFilename = filename;
+    notifyListeners();
   }
 }

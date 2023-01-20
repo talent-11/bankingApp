@@ -32,17 +32,17 @@ class _WelcomePageState extends State<WelcomePage> {
 
   void onPressedTest(BuildContext context) {
     // Navigator.pushReplacementNamed(context, '/wizard/signup/main');
-    Navigator.pushReplacementNamed(context, '/wizard/signup/start');
+    Navigator.pushNamed(context, '/wizard/signup/start');
   }
 
   void onPressedLogin(BuildContext context) {
     // Navigator.pushReplacementNamed(context, '/wizard/login');
-    Navigator.pushReplacementNamed(context, '/wizard/login');
+    Navigator.pushNamed(context, '/wizard/login');
   }
 
   void onPressedSignup(BuildContext context) {
     // Navigator.pushReplacementNamed(context, '/free/verify/0');
-    Navigator.pushReplacementNamed(context, '/free/verify/0');
+    Navigator.pushNamed(context, '/free/verify/0');
   }
 
   IconButton menuButton(BuildContext context) => IconButton(

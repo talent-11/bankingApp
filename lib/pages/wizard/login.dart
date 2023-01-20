@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
       context.read<CurrentAccount>().setAccount(user);
       context.read<CurrentAccount>().login(true);
 
-      Navigator.pushReplacementNamed(context, '/free/main');
+      Navigator.pushNamedAndRemoveUntil(context, '/free/main', (route) => false);
     } else if (response.statusCode == 400) {
       showDialog(
         context: context, 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
+import 'package:fotoc/constants.dart';
 import 'package:fotoc/pages/camera/take_picture.dart';
 
 class AppState {
@@ -22,15 +23,11 @@ class VerifyStep2Page extends StatefulWidget {
 class _VerifyStep2PageState extends State<VerifyStep2Page> {
   final app = AppState(false, "");
 
-  void uploadImage() {
-
-  }
-
   void onPressedTakePicture(BuildContext context) async {
     await availableCameras().then((cameras) => 
       // Navigator.push(context, MaterialPageRoute(builder: (_) => TakePictureScreen(cameras: cameras))));
       Navigator.push(context, MaterialPageRoute(builder: (_) => 
-        TakePictureScreen(camera: cameras.first, action: () { onPressedUpload(context); },))));
+        TakePictureScreen(camera: cameras.first, action: () { onPressedUpload(context); }, folder: Folders.masterCards))));
   }
 
   void onPressedUpload(BuildContext context) {

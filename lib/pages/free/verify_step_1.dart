@@ -110,9 +110,9 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
     // Navigator.pushNamed(context, '/free/verify/2');
   }
 
-  void onPressedCancel(BuildContext context) {
-    Navigator.pop(context);
-  }
+  // void onPressedCancel(BuildContext context) {
+  //   Navigator.pop(context);
+  // }
 
   List<Widget> decorateBody(BuildContext context, AccountModel user) {
     var widgets = <Widget>[];
@@ -377,20 +377,20 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
           children: [
-            Expanded(
-              flex: 1,
-              child: SizedBox(
-                height: 48,
-                child: FotocButton(
-                  outline: true,
-                  buttonText: "Cancel",
-                  onPressed: () {
-                    onPressedCancel(context);
-                  },
-                ),
-              )
-            ),
-            const SizedBox(width: 20),
+            // Expanded(
+            //   flex: 1,
+            //   child: SizedBox(
+            //     height: 48,
+            //     child: FotocButton(
+            //       outline: true,
+            //       buttonText: "Cancel",
+            //       onPressed: () {
+            //         onPressedCancel(context);
+            //       },
+            //     ),
+            //   )
+            // ),
+            // const SizedBox(width: 20),
             Expanded(
               flex: 1,
               child: SizedBox(

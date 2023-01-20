@@ -77,7 +77,10 @@ class _SignupMainPageState extends State<SignupMainPage> {
       if (widget.from == "verify") {
         dynamic result = json.decode(response.body);
         context.read<CurrentAccount>().setAccountToken(result['token']);
-        Navigator.popUntil(context, (route) => route.isFirst);
+        int count = 0;
+        Navigator.popUntil(context, (route) {
+          return count ++ == 2;
+        });
         // Navigator.pop(context);
       } else {
         Navigator.pushNamed(context, '/wizard/signup/almost');

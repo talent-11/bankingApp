@@ -69,7 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Container(
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.fromLTRB(20.0, 12.0, 20.0, 12.0),
-        color: const Color(0xff5d10f6).withOpacity(0.3),
+        color: const Color(0xff5d10f6).withOpacity(0.08),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -78,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
               style: const TextStyle(
                 color: Color(0xff252631),
                 fontSize: 16,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w400,
               ),
             ),
           ]

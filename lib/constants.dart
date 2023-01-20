@@ -9,9 +9,16 @@ class ApiConstants {
   static String statement = '/account/statement';
   static String transaction = '/transaction';
   static String pay = '/transaction/pay';
+  static String upload = '/service/upload';
 }
 
 class Notifications {
   static String transaction = "transaction";
-  
+}
+
+class Folders {
+  static String masterCards = 'cards/master';
+  static String slaveCards = 'cards/slave';
+  static String statements = 'statements';
+  static String profiles = 'profiles';
 }

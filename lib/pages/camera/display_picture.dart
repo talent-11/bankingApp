@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
+import 'package:fotoc/services/api_service.dart';
+import 'package:http/http.dart';
 
 class DisplayPictureScreen extends StatefulWidget {
   final String imagePath;
