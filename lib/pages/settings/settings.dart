@@ -7,6 +7,7 @@ import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/pages/statement/statement_Information.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/services/api_service.dart';
+import 'package:fotoc/pages/wizard/sidebar.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -26,6 +27,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   final app = AppState(AccountModel());
   bool alreadyMatched = false;
 
@@ -61,6 +63,16 @@ class _SettingsPageState extends State<SettingsPage> {
     
   }
 
+  void onPressedBar(BuildContext context) {
+    _scaffoldState.currentState?.openDrawer();
+  }
+
+  IconButton menuButton(BuildContext context) => IconButton(
+    icon: const Icon(Icons.menu, size: 32.0),
+    onPressed: () => onPressedBar(context), 
+    color: Colors.white,
+  );
+
   Widget decorateMenuItem(BuildContext context, String menuText, Function onPressed) {
     return GestureDetector(
       onTap: () {
@@ -89,7 +101,7 @@ class _SettingsPageState extends State<SettingsPage> {
   
   List<Widget> decorateBody(BuildContext context) {
     var widgets = <Widget>[];
-    widgets.add(const LogoBar());
+    widgets.add(LogoBar(iconButton: menuButton(context)));
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 32, bottom: 4), 
@@ -119,6 +131,8 @@ class _SettingsPageState extends State<SettingsPage> {
     });
 
     return Scaffold(
+      key: _scaffoldState,
+      drawer: const SideBar(),
       body: Column(
         children: decorateBody(context),
       ),

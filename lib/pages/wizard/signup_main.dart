@@ -37,6 +37,8 @@ class _SignupMainPageState extends State<SignupMainPage> {
   final app = AppState(false, AccountModel());
 
   bool agreed = false;
+  bool _visiblePassword = false;
+  bool _visibleConfirmPassword = false;
   String name = "";
   late String email, username, newPassword, rePassword, referralId, fcmToken;
 
@@ -106,6 +108,18 @@ class _SignupMainPageState extends State<SignupMainPage> {
 
   void onPressedSignin(BuildContext context) {
     Navigator.pushNamed(context, '/wizard/login');
+  }
+  
+  void onPressedShowPassword(BuildContext context) {
+    setState(() {
+      _visiblePassword = !_visiblePassword;
+    });
+  }
+
+  void onPressedShowConfirmPassword(BuildContext context) {
+    setState(() {
+      _visibleConfirmPassword = !_visibleConfirmPassword;
+    });
   }
 
   List<Widget> decorate(BuildContext context) {
@@ -190,8 +204,21 @@ class _SignupMainPageState extends State<SignupMainPage> {
         child: TextInputField(
           // labelText: "Create password",
           enabled: !app.loading,
-          obscureText: true,
+          obscureText: !_visiblePassword,
           hintText: "Enter your password",
+          suffixIcon: IconButton(
+            icon: Icon(
+              // Based on passwordVisible state choose the icon
+              _visiblePassword
+               ? Icons.visibility
+               : Icons.visibility_off,
+              color: Theme.of(context).primaryColor,
+            ),
+            onPressed: () {
+               // Update the state i.e. toogle the state of passwordVisible variable
+              onPressedShowPassword(context);
+            },
+          ),
           onChanged: (val) {
             setState(() => newPassword = val!);
           },
@@ -213,8 +240,21 @@ class _SignupMainPageState extends State<SignupMainPage> {
         child: TextInputField(
           // labelText: "Create password",
           enabled: !app.loading,
-          obscureText: true,
+          obscureText: !_visibleConfirmPassword,
           hintText: "Confirm your password",
+          suffixIcon: IconButton(
+            icon: Icon(
+              // Based on passwordVisible state choose the icon
+              _visibleConfirmPassword
+               ? Icons.visibility
+               : Icons.visibility_off,
+              color: Theme.of(context).primaryColor,
+            ),
+            onPressed: () {
+               // Update the state i.e. toogle the state of passwordVisible variable
+              onPressedShowConfirmPassword(context);
+            },
+          ),
           onChanged: (val) {
             setState(() => rePassword = val!);
           },
@@ -288,14 +328,14 @@ class _SignupMainPageState extends State<SignupMainPage> {
           const LogoBar(),
           Expanded(
             child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: decorate(context),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: decorate(context),
+                )
               )
             )
-          )
           ),
           footer(context),
         ],

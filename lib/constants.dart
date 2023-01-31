@@ -6,10 +6,13 @@ class ApiConstants {
   static String signup = '/account/register';
   static String reVerify = '/account/re-verify';
   static String profile = '/account/update';
+  static String upgrade = '/account/upgrade';
   static String statement = '/account/statement';
   static String transaction = '/transaction';
   static String pay = '/transaction/pay';
   static String upload = '/service/upload';
+  static String ocrStatement = '/service/ocr/statement';
+  static String ocrIdCard = '/service/ocr/master';
 }
 
 class Notifications {

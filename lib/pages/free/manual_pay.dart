@@ -37,19 +37,19 @@ class ManualPayPage extends StatefulWidget {
 
 class _ManualPayPageState extends State<ManualPayPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final app = AppState(false, AccountModel(name: ""));
-  String amount = "0.00";
+  final _app = AppState(false, AccountModel(name: ""));
+  String _amount = "0.00";
 
-  Future<void> _pay() async {
-    if (app.loading) return;
+  Future<void> transfer() async {
+    if (_app.loading) return;
 
-    setState(() => app.loading = true);
+    setState(() => _app.loading = true);
     String params = jsonEncode(<String, dynamic>{
-      'seller': app.seller.id,
-      'price': amount
+      'seller': _app.seller.id,
+      'price': _amount
     });
     Response? response = await ApiService().post(ApiConstants.pay, widget.buyer.token, params);
-    setState(() => app.loading = false);
+    setState(() => _app.loading = false);
     // Navigator.pushNamed(context, '/free/verify/2');
 
     if (response == null) {
@@ -66,7 +66,7 @@ class _ManualPayPageState extends State<ManualPayPage> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       AccountModel me = widget.buyer;
-      me.bank!.checking -= double.parse(formatCurrency.format(double.parse(amount) * 1.02));
+      me.bank!.checking -= double.parse(formatCurrency.format(double.parse(_amount) * 1.02));
       context.read<CurrentAccount>().setAccount(me);
 
       Navigator.pop(context);
@@ -85,16 +85,18 @@ class _ManualPayPageState extends State<ManualPayPage> {
   void onPressedNext(BuildContext context) {
     String error = "";
 
-    if (amount.isEmpty || double.parse(amount) == 0) {
+    if (_amount.isEmpty || double.parse(_amount) == 0) {
       error = 'Please enter amount';
-    } else if (double.parse(amount) < 0) {
+    } else if (double.parse(_amount) < 0) {
       error = 'Can not input negative';
-    } else if (app.seller == null || app.seller.id == null) {
+    } else if (double.parse(_amount) > widget.buyer.bank!.checking) {
+      error = 'Overflow your balance, currently your balance is {{s}}' + widget.buyer.bank!.checking.toString();
+    } else if (_app.seller.id == null) {
       error = 'Please choose a person to pay';
     }
 
     if (error.isEmpty) {
-      _pay();
+      transfer();
     } else {
       showDialog(
         context: context, 
@@ -115,7 +117,7 @@ class _ManualPayPageState extends State<ManualPayPage> {
     if (!mounted) return;
 
     if (result != null) {
-      setState(() => app.seller = result as AccountModel);
+      setState(() => _app.seller = result as AccountModel);
     }
   }
 
@@ -144,6 +146,21 @@ class _ManualPayPageState extends State<ManualPayPage> {
           ]
         ),
       ),
+    );
+  }
+
+  Widget decorateLebalAndButton(BuildContext context, String label) {
+    return decorateRow(
+      context, 
+      Text(label, style: const TextStyle(color: Colors.black54, fontSize: 15)), 
+      SizedBox(
+        width: 200,
+        height: 32,
+        child: FotocButton(
+          buttonText: _app.seller.id != null ? _app.seller.name! : "Choose a seller",
+          onPressed: () => onPressedSeller(context),
+        ),
+      )
     );
   }
 
@@ -206,12 +223,12 @@ class _ManualPayPageState extends State<ManualPayPage> {
             width: 96,
             height: 24,
             child: TextFormField(
-              enabled: !app.loading,
+              enabled: !_app.loading,
               textAlign: TextAlign.right,
               decoration: inputDecoration(context),
               keyboardType: TextInputType.number,
-              initialValue: amount,
-              onChanged: (val) => setState(() => amount = val),
+              initialValue: _amount,
+              onChanged: (val) => setState(() => _amount = val),
             ),
           )
         ]
@@ -220,15 +237,15 @@ class _ManualPayPageState extends State<ManualPayPage> {
   }
 
   List<Widget> decorateForm(BuildContext context) {
-    String sg = formatCurrency.format(double.parse(amount.isEmpty ? "0" : amount) * 0.015);
-    String cg = formatCurrency.format(double.parse(amount.isEmpty ? "0" : amount) * 0.005);
-    String total = formatCurrency.format(double.parse(amount.isEmpty ? "0" : amount) * 1.02);
+    String sg = formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 0.015);
+    String cg = formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 0.005);
+    String total = formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 1.02);
 
     var widgets = <Widget>[];
     widgets.add(const LogoBar());
-    widgets.add(decorateSellerButton(context));
+    widgets.add(const SizedBox(height: 8));
     widgets.add(decorateStaticValues(context, "Pay From", widget.buyer.name!));
-    widgets.add(decorateStaticValues(context, "Pay To", app.seller == null ? '' : app.seller.name!));
+    widgets.add(decorateLebalAndButton(context, "Pay To"));
     widgets.add(decorateAmountRow(context));
     widgets.add(decorateStaticCCValues(context, "SG Contribution (1.5%)", sg));
     widgets.add(decorateStaticCCValues(context, "CG Contribution (0.5%)", cg));
@@ -262,7 +279,7 @@ class _ManualPayPageState extends State<ManualPayPage> {
               child: SizedBox(
                 height: 48,
                 child: FotocButton(
-                  loading: app.loading,
+                  loading: _app.loading,
                   buttonText: "Pay",
                   onPressed: () {
                     onPressedNext(context);

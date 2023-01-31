@@ -31,6 +31,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final app = AppState(false, AccountModel());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _visiblePassword = false;
 
   late String userEmail, userPassword, fcmToken;
   // late String userEmail='syedraharoontesting@gmail.com', userPassword='Asdf1234', fcmToken;
@@ -90,6 +91,12 @@ class _LoginPageState extends State<LoginPage> {
 
   void onPressedSignup(BuildContext context) {
     Navigator.pushReplacementNamed(context, '/wizard/signup/start');
+  }
+
+  void onPressedShowPassword(BuildContext context) {
+    setState(() {
+      _visiblePassword = !_visiblePassword;
+    });
   }
 
   @override
@@ -170,7 +177,20 @@ class _LoginPageState extends State<LoginPage> {
                               enabled: !app.loading,
                               labelText: "Password",
                               hintText: "Enter your password",
-                              obscureText: true,
+                              obscureText: !_visiblePassword,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  // Based on passwordVisible state choose the icon
+                                  _visiblePassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                onPressed: () {
+                                  // Update the state i.e. toogle the state of passwordVisible variable
+                                  onPressedShowPassword(context);
+                                },
+                              ),
                               onSaved: (val) => userPassword = val!,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {

@@ -1,17 +1,19 @@
+import 'dart:convert';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:fotoc/components/ui/error_dialog.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
+
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/pages/camera/take_picture.dart';
-
-class AppState {
-  bool loading;
-  String imagePath;
-
-  AppState(this.loading, this.imagePath);
-}
+import 'package:fotoc/services/api_service.dart';
+import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/providers/account_provider.dart';
 
 class VerifyStep2Page extends StatefulWidget {
   const VerifyStep2Page({Key? key}) : super(key: key);
@@ -21,7 +23,7 @@ class VerifyStep2Page extends StatefulWidget {
 }
 
 class _VerifyStep2PageState extends State<VerifyStep2Page> {
-  final app = AppState(false, "");
+  bool _loading = false;
 
   void onPressedTakePicture(BuildContext context) async {
     await availableCameras().then((cameras) => 
@@ -30,8 +32,57 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
         TakePictureScreen(camera: cameras.first, action: () { onPressedUpload(context); }, folder: Folders.masterCards))));
   }
 
-  void onPressedUpload(BuildContext context) {
-    Navigator.pushNamed(context, '/wizard/signup/agree');
+  void onPressedUpload(BuildContext context) async {
+    if (_loading) return;
+
+    setState(() => _loading = true);
+
+    AccountModel me = Provider.of<CurrentAccount>(context, listen: false).account;
+    String filename = Provider.of<CurrentAccount>(context, listen: false).uploadedFilename;
+    
+    String params = jsonEncode(<String, dynamic>{
+      'file': 'XkuvsPnR.jpg',   // test code
+      // 'file': filename,
+    });
+    Response? response = await ApiService().post(ApiConstants.ocrIdCard, me.token, params);
+    
+    if (response == null) {
+      setState(() => _loading = false);
+      showDialog(
+        context: context, 
+        builder: (context) {
+          String text = "Please check your internet";
+          return ErrorDialog(text: text);
+        }
+      );
+      return;
+    }
+    
+    dynamic res = json.decode(response.body);
+    if (response.statusCode == 200) {
+      List<dynamic> errors = res["error_types"];
+
+      if (errors.isEmpty) {
+        Response? res = await ApiService().post(ApiConstants.upgrade, me.token, "");
+        dynamic result = json.decode(res!.body);
+        AccountModel user = AccountModel.fromJson(result['me']);
+        user.token = me.token;
+        context.read<CurrentAccount>().setAccount(user);
+
+        setState(() => _loading = false);
+
+        Navigator.pushNamed(context, '/wizard/signup/agree');
+      } else {
+        setState(() => _loading = false);
+        showDialog(
+          context: context, 
+          builder: (context) {
+            String text = "Please use more clear picture";
+            return ErrorDialog(text: text);
+          }
+        );
+      }
+    }
   }
 
   void onPressedCancel(BuildContext context) {

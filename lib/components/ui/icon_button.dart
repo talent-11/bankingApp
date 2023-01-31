@@ -30,9 +30,10 @@ class FotocIconButton extends StatelessWidget {
         )
       ),
       style: ButtonStyle(
+        padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(23),
+            borderRadius: BorderRadius.circular(20),
             side: BorderSide(color: mainColor)
           )
         ),

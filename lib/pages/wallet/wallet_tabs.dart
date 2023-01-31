@@ -27,7 +27,7 @@ class MainTabsPage extends StatefulWidget {
 
 class _MainTabsPageState extends State<MainTabsPage> {
   final app = AppState(AccountModel());
-  int _selectedIndex = 0;
+  int _selectedIndex = 4;
   // bool alreadyMatched = false;
 
   // @override
@@ -58,26 +58,25 @@ class _MainTabsPageState extends State<MainTabsPage> {
 
   List<Widget> getPages() {
     List<Widget> pages = [];
-    pages.add(const FreeDashboardPage());
-    // if (alreadyMatched == false) {
-    //   pages.add(const StatementInformationPage());
-    // }
+    pages.add(const Icon(Icons.home, size: 150));
     pages.add(const Icon(Icons.payments, size: 150));
     pages.add(const Icon(Icons.currency_bitcoin, size: 150));
     pages.add(const SettingsPage());
+    pages.add(const FreeDashboardPage());
 
     return pages;
   }
 
   List<BottomNavigationBarItem> getBottomIcons() {
     List<BottomNavigationBarItem> icons = [];
-    icons.add(const BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: "Home"));
+    icons.add(const BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: "Dashboard"));
     // if (alreadyMatched == false) {
     //   icons.add(const BottomNavigationBarItem(icon: Icon(Icons.credit_card), label: "Match Funds"));
     // }
+    icons.add(const BottomNavigationBarItem(icon: Icon(Icons.account_balance), label: "Bizz-Acct"));
     icons.add(const BottomNavigationBarItem(icon: Icon(Icons.payments), label: "Pay/Request"));
-    icons.add(const BottomNavigationBarItem(icon: Icon(Icons.currency_bitcoin), label: "Crypto"));
     icons.add(const BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"));
+    icons.add(const BottomNavigationBarItem(icon: Icon(Icons.account_circle_rounded), label: "Me"));
     return icons;
   }
 

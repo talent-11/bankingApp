@@ -32,7 +32,7 @@ class PrimaryButton extends StatelessWidget {
       },
       child: SizedBox(
         width: deviceSize.width - 48.0,
-        height: 46.0,
+        height: 40.0,
         child: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -42,7 +42,7 @@ class PrimaryButton extends StatelessWidget {
       ),
       style: ButtonStyle(
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(46.0))
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0))
         ),
         backgroundColor: MaterialStateProperty.resolveWith<Color?>(
           (Set<MaterialState> states) {

@@ -175,52 +175,52 @@ class _WelcomePageState extends State<WelcomePage> {
     )
   );
 
-  Widget body(BuildContext context) => Expanded(
-    flex: 1,
-    child: ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
-          child: titleText(context, titles[0]),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-          child: titleText(context, titles[1]),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-          child: descriptionText(context),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-          child: tipText(context),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-          child: titleText1(context),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(8, 20, 8, 20),
-          child: PrimaryButton(
-            buttonText: "Get Test Account", 
-            onPressed: () => onPressedTest(context)
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-          child: titleText2(context),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(8, 20, 8, 20),
-          child: buttons(context),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-          child: descriptionText1(context),
+  Widget body(BuildContext context) => Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+        child: titleText(context, titles[0]),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+        child: titleText(context, titles[1]),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+        child: descriptionText(context),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        child: tipText(context),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+        child: titleText2(context),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+        child: buttons(context),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+        child: descriptionText1(context),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+        child: titleText1(context),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+        child: SizedBox(
+          width: 200,
+          height: 46,
+          child: FotocButton(
+            buttonText: "Get Test Account",
+            onPressed: () => onPressedTest(context),
+          )
         )
-      ],
-    )
+      )
+    ],
   );
 
   @override
@@ -230,11 +230,11 @@ class _WelcomePageState extends State<WelcomePage> {
       drawer: const SideBar(),
       body: Container(
         color: Colors.white,
-        child: Column(
-          children: <Widget>[
+        child: SingleChildScrollView(
+          child: Column(children: [
             LogoBar(iconButton: menuButton(context)),
             body(context),
-          ],
+          ]),
         ),
       ),
     );

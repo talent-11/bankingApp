@@ -27,9 +27,9 @@ class PeoplePage extends StatefulWidget {
 }
 
 class _PeoplePageState extends State<PeoplePage> {
-  final app = AppState(false);
-  String searchString = "";
-  List<AccountModel> people = [];
+  final _app = AppState(false);
+  String _searchString = "";
+  List<AccountModel> _people = [];
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -39,15 +39,16 @@ class _PeoplePageState extends State<PeoplePage> {
   }
 
   _getPeoples() async {
-    if (app.loading) return;
+    if (_app.loading) return;
 
-    people = [];
-    setState(() => app.loading = true);
+    _people = [];
+    setState(() => _app.loading = true);
     Response? response = await ApiService().get(ApiConstants.account, widget.me.token);
-    setState(() => app.loading = false);
+    setState(() => _app.loading = false);
 
     if (response != null && response.statusCode == 200) {
-      people = userModelFromJson(response.body);
+      _people = userModelFromJson(response.body);
+      _people = _people.where((element) => element.verifiedId != "").toList();
       return;
     }
 
@@ -82,9 +83,9 @@ class _PeoplePageState extends State<PeoplePage> {
         controller: _controller,
         onPressedClear: () {
           _controller.text = "";
-          setState(() => searchString = "");
+          setState(() => _searchString = "");
         },
-        onChanged: (value) => setState(() => searchString = value),
+        onChanged: (value) => setState(() => _searchString = value),
       )
     );
   }
@@ -139,14 +140,23 @@ class _PeoplePageState extends State<PeoplePage> {
 
   Widget decorateList(BuildContext context) {
     List<Widget> widgets = [];
-    List<AccountModel> newPeople = people.where((element) => 
-      element.name!.toLowerCase().contains(searchString.toLowerCase()) || element.username!.toLowerCase().contains(searchString.toLowerCase())
+    List<AccountModel> newPeople = _people.where((element) => 
+      (element.name!.toLowerCase().contains(_searchString.toLowerCase()) || element.username!.toLowerCase().contains(_searchString.toLowerCase())) && element.id != widget.me.id
     ).toList();
     
     for (var account in newPeople) {
-      if (account.id != widget.me.id) {
+      // if (account.id != widget.me.id) {
         widgets.add(decorateAccount(context, account));
-      }
+      // }
+    }
+
+    if (newPeople.isEmpty) {
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: Text("There is no verified account.", style: Theme.of(context).textTheme.headline1)
+        )
+      );
     }
     
     return Column(children: widgets);
@@ -154,7 +164,7 @@ class _PeoplePageState extends State<PeoplePage> {
 
   Widget decorateBody(BuildContext context) {
     return Expanded(
-      child: app.loading ? 
+      child: _app.loading ? 
         Center(
           child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator(color: Theme.of(context).primaryColor))
         )

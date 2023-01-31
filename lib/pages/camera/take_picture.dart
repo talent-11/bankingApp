@@ -6,6 +6,7 @@ import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/pages/camera/display_picture.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/services/api_service.dart';
+
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
@@ -48,12 +49,21 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
 
   
   Future<void> onPressedUpload(BuildContext context) async {
+    if (app.loading) return;
+
+    setState(() {
+      app.loading = true;
+    });
     StreamedResponse? response = await ApiService().uploadFile(app.user.token!, _image.path, foldername: widget.folder);
     if (response!.statusCode == 200) {
       String respStr = await response.stream.bytesToString();
       dynamic result = json.decode(respStr);
       context.read<CurrentAccount>().setUploadedFilename(result['filename']);
+      // context.read<CurrentAccount>().setUploadedFilename('AmericanExpressNationalBank.jpg');
     }
+    setState(() {
+      app.loading = false;
+    });
     widget.action();
   }
 

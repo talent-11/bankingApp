@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 
 class TextInputField extends StatelessWidget {
-  const TextInputField(
-      {Key? key, this.enabled, this.labelText, this.hintText, this.obscureText, this.keyboardType, this.validator, this.onSaved, this.onChanged})
-      : super(key: key);
+  const TextInputField({
+    Key? key, 
+    this.enabled, 
+    this.labelText, 
+    this.hintText, 
+    this.obscureText, 
+    this.suffixIcon,
+    this.keyboardType, 
+    this.validator, 
+    this.onSaved, 
+    this.onChanged
+  }) : super(key: key);
 
   final bool? enabled;
   final String? labelText;
   final String? hintText;
   final bool? obscureText;
+  final Widget? suffixIcon;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final String? Function(String?)? onSaved;
@@ -19,25 +29,30 @@ class TextInputField extends StatelessWidget {
 
     if (labelText != null) {
       widget.add(Padding(
-          padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-          child: Text(labelText!, style: Theme.of(context).textTheme.bodyText2)));
+        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+        child: Text(labelText!, style: Theme.of(context).textTheme.bodyText2))
+      );
     }
 
-    widget.add(TextFormField(
-      enabled: enabled,
-      obscureText: obscureText ?? false,
-      keyboardType: keyboardType,
-      validator: validator,
-      onSaved: onSaved,
-      onChanged: onChanged,
-      decoration: InputDecoration(
+    widget.add(
+      TextFormField(
+        enabled: enabled,
+        obscureText: obscureText ?? false,
+        keyboardType: keyboardType,
+        validator: validator,
+        onSaved: onSaved,
+        onChanged: onChanged,
+        decoration: InputDecoration(
           hintText: hintText,
           hintStyle: Theme.of(context).textTheme.bodyText1,
           border: const OutlineInputBorder(
             borderSide: BorderSide.none,
           ),
-          contentPadding: const EdgeInsets.only(left: 20.0, right: 20.0)),
-    ));
+          contentPadding: const EdgeInsets.only(left: 20.0, right: 20.0),
+          suffixIcon: suffixIcon
+        ),
+      )
+    );
 
     return widget;
   }

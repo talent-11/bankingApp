@@ -34,7 +34,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final app = AppState(false, AccountModel());
 
-  late String fullName, username, email, gender = 'Male', phone, suite, city, state, zipcode, country = 'US', newPassword, rePassword, fcmToken;
+  late String fullName, username, email, gender = 'Male', marital = 'Married', phone, suite, city, state, zipcode, country = 'US', newPassword, rePassword, fcmToken;
   TextEditingController dateController = TextEditingController();
 
   @override
@@ -71,7 +71,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
       'phone': phone,
       'birth': dateController.text,
       'minor': 'False',
-      'marital': 'married'
+      'marital': marital
     });
     Response? response = await ApiService().put(ApiConstants.profile, token, params);
     setState(() => app.loading = false);
@@ -183,7 +183,8 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         )
       )
     );
-    List genders=["Male", "Female", "Other"];
+
+    List genders=["Male", "Female"];
     Row addRadioButton(int btnValue, String title) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -215,12 +216,51 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
             children: <Widget>[
               addRadioButton(0, 'Male'),
               addRadioButton(1, 'Female'),
-              addRadioButton(2, 'Other'),
             ],
           ),
         )
       )
     );
+
+    List maritals=["Married", "Single", "Widowed"];
+    Row addRadioButton1(int btnValue, String title) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Radio<String>(
+            activeColor: Theme.of(context).primaryColor,
+            value: maritals[btnValue],
+            groupValue: marital,
+            onChanged: (value){
+              setState(() {
+                marital = value.toString();
+              });
+            },
+          ),
+          Text(title)
+        ],
+      );
+    }
+    widgets.add(
+      Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Container(
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0)
+            )
+          ),
+          child: Row(
+            children: <Widget>[
+              addRadioButton1(0, 'Married'),
+              addRadioButton1(1, 'Single'),
+              addRadioButton1(2, 'Widowed'),
+            ],
+          ),
+        )
+      )
+    );
+
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 8.0),

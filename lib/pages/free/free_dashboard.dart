@@ -4,6 +4,8 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fotoc/components/ui/icon_button.dart';
+import 'package:fotoc/components/ui/search_bar.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +24,7 @@ import 'package:fotoc/pages/free/scan_pay.dart';
 import 'package:fotoc/pages/qr/show_qr_code.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/pages/free/manual_pay.dart';
+import 'package:fotoc/pages/wizard/sidebar.dart';
 
 class AppState {
   AccountModel me;
@@ -40,8 +43,11 @@ class FreeDashboardPage extends StatefulWidget {
 }
 
 class _FreeDashboardPageState extends State<FreeDashboardPage> {
+  final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   final app = AppState(AccountModel(), false);
   List<TransactionModel> transactions = [];
+  final TextEditingController _controller = TextEditingController();
+  String _searchString = "";
 
   @override
   void initState() {
@@ -112,7 +118,9 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
   void onPressedQrCode(BuildContext context) {
     String params = jsonEncode(<String, dynamic>{
       'id': app.me.id,
-      'name': app.me.name
+      'name': app.me.name,
+      'username': app.me.username,
+      'email': app.me.email,
     });
     Navigator.push(context, MaterialPageRoute(builder: (_) => ShowQrCodeScreen(dataString: params)));
   }
@@ -123,6 +131,14 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
 
   void onPressedScan(BuildContext context) {
     scan();
+  }
+
+  void onPressedBar(BuildContext context) {
+    _scaffoldState.currentState?.openDrawer();
+  }
+
+  void onPressedHome(BuildContext context) {
+
   }
 
   Future scan() async {
@@ -156,6 +172,12 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
       // setState(() => barcode = 'Unknown error: $e');
     }
   }
+
+  IconButton menuButton(BuildContext context) => IconButton(
+    icon: const Icon(Icons.menu, size: 32.0),
+    onPressed: () => onPressedBar(context), 
+    color: Colors.white,
+  );
 
   Widget decorateTransaction(BuildContext context, TransactionModel transaction) {
     return Row(
@@ -243,6 +265,200 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
     ],
   );
 
+  List<Widget> decorateBody(BuildContext context) {
+    List<Widget> widgets = [];
+    if (app.me.verifiedId != "--") {
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+          child: Column(
+            children: [
+              SizedBox(
+                width: 40,
+                height: 40,
+                child: FotocIconButton(
+                  icon: const Icon(Icons.home, color: Colors.white, size: 32.0), 
+                  onPressed: () => onPressedHome(context)
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 0, top: 8),
+                child: FotocSearchBar(
+                  controller: _controller,
+                  onPressedClear: () {
+                    _controller.text = "";
+                    setState(() => _searchString = "");
+                  },
+                  onChanged: (value) => setState(() => _searchString = value),
+                )
+              )
+            ],
+          )
+        ),
+      );
+    } else {
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: Center(
+            child: PrimaryButton(
+              buttonText: "Get Full Account", 
+              onPressed: () => onPressedGetFullAccount(context)
+            )
+          ),
+        ),
+      );
+
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(
+                  "Fully Verified Account Holders get:", 
+                  style: Theme.of(context).textTheme.headline6,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              const BulletRow(text: "Ability to receive {{s}}", color: Color(0xff252631)),
+              const BulletRow(text: "{{s}}10,000.00 to spend or save.", color: Color(0xff252631)),
+              const BulletRow(text: "We match the funds you have in other currency systems.", color: Color(0xff252631)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(
+                    width: 200,
+                    child: BulletRow(text: "{{s}}1,000 for every referral", color: Color(0xff252631)),
+                  ),
+                  TextButton(
+                    child: Text("(See details)", style: Theme.of(context).textTheme.headline6),
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(50, 30),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      alignment: Alignment.centerLeft),
+                    onPressed: () => onPressedMore(context)
+                  )
+                ]
+              ),
+              const BulletRow(text: "3% interest on savings account", color: Color(0xff252631)),
+              const Divider(height: 16, thickness: 1, color: Colors.black26),
+            ],
+          )
+        ),
+      );
+    }
+
+    widgets.add(
+      Padding(
+        padding: const EdgeInsets.only(top: 16, bottom: 24),
+        child: Row(
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              margin: const EdgeInsets.only(right: 16),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(40),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).primaryColor.withOpacity(0.6),
+                    spreadRadius: 2,
+                    blurRadius: 2,
+                    offset: const Offset(0, 0), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.qr_code, size: 48, color: Colors.white),
+                onPressed: () => onPressedQrCode(context),
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  app.me.name!, 
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor, 
+                    decoration: TextDecoration.underline, 
+                    decorationThickness: 1.5,
+                    fontSize: 18, 
+                    fontWeight: FontWeight.w500
+                  )
+                ),
+                Text(
+                  "@" + app.me.username!,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                app.me.verifiedId != "--" ? const SizedBox(height: 2) : const SizedBox(width: 0, height: 0),
+                app.me.verifiedId != "--" ? Text("Your referral code is " + app.me.referralId!, style: Theme.of(context).textTheme.headline6) : const SizedBox(width: 0, height: 0),
+                app.me.verifiedId != "--" ? const SizedBox(height: 4) : const SizedBox(width: 0, height: 0),
+                app.me.verifiedId != "--" ? 
+                  const TextWithCC(text: ("Invite friends, earn {{s}}1,000"), fontSize: 14, color: Colors.lightBlue, lineHeight: 1.0) : 
+                  const SizedBox(width: 0, height: 0)
+              ],
+            )
+          ]
+        ),
+      ),
+    );
+
+    widgets.add(
+      Center(
+        child: Container(
+          alignment: Alignment.center,
+          width: 240,
+          height: 80,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextWithCC(text: ("{{s}}" + formatCurrency.format(app.me.bank!.checking)), fontSize: 20, color: Colors.black, lineHeight: 1.0,),
+              const SizedBox(height: 8),
+              Text(
+                app.me.verifiedId != "--" ? "Transactional Account Balance" : "Test Account Balance", 
+                style: Theme.of(context).textTheme.headline6,
+              )
+            ]
+          ),
+        ),
+      ),
+    );
+
+    widgets.add(
+      Padding(
+        padding: const EdgeInsets.only(top: 32),
+        child: decorateButtons(context),
+      )
+    );
+
+    widgets.add(
+      Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+        child: decorateTransactions(context),
+      )
+    );
+    
+    return widgets;
+  }
+
   @override
   Widget build(BuildContext context) {
     AccountModel me = context.watch<CurrentAccount>().account;
@@ -251,147 +467,16 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
     });
     
     return Scaffold(
+      key: _scaffoldState,
+      drawer: const SideBar(),
       body: Column(
         children: [
-          const LogoBar(),
+          LogoBar(iconButton: menuButton(context)),
           Expanded(
             child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
               child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Center(
-                      child: PrimaryButton(
-                        buttonText: "Get Full Account", 
-                        onPressed: () => onPressedGetFullAccount(context)
-                      )
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Text(
-                            "Fully Verified Account Holders get:", 
-                            style: Theme.of(context).textTheme.headline6,
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        const BulletRow(text: "Ability to receive {{s}}", color: Color(0xff252631)),
-                        const BulletRow(text: "{{s}}10,000.00 to spend or save.", color: Color(0xff252631)),
-                        const BulletRow(text: "We match the funds you have in other currency systems.", color: Color(0xff252631)),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const SizedBox(
-                              width: 200,
-                              child: BulletRow(text: "{{s}}1,000 for every referral", color: Color(0xff252631)),
-                            ),
-                            TextButton(
-                              child: Text("(See details)", style: Theme.of(context).textTheme.headline6),
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.zero,
-                                minimumSize: const Size(50, 30),
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                alignment: Alignment.centerLeft),
-                              onPressed: () => onPressedMore(context)
-                            )
-                          ]
-                        ),
-                        const BulletRow(text: "3% interest on savings account", color: Color(0xff252631)),
-                        const Divider(height: 16, thickness: 1, color: Colors.black26),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16, bottom: 24),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 80,
-                                height: 80,
-                                margin: const EdgeInsets.only(right: 16),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius: BorderRadius.circular(40),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Theme.of(context).primaryColor.withOpacity(0.6),
-                                      spreadRadius: 2,
-                                      blurRadius: 2,
-                                      offset: const Offset(0, 0), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(Icons.qr_code, size: 48, color: Colors.white),
-                                  onPressed: () => onPressedQrCode(context),
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    me.name!, 
-                                    style: TextStyle(
-                                      color: Theme.of(context).primaryColor, 
-                                      decoration: TextDecoration.underline, 
-                                      decorationThickness: 1.5,
-                                      fontSize: 18, 
-                                      fontWeight: FontWeight.w500
-                                    )
-                                  ),
-                                  Text(
-                                    "@" + me.username!,
-                                    style: Theme.of(context).textTheme.headline6,
-                                  )
-                                ],
-                              )
-                            ]
-                          ),
-                        ),
-                        Center(
-                          child: Container(
-                            alignment: Alignment.center,
-                            width: 240,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: const Offset(0, 3), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                TextWithCC(text: ("{{s}}" + formatCurrency.format(me.bank!.checking)), fontSize: 20, color: Colors.black, lineHeight: 1.0,),
-                                Text(
-                                  "Test Account Balance", 
-                                  style: Theme.of(context).textTheme.headline6,
-                                )
-                              ]
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 32),
-                          child: decorateButtons(context),
-                        )
-                      ],
-                    )
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-                    child: decorateTransactions(context),
-                  )
-                ]
+                children: decorateBody(context)
               ),
             )
           )

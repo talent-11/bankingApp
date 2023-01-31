@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:fotoc/constants.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
+import 'package:fotoc/constants.dart';
+import 'package:fotoc/providers/statement_provider.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/routes.dart';
 
@@ -30,6 +31,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider<CurrentAccount>(create: (_) => CurrentAccount()),
+        ChangeNotifierProvider<CurrentStatement>(create: (_) => CurrentStatement()),
       ],
       child: const MyApp()
     )
