@@ -13,7 +13,7 @@ import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/components/ui/primary_button.dart';
-import 'package:fotoc/pages/pay/people.dart';
+import 'package:fotoc/pages/dashboard/people.dart';
 
 
 class AppState {

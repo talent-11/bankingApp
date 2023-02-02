@@ -22,10 +22,10 @@ import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/models/transaction_model.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/constants.dart';
-import 'package:fotoc/pages/pay/scan_pay.dart';
-import 'package:fotoc/pages/qr/show_qr_code.dart';
+import 'package:fotoc/pages/dashboard/scan_pay.dart';
+import 'package:fotoc/pages/dashboard/show_qr_code.dart';
 import 'package:fotoc/providers/account_provider.dart';
-import 'package:fotoc/pages/pay/manual_pay.dart';
+import 'package:fotoc/pages/dashboard/manual_pay.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
 
 class AppState {
@@ -55,6 +55,13 @@ class _DashboardPageState extends State<DashboardPage> {
     
     // Future.delayed(const Duration(milliseconds: 10), getTransactions);
     getTransactions();
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
   }
 
   getTransactions() async {
@@ -213,6 +220,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   List<Widget> decorateBody(BuildContext context) {
     List<Widget> widgets = [];
+
     if (_app.me.verifiedId != "--") {
       widgets.add(
         Padding(
@@ -299,10 +307,7 @@ class _DashboardPageState extends State<DashboardPage> {
     }
 
     widgets.add(
-      Padding(
-        padding: const EdgeInsets.only(top: 16, bottom: 24),
-        child: ThumbnailBar(onPressedQrCode: onPressedQrCode, user: _app.me),
-      ),
+      Padding(padding: const EdgeInsets.only(top: 16, bottom: 24), child: ThumbnailBar(onPressedQrCode: onPressedQrCode, user: _app.me)),
     );
 
     widgets.add(Center(child: BalanceBox(user: _app.me)));
@@ -316,9 +321,8 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    AccountModel me = context.watch<CurrentAccount>().account;
     setState(() {
-      _app.me = me;
+      _app.me = context.watch<CurrentAccount>().account;
     });
     
     return Scaffold(
@@ -330,9 +334,7 @@ class _DashboardPageState extends State<DashboardPage> {
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                children: decorateBody(context)
-              ),
+              child: Column(children: decorateBody(context)),
             )
           )
         ],

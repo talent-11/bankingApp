@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:fotoc/pages/individual/dashboard.dart';
+import 'package:fotoc/pages/dashboard/dashboard.dart';
 import 'package:fotoc/pages/individual/verify_step_0.dart';
 import 'package:fotoc/pages/individual/verify_step_1.dart';
 import 'package:fotoc/pages/individual/verify_step_2.dart';
