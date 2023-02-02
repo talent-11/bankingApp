@@ -10,13 +10,6 @@ import 'package:fotoc/services/api_service.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
-class AppState {
-  bool loading;
-  AccountModel user;
-
-  AppState(this.loading, this.user);
-}
-
 class TakePictureScreen extends StatefulWidget {
   const TakePictureScreen({Key? key, required this.camera, required this.action, this.folder = ""}) : super(key: key);
   
@@ -29,9 +22,9 @@ class TakePictureScreen extends StatefulWidget {
 }
 
 class _TakePictureScreenState extends State<TakePictureScreen> {
-  final app = AppState(false, AccountModel());
   late CameraController _controller;
   late XFile _image;
+  bool _loading = false;
 
   @override
   void initState() {
@@ -49,22 +42,20 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
 
   
   Future<void> onPressedUpload(BuildContext context) async {
-    if (app.loading) return;
+    if (_loading) return;
 
-    setState(() {
-      app.loading = true;
-    });
-    StreamedResponse? response = await ApiService().uploadFile(app.user.token!, _image.path, foldername: widget.folder);
+    AccountModel me = Provider.of<CurrentAccount>(context, listen: false).account;
+
+    setState(() { _loading = true; });
+    StreamedResponse? response = await ApiService().uploadFile(me.token!, _image.path, foldername: widget.folder);
+    setState(() { _loading = false; });
     if (response!.statusCode == 200) {
       String respStr = await response.stream.bytesToString();
       dynamic result = json.decode(respStr);
       context.read<CurrentAccount>().setUploadedFilename(result['filename']);
       // context.read<CurrentAccount>().setUploadedFilename('AmericanExpressNationalBank.jpg');
+      widget.action();
     }
-    setState(() {
-      app.loading = false;
-    });
-    widget.action();
   }
 
   
@@ -96,9 +87,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
       await _controller.setFlashMode(FlashMode.off);
 
       XFile image = await _controller.takePicture();
-      setState(() {
-        _image = image;
-      });
+      setState(() { _image = image; });
 
       if (!mounted) return;
 
@@ -123,9 +112,6 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
 
   @override
   Widget build(BuildContext context) {
-    AccountModel me = context.watch<CurrentAccount>().account;
-    app.user = me;
-    
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(

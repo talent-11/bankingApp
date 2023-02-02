@@ -4,12 +4,12 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fotoc/components/ui/icon_button.dart';
-import 'package:fotoc/components/ui/search_bar.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import 'package:fotoc/components/ui/icon_button.dart';
+import 'package:fotoc/components/ui/search_bar.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/ui/icon_text_button.dart';

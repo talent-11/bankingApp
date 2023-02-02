@@ -24,6 +24,7 @@ class AccountModel {
     this.state,
     this.country,
     this.bank,
+    this.business,
     // required this.website,
     // required this.company,
   });
@@ -44,6 +45,7 @@ class AccountModel {
   String? state;
   String? country;
   Bank? bank = Bank(checking: 0, saving: 0);
+  Business? business;
 
   factory AccountModel.fromJson(Map<String, dynamic> json) => AccountModel(
     id: json["id"],
@@ -120,4 +122,8 @@ class Bank {
     "checking": checking,
     "saving": saving,
   };
+}
+
+class Business {
+  Business();
 }

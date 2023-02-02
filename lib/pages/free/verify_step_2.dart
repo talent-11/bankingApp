@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
+import 'package:fotoc/pages/camera/display_picture.dart';
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'package:fotoc/components/ui/logo_bar.dart';
@@ -24,12 +26,57 @@ class VerifyStep2Page extends StatefulWidget {
 
 class _VerifyStep2PageState extends State<VerifyStep2Page> {
   bool _loading = false;
+  late XFile _image;
+
+  Future<void> uploadFile(BuildContext context) async {
+    if (_loading) return;
+
+    AccountModel me = Provider.of<CurrentAccount>(context, listen: false).account;
+
+    setState(() { _loading = true; });
+    StreamedResponse? response = await ApiService().uploadFile(me.token!, _image.path, foldername: Folders.masterCards);
+    setState(() { _loading = false; });
+    if (response!.statusCode == 200) {
+      String respStr = await response.stream.bytesToString();
+      dynamic result = json.decode(respStr);
+      context.read<CurrentAccount>().setUploadedFilename(result['filename']);
+      Navigator.pushNamed(context, '/wizard/signup/agree');
+    }
+  }
 
   void onPressedTakePicture(BuildContext context) async {
     await availableCameras().then((cameras) => 
-      // Navigator.push(context, MaterialPageRoute(builder: (_) => TakePictureScreen(cameras: cameras))));
-      Navigator.push(context, MaterialPageRoute(builder: (_) => 
-        TakePictureScreen(camera: cameras.first, action: () { onPressedUpload(context); }, folder: Folders.masterCards))));
+      Navigator.push(
+        context, 
+        MaterialPageRoute(
+          builder: (_) => TakePictureScreen(
+            camera: cameras.first, 
+            action: () { onPressedUpload(context); }, folder: Folders.masterCards
+          )
+        )
+      )
+    );
+  }
+
+  void onPressedTakeGallery(BuildContext context) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() { _image = image; });
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => DisplayPictureScreen(
+            // Pass the automatically generated path to
+            // the DisplayPictureScreen widget.
+            imagePath: image.path,
+            actionText: "Upload",
+            action: () {
+              uploadFile(context);
+            }
+          ),
+        ),
+      );
+    }
   }
 
   void onPressedUpload(BuildContext context) async {
@@ -41,8 +88,8 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
     String filename = Provider.of<CurrentAccount>(context, listen: false).uploadedFilename;
     
     String params = jsonEncode(<String, dynamic>{
-      'file': 'XkuvsPnR.jpg',   // test code
-      // 'file': filename,
+      // 'file': 'XkuvsPnR.jpg',   // test code
+      'file': filename,
     });
     Response? response = await ApiService().post(ApiConstants.ocrIdCard, me.token, params);
     
@@ -115,7 +162,20 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
                   Expanded(
                     flex: 1,
                     child: SizedBox(
-                      height: 48,
+                      height: 40,
+                      child: FotocButton(
+                        buttonText: "Camera",
+                        onPressed: () {
+                          onPressedTakePicture(context);
+                        },
+                      ),
+                    )
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    flex: 1,
+                    child: SizedBox(
+                      height: 40,
                       child: FotocButton(
                         outline: true,
                         buttonText: "Cancel",
@@ -129,11 +189,11 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
                   Expanded(
                     flex: 1,
                     child: SizedBox(
-                      height: 48,
+                      height: 40,
                       child: FotocButton(
-                        buttonText: "Take a picture",
+                        buttonText: "Gallery",
                         onPressed: () {
-                          onPressedTakePicture(context);
+                          onPressedTakeGallery(context);
                         },
                       ),
                     )
