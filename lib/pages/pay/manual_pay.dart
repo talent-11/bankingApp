@@ -1,9 +1,6 @@
 import 'dart:convert';
 
-import 'package:fotoc/components/ui/primary_button.dart';
-import 'package:fotoc/pages/pay/people.dart';
 import 'package:http/http.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,6 +12,8 @@ import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/providers/account_provider.dart';
+import 'package:fotoc/components/ui/primary_button.dart';
+import 'package:fotoc/pages/pay/people.dart';
 
 
 class AppState {
@@ -23,8 +22,6 @@ class AppState {
 
   AppState(this.loading, this.seller);
 }
-
-final formatCurrency = NumberFormat.currency(locale: "en_US", symbol: "");
 
 class ManualPayPage extends StatefulWidget {
   const ManualPayPage({Key? key, required this.buyer}) : super(key: key);
@@ -66,7 +63,7 @@ class _ManualPayPageState extends State<ManualPayPage> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       AccountModel me = widget.buyer;
-      me.bank!.checking -= double.parse(formatCurrency.format(double.parse(_amount) * 1.02));
+      me.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(_amount) * 1.02));
       context.read<CurrentAccount>().setAccount(me);
 
       Navigator.pop(context);
@@ -237,9 +234,9 @@ class _ManualPayPageState extends State<ManualPayPage> {
   }
 
   List<Widget> decorateForm(BuildContext context) {
-    String sg = formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 0.015);
-    String cg = formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 0.005);
-    String total = formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 1.02);
+    String sg = Ext.formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 0.015);
+    String cg = Ext.formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 0.005);
+    String total = Ext.formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 1.02);
 
     var widgets = <Widget>[];
     widgets.add(const LogoBar());

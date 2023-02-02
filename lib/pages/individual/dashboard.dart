@@ -4,11 +4,13 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fotoc/components/ui/transactions_view.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import 'package:fotoc/components/ui/transactions_view.dart';
+import 'package:fotoc/components/ui/thumbnail_bar.dart';
+import 'package:fotoc/components/ui/balance_box.dart';
 import 'package:fotoc/components/ui/icon_button.dart';
 import 'package:fotoc/components/ui/search_bar.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
@@ -16,7 +18,6 @@ import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/ui/icon_text_button.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/bullet_row.dart';
-import 'package:fotoc/components/wizard/text_with_cc.dart';
 import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/models/transaction_model.dart';
 import 'package:fotoc/services/api_service.dart';
@@ -34,8 +35,6 @@ class AppState {
   AppState(this.me, this.loading);
 }
 
-final formatCurrency = NumberFormat.currency(locale: "en_US", symbol: "");
-
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
 
@@ -45,7 +44,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
-  final app = AppState(AccountModel(), false);
+  final _app = AppState(AccountModel(), false);
   List<TransactionModel> _transactions = [];
   final TextEditingController _controller = TextEditingController();
   String _searchString = "";
@@ -59,13 +58,13 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   getTransactions() async {
-    if (app.loading) return;
+    if (_app.loading) return;
 
     _transactions = [];
-    setState(() => app.loading = true);
+    setState(() => _app.loading = true);
     AccountModel me = Provider.of<CurrentAccount>(context, listen: false).account;
     Response? response = await ApiService().get(ApiConstants.transaction, me.token);
-    setState(() => app.loading = false);
+    setState(() => _app.loading = false);
 
     if (response != null && response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
@@ -120,16 +119,16 @@ class _DashboardPageState extends State<DashboardPage> {
 
   void onPressedQrCode(BuildContext context) {
     String params = jsonEncode(<String, dynamic>{
-      'id': app.me.id,
-      'name': app.me.name,
-      'username': app.me.username,
-      'email': app.me.email,
+      'id': _app.me.id,
+      'name': _app.me.name,
+      'username': _app.me.username,
+      'email': _app.me.email,
     });
     Navigator.push(context, MaterialPageRoute(builder: (_) => ShowQrCodeScreen(dataString: params)));
   }
 
   void onPressedPay(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => ManualPayPage(buyer: app.me)));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => ManualPayPage(buyer: _app.me)));
   }
 
   void onPressedScan(BuildContext context) {
@@ -151,7 +150,7 @@ class _DashboardPageState extends State<DashboardPage> {
       if (sellerJson.containsKey('id') && sellerJson.containsKey('name')) {
         AccountModel seller = AccountModel(id: int.parse(sellerJson["id"]), name: sellerJson["name"]);
 
-        if (seller.id == app.me.id) {
+        if (seller.id == _app.me.id) {
           showDialog(
             context: context, 
             builder: (context) {
@@ -161,7 +160,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
           return;
         }
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ScanPayPage(seller: seller, buyer: app.me)));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ScanPayPage(seller: seller, buyer: _app.me)));
       }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
@@ -188,7 +187,7 @@ class _DashboardPageState extends State<DashboardPage> {
       Expanded(
         flex: 1,
         child: SizedBox(
-          height: 48,
+          height: 40,
           child: FotocIconTextButton(
             icon: Icon(Icons.qr_code, size: 20, color: Theme.of(context).primaryColor),
             outline: true,
@@ -197,13 +196,11 @@ class _DashboardPageState extends State<DashboardPage> {
           )
         )
       ),
-      const SizedBox(
-        width: 16,
-      ),
+      const SizedBox(width: 20),
       Expanded(
         flex: 1,
         child: SizedBox(
-          height: 48,
+          height: 40,
           child: FotocIconTextButton(
             icon: SvgPicture.asset("assets/svgs/cc.svg", width: 20 * 0.379412, height: 20, color: Colors.white),
             buttonText: "Pay",
@@ -216,7 +213,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   List<Widget> decorateBody(BuildContext context) {
     List<Widget> widgets = [];
-    if (app.me.verifiedId != "--") {
+    if (_app.me.verifiedId != "--") {
       widgets.add(
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -260,7 +257,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
       widgets.add(
         Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -304,106 +301,15 @@ class _DashboardPageState extends State<DashboardPage> {
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 16, bottom: 24),
-        child: Row(
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              margin: const EdgeInsets.only(right: 16),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(40),
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).primaryColor.withOpacity(0.6),
-                    spreadRadius: 2,
-                    blurRadius: 2,
-                    offset: const Offset(0, 0), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.qr_code, size: 48, color: Colors.white),
-                onPressed: () => onPressedQrCode(context),
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  app.me.name!, 
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor, 
-                    decoration: TextDecoration.underline, 
-                    decorationThickness: 1.5,
-                    fontSize: 18, 
-                    fontWeight: FontWeight.w500
-                  )
-                ),
-                Text(
-                  "@" + app.me.username!,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                app.me.verifiedId != "--" ? const SizedBox(height: 2) : const SizedBox(width: 0, height: 0),
-                app.me.verifiedId != "--" ? Text("Your referral code is " + app.me.referralId!, style: Theme.of(context).textTheme.headline6) : const SizedBox(width: 0, height: 0),
-                app.me.verifiedId != "--" ? const SizedBox(height: 4) : const SizedBox(width: 0, height: 0),
-                app.me.verifiedId != "--" ? 
-                  const TextWithCC(text: ("Invite friends, earn {{s}}1,000"), fontSize: 14, color: Colors.lightBlue, lineHeight: 1.0) : 
-                  const SizedBox(width: 0, height: 0)
-              ],
-            )
-          ]
-        ),
+        child: ThumbnailBar(onPressedQrCode: onPressedQrCode, user: _app.me),
       ),
     );
 
-    widgets.add(
-      Center(
-        child: Container(
-          alignment: Alignment.center,
-          width: 240,
-          height: 80,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: const Offset(0, 3), // changes position of shadow
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextWithCC(text: ("{{s}}" + formatCurrency.format(app.me.bank!.checking)), fontSize: 20, color: Colors.black, lineHeight: 1.0,),
-              const SizedBox(height: 8),
-              Text(
-                app.me.verifiedId != "--" ? "Transactional Account Balance" : "Test Account Balance", 
-                style: Theme.of(context).textTheme.headline6,
-              )
-            ]
-          ),
-        ),
-      ),
-    );
+    widgets.add(Center(child: BalanceBox(user: _app.me)));
 
-    widgets.add(
-      Padding(
-        padding: const EdgeInsets.only(top: 32),
-        child: decorateButtons(context),
-      )
-    );
+    widgets.add(Padding(padding: const EdgeInsets.only(top: 32), child: decorateButtons(context)));
 
-    widgets.add(
-      Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-        child: TransactionsView(transactions: _transactions),
-      )
-    );
+    widgets.add(Padding(padding: const EdgeInsets.fromLTRB(20, 0, 20, 16), child: TransactionsView(transactions: _transactions)));
     
     return widgets;
   }
@@ -412,7 +318,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     AccountModel me = context.watch<CurrentAccount>().account;
     setState(() {
-      app.me = me;
+      _app.me = me;
     });
     
     return Scaffold(

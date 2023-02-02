@@ -24,7 +24,7 @@ class MainTabsPage extends StatefulWidget {
 
 class _MainTabsPageState extends State<MainTabsPage> {
   late AccountModel _me;
-  bool _isBizz = true;
+  // bool _isBizz = true;
   int _selectedIndex = 0;
   // bool alreadyMatched = false;
 

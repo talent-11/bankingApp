@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -20,8 +19,6 @@ class AppState {
 
   AppState(this.loading);
 }
-
-final formatCurrency = NumberFormat.currency(locale: "en_US", symbol: "");
 
 class ScanPayPage extends StatefulWidget {
   const ScanPayPage({Key? key, required this.seller, required this.buyer}) : super(key: key);
@@ -64,7 +61,7 @@ class _ScanPayPageState extends State<ScanPayPage> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       AccountModel me = widget.buyer;
-      me.bank!.checking -= double.parse(formatCurrency.format(double.parse(amount) * 1.02));
+      me.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(amount) * 1.02));
       context.read<CurrentAccount>().setAccount(me);
 
       Navigator.pop(context);
@@ -204,9 +201,9 @@ class _ScanPayPageState extends State<ScanPayPage> {
   }
 
   List<Widget> decorateForm(BuildContext context) {
-    String sg = formatCurrency.format(double.parse(amount.isEmpty ? "0" : amount) * 0.015);
-    String cg = formatCurrency.format(double.parse(amount.isEmpty ? "0" : amount) * 0.005);
-    String total = formatCurrency.format(double.parse(amount.isEmpty ? "0" : amount) * 1.02);
+    String sg = Ext.formatCurrency.format(double.parse(amount.isEmpty ? "0" : amount) * 0.015);
+    String cg = Ext.formatCurrency.format(double.parse(amount.isEmpty ? "0" : amount) * 0.005);
+    String total = Ext.formatCurrency.format(double.parse(amount.isEmpty ? "0" : amount) * 1.02);
 
     var widgets = <Widget>[];
     widgets.add(const LogoBar());

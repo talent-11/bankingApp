@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class ApiConstants {
   static String baseUrl = 'http://api.fotocbank.org';
   // static String baseUrl = 'https://5a87-104-223-87-12.ngrok.io';
@@ -24,4 +26,8 @@ class Folders {
   static String slaveCards = 'cards/slave';
   static String statements = 'statements';
   static String profiles = 'profiles';
+}
+
+class Ext {
+  static NumberFormat formatCurrency = NumberFormat.currency(locale: "en_US", symbol: "");
 }

@@ -14,7 +14,6 @@ import 'package:fotoc/services/api_service.dart';
 
 import 'package:provider/provider.dart';
 import 'package:http/http.dart';
-import 'package:intl/intl.dart';
 
 const descriptions = [
   "We will one-time match checking accounts, savings accounts, retirement accounts, investment accounts (stocks, bonds, mutual funds, Insurance policies with a statement of cash value, CDs, options, futures, and ETFs) and crypto currency accounts.",
@@ -25,8 +24,6 @@ const errors = [
   "Fields must match your scanned statement.",
   "Information on Statement for Acct Holder must match with information on Individual Acct Holder at FOTOC Bank"
 ];
-
-final formatCurrency = NumberFormat.currency(locale: "en_US", symbol: "");
 
 class StatementPreviewPage extends StatefulWidget {
   const StatementPreviewPage({Key? key}) : super(key: key);
@@ -65,7 +62,7 @@ class _StatementPreviewPageState extends State<StatementPreviewPage> {
       'year': _statement!.year!.toString(), 
       'bank': _statement!.bankName!,
       'name': _statement!.name!,
-      'balance': formatCurrency.format(_statement!.balance!)
+      'balance': Ext.formatCurrency.format(_statement!.balance!)
     });
 
     Response? response = await ApiService().post(ApiConstants.ocrStatement, _me?.token, params);
@@ -130,7 +127,7 @@ class _StatementPreviewPageState extends State<StatementPreviewPage> {
     if (_errors.contains("balance")) {
       items.add(decorateItem(context, "Statement Balance", "Wrong balance", color: Colors.redAccent));
     } else {
-      items.add(decorateItem(context, "Statement Balance", "\$" + formatCurrency.format(_statement!.balance!)));
+      items.add(decorateItem(context, "Statement Balance", "\$" + Ext.formatCurrency.format(_statement!.balance!)));
     }
 
     if (_errors.contains("year")) {
