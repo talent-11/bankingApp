@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:fotoc/components/ui/primary_button.dart';
-import 'package:fotoc/pages/free/people.dart';
+import 'package:fotoc/pages/individual/people.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';

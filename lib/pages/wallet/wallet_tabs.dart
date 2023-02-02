@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 // import 'package:http/http.dart';
 
 import 'package:fotoc/models/account_model.dart';
-import 'package:fotoc/pages/free/free_dashboard.dart';
+import 'package:fotoc/pages/individual/free_dashboard.dart';
 import 'package:fotoc/providers/account_provider.dart';
 // import 'package:fotoc/providers/account_provider.dart';
 

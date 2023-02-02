@@ -21,10 +21,10 @@ import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/models/transaction_model.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/constants.dart';
-import 'package:fotoc/pages/free/scan_pay.dart';
+import 'package:fotoc/pages/individual/scan_pay.dart';
 import 'package:fotoc/pages/qr/show_qr_code.dart';
 import 'package:fotoc/providers/account_provider.dart';
-import 'package:fotoc/pages/free/manual_pay.dart';
+import 'package:fotoc/pages/individual/manual_pay.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
 
 class AppState {

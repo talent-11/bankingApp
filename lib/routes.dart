@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:fotoc/pages/free/free_dashboard.dart';
-import 'package:fotoc/pages/free/verify_step_0.dart';
-import 'package:fotoc/pages/free/verify_step_1.dart';
-import 'package:fotoc/pages/free/verify_step_2.dart';
-import 'package:fotoc/pages/free/verify_step_3.dart';
-import 'package:fotoc/pages/free/verify_step_need.dart';
+import 'package:fotoc/pages/individual/free_dashboard.dart';
+import 'package:fotoc/pages/individual/verify_step_0.dart';
+import 'package:fotoc/pages/individual/verify_step_1.dart';
+import 'package:fotoc/pages/individual/verify_step_2.dart';
+import 'package:fotoc/pages/individual/verify_step_3.dart';
+import 'package:fotoc/pages/individual/verify_step_need.dart';
 import 'package:fotoc/pages/settings/settings.dart';
 import 'package:fotoc/pages/statement/statement_about_cash.dart';
 import 'package:fotoc/pages/wallet/wallet_tabs.dart';

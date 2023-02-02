@@ -36,6 +36,7 @@ class _BusinessAccountPageState extends State<BusinessAccountPage> {
   }
 
   void onPressedVerified(BuildContext context) {
+    Navigator.pushNamed(context, '/free/verify/0');
   }
 
   IconButton menuButton(BuildContext context) => IconButton(
@@ -61,7 +62,7 @@ class _BusinessAccountPageState extends State<BusinessAccountPage> {
           width: 200,
           height: 40,
           child: FotocButton(
-            buttonText: "Get a Verified Account", 
+            buttonText: "Get Full Account", 
             onPressed: () => onPressedVerified(context)
           ),
         )
