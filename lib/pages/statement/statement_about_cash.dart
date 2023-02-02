@@ -12,7 +12,7 @@ const titles = [
 
 const descriptions = [
   " In the near future, the \"FEDERAL RESERVE SYSTEM\" will end everyone's ability to buy or sell with cash as they try to force everyone into their NWO (New World Order) artificial intelligence cashless digital currency system. They will most likely get rid of banks as well. FOTOC's Banking System will soon be accepting Banks into our Banking System and we will be matching the funds they have in the FEDERAL RESERVE BANKING SYSTEM.",
-  " You can convert your cash (U.S. Dollars only) into a U.S. money order or U.S. Cashier's Check (personal/business checks not accepted), or a debit card, credit card, Visa/MasterCard git card and donate your FEDERAL RESERVE money through our main website {{cdonation portal here:}} we will not only match your funds, but you will receive 100 times (in cc's) the amount of your donation - Which will be credited into your account with FOTOC Bank. For example: If you donate \$3,500 {{cthrough this portal:}} you will instantly receive 350,000 (cc's) credited into your account at FOTOC Bank.",
+  " You can convert your cash (U.S. Dollars only) into a U.S. money order or U.S. Cashier's Check (personal/business checks not accepted), or a debit card, credit card, Visa/MasterCard git card and donate your FEDERAL RESERVE money through our main website {{cdonation portal here:}} we will not only match your funds, but you will receive 100 times (in {{s}}'s) the amount of your donation - Which will be credited into your account with FOTOC Bank. For example: If you donate \$3,500 {{cthrough this portal:}} you will instantly receive 350,000 ({{s}}'s) credited into your account at FOTOC Bank.",
 ];
 
 class StatementAboutCashPage extends StatefulWidget {
