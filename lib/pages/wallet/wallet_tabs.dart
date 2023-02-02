@@ -1,7 +1,7 @@
 // import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fotoc/pages/bizz/business_account.dart';
+import 'package:fotoc/pages/business/business_account.dart';
 import 'package:fotoc/pages/settings/settings.dart';
 import 'package:provider/provider.dart';
 // import 'package:fotoc/constants.dart';
@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 // import 'package:http/http.dart';
 
 import 'package:fotoc/models/account_model.dart';
-import 'package:fotoc/pages/individual/free_dashboard.dart';
+import 'package:fotoc/pages/individual/dashboard.dart';
 import 'package:fotoc/providers/account_provider.dart';
 // import 'package:fotoc/providers/account_provider.dart';
 
@@ -63,7 +63,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
 
   List<Widget> getPages() {
     List<Widget> pages = [];
-    pages.add(const FreeDashboardPage());
+    pages.add(const DashboardPage());
     // pages.add(_isBizz ? const BusinessAccountPage() : const IndividualAccountPage());
     pages.add(const BusinessAccountPage());
     pages.add(const Icon(Icons.currency_bitcoin, size: 150));

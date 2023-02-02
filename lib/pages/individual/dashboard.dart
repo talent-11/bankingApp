@@ -36,14 +36,14 @@ class AppState {
 
 final formatCurrency = NumberFormat.currency(locale: "en_US", symbol: "");
 
-class FreeDashboardPage extends StatefulWidget {
-  const FreeDashboardPage({Key? key}) : super(key: key);
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({Key? key}) : super(key: key);
 
   @override
-  State<FreeDashboardPage> createState() => _FreeDashboardPageState();
+  State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class _FreeDashboardPageState extends State<FreeDashboardPage> {
+class _DashboardPageState extends State<DashboardPage> {
   final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   final app = AppState(AccountModel(), false);
   List<TransactionModel> _transactions = [];

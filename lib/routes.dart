@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:fotoc/pages/individual/free_dashboard.dart';
+import 'package:fotoc/pages/individual/dashboard.dart';
 import 'package:fotoc/pages/individual/verify_step_0.dart';
 import 'package:fotoc/pages/individual/verify_step_1.dart';
 import 'package:fotoc/pages/individual/verify_step_2.dart';
@@ -28,7 +28,7 @@ final routes = {
   '/wizard/signup/main': (BuildContext context) => const SignupMainPage(),
   '/wizard/signup/almost': (BuildContext context) => const SignupAlmostPage(),
   '/free/main': (BuildContext context) => const MainTabsPage(),
-  '/free/dashboard': (BuildContext context) => const FreeDashboardPage(),
+  '/free/dashboard': (BuildContext context) => const DashboardPage(),
   '/free/verify/0': (BuildContext context) => const VerifyStep0Page(),
   '/free/verify/need': (BuildContext context) => const VerifyStepNeedPage(),
   '/free/verify/1': (BuildContext context) => const VerifyStep1Page(),

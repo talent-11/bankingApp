@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:provider/provider.dart';
 
