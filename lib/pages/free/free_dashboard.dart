@@ -4,6 +4,7 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fotoc/components/ui/transactions_view.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +46,7 @@ class FreeDashboardPage extends StatefulWidget {
 class _FreeDashboardPageState extends State<FreeDashboardPage> {
   final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   final app = AppState(AccountModel(), false);
-  List<TransactionModel> transactions = [];
+  List<TransactionModel> _transactions = [];
   final TextEditingController _controller = TextEditingController();
   String _searchString = "";
 
@@ -53,15 +54,17 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
   void initState() {
     super.initState();
     
-    Future.delayed(const Duration(milliseconds: 10), _getTransactions);
+    // Future.delayed(const Duration(milliseconds: 10), getTransactions);
+    getTransactions();
   }
 
-  _getTransactions() async {
+  getTransactions() async {
     if (app.loading) return;
 
-    transactions = [];
+    _transactions = [];
     setState(() => app.loading = true);
-    Response? response = await ApiService().get(ApiConstants.transaction, app.me.token);
+    AccountModel me = Provider.of<CurrentAccount>(context, listen: false).account;
+    Response? response = await ApiService().get(ApiConstants.transaction, me.token);
     setState(() => app.loading = false);
 
     if (response != null && response.statusCode == 200) {
@@ -70,12 +73,12 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
         Map<String, dynamic> sender = trans['sender'];
         Map<String, dynamic> receiver = trans['receiver'];
 
-        transactions.add(
+        _transactions.add(
           TransactionModel(
-            name: sender['username'] == app.me.username ? receiver['name'] : sender['name'],
+            name: sender['username'] == me.username ? receiver['name'] : sender['name'],
             date: DateFormat('MMM d').format(DateTime.parse(trans['created_at'])),
             amount: trans['amount'],
-            paid: sender['username'] == app.me.username
+            paid: sender['username'] == me.username
           )
         );
       }
@@ -178,60 +181,6 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
     onPressed: () => onPressedBar(context), 
     color: Colors.white,
   );
-
-  Widget decorateTransaction(BuildContext context, TransactionModel transaction) {
-    return Row(
-      children: [
-        Icon(
-          Icons.account_circle,
-          color: Theme.of(context).primaryColor,
-          size: 60.0,
-        ),
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              decoration: const BoxDecoration(
-                border: Border(bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0))
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(transaction.name, style: Theme.of(context).textTheme.headline2),
-                        Text(transaction.date, style: Theme.of(context).textTheme.bodyText1)
-                      ],
-                    )
-                  ),
-                  TextWithCC(
-                    text: (transaction.paid ? "-" : "+") + "{{s}}" + transaction.amount, 
-                    fontSize: 16.0, 
-                    color: transaction.paid ? const Color(0xffdc2f38) : Colors.green, 
-                    fontWeight: FontWeight.w400
-                  )
-                ]
-              )
-            )
-          )
-        ),
-      ],
-    );
-  }
-
-  Widget decorateTransactions(BuildContext context) {
-    List<Widget> transactionWidgets = [];
-    for (var transaction in transactions) {
-      transactionWidgets.add(decorateTransaction(context, transaction));
-    }
-    return Column(
-      children: transactionWidgets
-    );
-  }
 
   Widget decorateButtons(BuildContext context) => Row(
     // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -452,7 +401,7 @@ class _FreeDashboardPageState extends State<FreeDashboardPage> {
     widgets.add(
       Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-        child: decorateTransactions(context),
+        child: TransactionsView(transactions: _transactions),
       )
     );
     
