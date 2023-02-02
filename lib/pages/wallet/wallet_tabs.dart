@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:fotoc/pages/bizz/business_account.dart';
-import 'package:fotoc/pages/bizz/individual_account.dart';
 import 'package:fotoc/pages/settings/settings.dart';
 import 'package:provider/provider.dart';
 // import 'package:fotoc/constants.dart';
