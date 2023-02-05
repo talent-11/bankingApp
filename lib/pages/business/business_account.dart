@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/wizard/button.dart';
+import 'package:fotoc/pages/business/business_verify_0.dart';
 import 'package:provider/provider.dart';
 
 import 'package:fotoc/components/ui/logo_bar.dart';
@@ -32,6 +33,7 @@ class _BusinessAccountPageState extends State<BusinessAccountPage> {
   }
 
   void onPressedBusiness(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const BusinessVerify0Page()));
   }
 
   void onPressedVerified(BuildContext context) {

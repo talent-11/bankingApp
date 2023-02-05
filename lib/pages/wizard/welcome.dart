@@ -31,7 +31,6 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   void onPressedTest(BuildContext context) {
-    // Navigator.pushReplacementNamed(context, '/wizard/signup/main');
     Navigator.pushNamed(context, '/wizard/signup/start');
   }
 

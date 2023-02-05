@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
+import 'package:fotoc/pages/individual/verify_step_need.dart';
 
 const descriptions = [
   "1. Fill out our form with your information.",
@@ -26,7 +27,7 @@ class _VerifyStep0PageState extends State<VerifyStep0Page> {
   }
 
   void onPressedNeed() {
-    Navigator.pushNamed(context, '/free/verify/need');
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const VerifyStepNeedPage()));
   }
 
   void onPressedNo(BuildContext context) {

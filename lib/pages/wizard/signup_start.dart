@@ -33,8 +33,7 @@ class _SignupStartPageState extends State<SignupStartPage> {
   void onPressedGetStarted(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      context.read<CurrentAccount>().setAccount(AccountModel(friendId: _friendReferralId));
-      Navigator.push(context, MaterialPageRoute(builder: (_) => SignupMainPage(from: widget.from)));
+      Navigator.push(context, MaterialPageRoute(builder: (_) => SignupMainPage(from: widget.from, friendId: _friendReferralId)));
     }
   }
 

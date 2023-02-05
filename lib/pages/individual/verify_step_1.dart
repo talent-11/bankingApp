@@ -43,7 +43,6 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
 
     dynamic showSignupMainPage() => {
       if (app.user.email == null) {
-        // Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupMainPage(from: "verify")))
         Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupStartPage(from: "verify")))
       }
     };

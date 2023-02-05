@@ -8,7 +8,6 @@ import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/dots.dart';
-import 'package:fotoc/components/wizard/footer.dart';
 import 'package:fotoc/components/wizard/labeled_checkbox.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
 import 'package:fotoc/constants.dart';
@@ -16,17 +15,14 @@ import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/services/validation_service.dart';
 import 'package:fotoc/providers/account_provider.dart';
 
-class SignupMainPage extends StatefulWidget {
-  const SignupMainPage({Key? key, this.from, this.friendId}) : super(key: key);
-
-  final String? from;
-  final String? friendId;
+class BusinessVerify2Page extends StatefulWidget {
+  const BusinessVerify2Page({Key? key}) : super(key: key);
 
   @override
-  State<SignupMainPage> createState() => _SignupMainPageState();
+  State<BusinessVerify2Page> createState() => _BusinessVerify2PageState();
 }
 
-class _SignupMainPageState extends State<SignupMainPage> {
+class _BusinessVerify2PageState extends State<BusinessVerify2Page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _loading = false;
   bool _agreed = false;
@@ -55,7 +51,6 @@ class _SignupMainPageState extends State<SignupMainPage> {
       'email': _email.toLowerCase(),
       'username': _username.toLowerCase(),
       'password': _newPassword,
-      'friend_id': widget.friendId,
       'fcm_token': fcmToken,
     });
     Response? response = await ApiService().post(ApiConstants.signup, '', params);
@@ -69,17 +64,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
         }
       );
     } else if (response.statusCode == 200) {
-      if (widget.from == "verify") {
-        dynamic result = json.decode(response.body);
-        context.read<CurrentAccount>().setAccountToken(result['token']);
-        int count = 0;
-        Navigator.popUntil(context, (route) {
-          return count ++ == 2;
-        });
-        // Navigator.pop(context);
-      } else {
-        Navigator.pushNamed(context, '/wizard/signup/almost');
-      }
+      
     } else if (response.statusCode == 400) {
       showDialog(
         context: context, 
@@ -90,6 +75,10 @@ class _SignupMainPageState extends State<SignupMainPage> {
         }
       );
     }
+  }
+
+  void onPressedBack(BuildContext context) {
+    Navigator.pop(context);
   }
 
   void onPressedNext(BuildContext context) {
@@ -109,6 +98,12 @@ class _SignupMainPageState extends State<SignupMainPage> {
   void onPressedShowConfirmPassword(BuildContext context) {
     setState(() { _visibleConfirmPassword = !_visibleConfirmPassword; });
   }
+
+  IconButton backButton(BuildContext context) => IconButton(
+    icon: const Icon(Icons.arrow_back_ios, size: 32.0),
+    onPressed: () => onPressedBack(context), 
+    color: Colors.white,
+  );
 
   List<Widget> decorate(BuildContext context) {
     var widgets = <Widget>[];
@@ -249,20 +244,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
         }
       )
     );
-    if (widget.from != "verify") {
-      widgets.add(
-        WizardFooter(
-          description: "Do you have an account?",
-          buttonText: "Sign in here",
-          onPressed: () {
-            onPressedSignin(context);
-          }
-        )
-      );
-      widgets.add(const Dots(selectedIndex: 1, dots: 3));
-    } else {
-      widgets.add(const Dots(selectedIndex: 1, dots: 6));
-    }
+    widgets.add(const Dots(selectedIndex: 1, dots: 6));
     return widgets;
   }
 
@@ -271,7 +253,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
     return Scaffold(
       body: Column(
         children: [
-          const LogoBar(),
+          LogoBar(iconButton: backButton(context)),
           Expanded(
             child: SingleChildScrollView(
               child: Form(

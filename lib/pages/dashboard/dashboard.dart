@@ -314,7 +314,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
     widgets.add(Padding(padding: const EdgeInsets.only(top: 32), child: decorateButtons(context)));
 
-    widgets.add(Padding(padding: const EdgeInsets.fromLTRB(20, 0, 20, 16), child: TransactionsView(transactions: _transactions)));
+    widgets.add(Padding(padding: const EdgeInsets.fromLTRB(20, 16, 20, 0), child: TransactionsView(transactions: _transactions)));
     
     return widgets;
   }
