@@ -75,15 +75,12 @@ class _SignupMainPageState extends State<SignupMainPage> {
       if (widget.from == "verify") {
         dynamic result = json.decode(response.body);
         context.read<AccountProvider>().setAccountToken(result['token']);
-        // Navigator.popUntil(context, (route) {
-        //   return count ++ == 2;
-        // });
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const VerifyStep1Page()), (route) {
-          return count ++ == 1;
+          return count ++ == 2;
         });
       } else {
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const SignupAlmostPage()), (route) {
-          return count ++ == 1;
+          return count ++ == 2;
         });
       }
     } else if (response.statusCode == 400) {

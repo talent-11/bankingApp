@@ -29,7 +29,7 @@ class _VerifyStep0PageState extends State<VerifyStep0Page> {
 
   void onPressedYes(BuildContext context) {
     if (Provider.of<AccountProvider>(context, listen: false).account.email == null) {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupStartPage(from: "verify")));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SignupStartPage(from: "verify")));
     } else {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep1Page()));
     }

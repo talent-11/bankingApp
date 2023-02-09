@@ -34,18 +34,6 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
   @override
   void initState() {
     super.initState();
-
-    // dynamic showSignupMainPage() => {
-    //   if (app.user.email == null) {
-    //     Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupStartPage(from: "verify")))
-    //   }
-    // };
-
-    // Future.delayed(const Duration(milliseconds: 200), showSignupMainPage);
-    
-    // if (Provider.of<AccountProvider>(context, listen: false).account.email == null) {
-    //   Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupStartPage(from: "verify")));
-    // }
   }
 
   @override
@@ -214,14 +202,18 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
                 label: 'Male', 
                 groupValue: _gender, 
                 onChanged: (value) {
-                  _gender = value.toString();
+                  setState(() {
+                    _gender = value.toString();
+                  });
                 }
               ),
               RadioText(
                 label: 'Female', 
                 groupValue: _gender, 
                 onChanged: (value) {
-                  _gender = value;
+                  setState(() {
+                    _gender = value.toString();
+                  });
                 }
               ),
             ],
@@ -267,21 +259,27 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
                 label: 'Married', 
                 groupValue: _marital, 
                 onChanged: (value) {
-                  _marital = value.toString();
+                  setState(() {
+                    _marital = value.toString();
+                  });
                 }
               ),
               RadioText(
                 label: 'Single', 
                 groupValue: _marital, 
                 onChanged: (value) {
-                  _marital = value.toString();
+                  setState(() {
+                    _marital = value.toString();
+                  });
                 }
               ),
               RadioText(
                 label: 'Widowed', 
                 groupValue: _marital, 
                 onChanged: (value) {
-                  _marital = value.toString();
+                  setState(() {
+                    _marital = value.toString();
+                  });
                 }
               ),
             ],
