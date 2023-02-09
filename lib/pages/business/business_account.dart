@@ -1,20 +1,21 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fotoc/components/ui/radio_text.dart';
-import 'package:fotoc/providers/settings_provider.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
+import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/providers/settings_provider.dart';
 import 'package:fotoc/providers/account_provider.dart';
+import 'package:fotoc/components/ui/radio_text.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
-import 'package:fotoc/constants.dart';
-import 'package:fotoc/pages/wizard/sidebar.dart';
-import 'package:fotoc/pages/business/business_verify_0.dart';
 import 'package:fotoc/services/api_service.dart';
+import 'package:fotoc/pages/wizard/sidebar.dart';
+import 'package:fotoc/pages/individual/verify_step_0.dart';
+import 'package:fotoc/pages/business/business_verify_0.dart';
 
 class BusinessAccountPage extends StatefulWidget {
   const BusinessAccountPage({Key? key}) : super(key: key);
@@ -45,7 +46,7 @@ class _BusinessAccountPageState extends State<BusinessAccountPage> {
   }
 
   void onPressedVerified(BuildContext context) {
-    Navigator.pushNamed(context, '/free/verify/0');
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const VerifyStep0Page()));
   }
 
   void onPressedResend(BuildContext context) async {

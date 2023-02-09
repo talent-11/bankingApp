@@ -1,8 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
+import 'package:fotoc/pages/individual/verify_step_1.dart';
 import 'package:fotoc/pages/individual/verify_step_need.dart';
+import 'package:fotoc/pages/wizard/signup_start.dart';
+import 'package:fotoc/providers/account_provider.dart';
 
 const descriptions = [
   "1. Fill out our form with your information.",
@@ -23,7 +28,11 @@ class _VerifyStep0PageState extends State<VerifyStep0Page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void onPressedYes(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/free/verify/1');
+    if (Provider.of<AccountProvider>(context, listen: false).account.email == null) {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupStartPage(from: "verify")));
+    } else {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep1Page()));
+    }
   }
 
   void onPressedNeed() {

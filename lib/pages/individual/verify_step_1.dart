@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:country_list_pick/country_list_pick.dart';
+import 'package:http/http.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
@@ -8,14 +11,11 @@ import 'package:fotoc/components/ui/radio_text.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
+import 'package:fotoc/pages/individual/verify_step_2.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
-import 'package:fotoc/pages/wizard/signup_start.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/services/api_service.dart';
-import 'package:http/http.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class VerifyStep1Page extends StatefulWidget {
   const VerifyStep1Page({Key? key}) : super(key: key);
@@ -43,9 +43,9 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
 
     // Future.delayed(const Duration(milliseconds: 200), showSignupMainPage);
     
-    if (Provider.of<AccountProvider>(context, listen: false).account.email != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupStartPage(from: "verify")));
-    }
+    // if (Provider.of<AccountProvider>(context, listen: false).account.email == null) {
+    //   Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupStartPage(from: "verify")));
+    // }
   }
 
   @override
@@ -88,7 +88,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
       context.read<AccountProvider>().setAccount(user);
       context.read<AccountProvider>().login(true);
 
-      Navigator.pushNamed(context, '/free/verify/2');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep2Page()));
     } else if (response.statusCode == 400) {
       showDialog(
         context: context, 
@@ -106,12 +106,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
       _formKey.currentState!.save();
       _update(context);
     }
-    // Navigator.pushNamed(context, '/free/verify/2');
   }
-
-  // void onPressedCancel(BuildContext context) {
-  //   Navigator.pop(context);
-  // }
 
   List<Widget> decorateBody(BuildContext context) {
     var widgets = <Widget>[];

@@ -4,10 +4,7 @@ import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/footer.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
-import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/pages/wizard/signup_main.dart';
-import 'package:fotoc/providers/account_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:fotoc/services/validation_service.dart';
 
 const descriptions = [

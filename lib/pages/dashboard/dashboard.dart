@@ -4,7 +4,6 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fotoc/providers/settings_provider.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -23,9 +22,11 @@ import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/models/transaction_model.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/constants.dart';
+import 'package:fotoc/providers/settings_provider.dart';
+import 'package:fotoc/providers/account_provider.dart';
+import 'package:fotoc/pages/individual/verify_step_0.dart';
 import 'package:fotoc/pages/dashboard/scan_pay.dart';
 import 'package:fotoc/pages/dashboard/show_qr_code.dart';
-import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
 
 class AppState {
@@ -116,7 +117,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   void onPressedGetFullAccount(BuildContext context) {
-    Navigator.pushNamed(context, '/free/verify/0');
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const VerifyStep0Page()));
   }
 
   void onPressedMore(BuildContext context) {

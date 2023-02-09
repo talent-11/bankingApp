@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:fotoc/components/ui/logo_bar.dart';
-import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/text_spans.dart';
+import 'package:fotoc/pages/individual/verify_step_0.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
 
 const titles = [
@@ -40,8 +41,7 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   void onPressedSignup(BuildContext context) {
-    // Navigator.pushReplacementNamed(context, '/free/verify/0');
-    Navigator.pushNamed(context, '/free/verify/0');
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const VerifyStep0Page()));
   }
 
   IconButton menuButton(BuildContext context) => IconButton(

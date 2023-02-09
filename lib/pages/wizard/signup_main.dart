@@ -15,6 +15,8 @@ import 'package:fotoc/constants.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/services/validation_service.dart';
 import 'package:fotoc/providers/account_provider.dart';
+import 'package:fotoc/pages/individual/verify_step_1.dart';
+import 'package:fotoc/pages/wizard/signup_almost.dart';
 
 class SignupMainPage extends StatefulWidget {
   const SignupMainPage({Key? key, this.from, this.friendId}) : super(key: key);
@@ -69,16 +71,20 @@ class _SignupMainPageState extends State<SignupMainPage> {
         }
       );
     } else if (response.statusCode == 200) {
+      int count = 0;
       if (widget.from == "verify") {
         dynamic result = json.decode(response.body);
         context.read<AccountProvider>().setAccountToken(result['token']);
-        int count = 0;
-        Navigator.popUntil(context, (route) {
-          return count ++ == 2;
+        // Navigator.popUntil(context, (route) {
+        //   return count ++ == 2;
+        // });
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const VerifyStep1Page()), (route) {
+          return count ++ == 1;
         });
-        // Navigator.pop(context);
       } else {
-        Navigator.pushNamed(context, '/wizard/signup/almost');
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const SignupAlmostPage()), (route) {
+          return count ++ == 1;
+        });
       }
     } else if (response.statusCode == 400) {
       showDialog(

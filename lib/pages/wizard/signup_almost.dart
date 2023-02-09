@@ -31,10 +31,6 @@ class _SignupAlmostPageState extends State<SignupAlmostPage> {
     Navigator.pushReplacementNamed(context, '/wizard/login');
   }
  
-  // void onPressedVerify(BuildContext context) {
-  //   Navigator.pushReplacementNamed(context, '/free/verify/0');
-  // }
-
   void onPressedResend(BuildContext context) async {
     if (loading) return;
 
