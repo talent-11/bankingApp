@@ -37,6 +37,12 @@ class AccountProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void updateBusinessAccountBank(double checking) {
+    if (!_loggedIn) return;
+    _account.business!.bank!.checking = checking;
+    notifyListeners();
+  }
+
   void setFcmToken(String fcmToken) {
     _fcmToken = fcmToken;
     notifyListeners();

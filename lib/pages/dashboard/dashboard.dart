@@ -70,21 +70,28 @@ class _DashboardPageState extends State<DashboardPage> {
     _transactions = [];
     setState(() => _app.loading = true);
     AccountModel me = Provider.of<AccountProvider>(context, listen: false).account;
-    Response? response = await ApiService().get(ApiConstants.transaction, me.token);
+    String selectedAccountType = Provider.of<SettingsProvider>(context, listen: false).bizzAccount;
+
+    String url = ApiConstants.transaction + "?id=" + (selectedAccountType == Ext.business ? me.business!.id.toString() : me.id.toString()) + "&type=" + selectedAccountType;
+    Response? response = await ApiService().get(url, me.token);
     setState(() => _app.loading = false);
 
     if (response != null && response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
       for (Map<String, dynamic> trans in data) {
-        Map<String, dynamic> sender = trans['sender'];
-        Map<String, dynamic> receiver = trans['receiver'];
+        dynamic sender = trans['sender'];
+        dynamic sender2 = trans['sender2'];
+        dynamic receiver = trans['receiver'];
+        dynamic receiver2 = trans['receiver2'];
 
+        bool paid = sender['id'] == me.id || (me.business != null && sender2 != null && sender2['id'] == me.business!.id);
+        String receiverName = paid ? receiver != null ? receiver['name'] : receiver2['name'] : sender != null ? sender['name'] : sender2['name'];
         _transactions.add(
           TransactionModel(
-            name: sender['username'] == me.username ? receiver['name'] : sender['name'],
+            name: receiverName,
             date: DateFormat('MMM d').format(DateTime.parse(trans['created_at'])),
             amount: trans['amount'],
-            paid: sender['username'] == me.username
+            paid: paid
           )
         );
       }

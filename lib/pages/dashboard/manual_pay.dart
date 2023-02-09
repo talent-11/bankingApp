@@ -75,14 +75,17 @@ class _ManualPayPageState extends State<ManualPayPage> {
       const snackBar = SnackBar(content: Text('Paid successfully'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      AccountModel me = _me;
-      double fee = (_me.business == null || (_me.id! != _app.receiverId && _me.business!.id! != _app.receiverId)) ? 0 : 0.2;
+      double fee = (_me.business == null || (_me.id != _app.receiverId && _me.business!.id != _app.receiverId)) ? 0.02 : 0;
       if (isBusiness) {
-        me.business!.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(_amount) * (1 + fee)));
+        context.read<AccountProvider>().updateBusinessAccountBank(
+          _me.business!.bank!.checking - double.parse(Ext.formatCurrency.format(double.parse(_amount) * (1 + fee)))
+        );
       } else {
-        me.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(_amount) * (1 + fee)));
+        context.read<AccountProvider>().updateAccountBank(
+          _me.bank!.checking - double.parse(Ext.formatCurrency.format(double.parse(_amount) * (1 + fee)))
+        );
       }
-      context.read<AccountProvider>().setAccount(me);
+      // context.read<AccountProvider>().setAccount(me);
       context.read<SettingsProvider>().setTabIndex(0);
     } else if (response.statusCode == 400) {
       showDialog(

@@ -92,7 +92,11 @@ class MyApp extends StatelessWidget {
           );
           if (notification.data!["type"] == Notifications.transaction) {
             double checking = double.parse(notification.data!["balance"]);
-            context.read<AccountProvider>().updateAccountBank(checking);
+            if (notification.data!["account_type"] == Ext.business) {
+              context.read<AccountProvider>().updateBusinessAccountBank(checking);
+            } else {
+              context.read<AccountProvider>().updateAccountBank(checking);
+            }
           }
         });
 
