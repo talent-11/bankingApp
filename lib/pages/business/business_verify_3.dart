@@ -85,9 +85,14 @@ class _BusinessVerify3PageState extends State<BusinessVerify3Page> {
     } else if (response.statusCode == 200) {
       dynamic result = json.decode(response.body);
       BusinessModel business = BusinessModel.fromJson(result['business']);
+      AccountModel user = Provider.of<AccountProvider>(context, listen: false).account;
+      user.business = business;
+      context.read<AccountProvider>().setAccount(user);
       
       const snackBar = SnackBar(content: Text('We\'ve just sent a verification email'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      Navigator.pushNamed(context, '/free/verify/3');
     } else if (response.statusCode == 400) {
       showDialog(
         context: context, 

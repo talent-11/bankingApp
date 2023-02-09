@@ -1,6 +1,7 @@
 // import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fotoc/pages/dashboard/manual_pay.dart';
 import 'package:provider/provider.dart';
 // import 'package:fotoc/pages/statement/statement_Information.dart';
 // import 'package:fotoc/services/api_service.dart';
@@ -23,9 +24,8 @@ class MainTabsPage extends StatefulWidget {
 }
 
 class _MainTabsPageState extends State<MainTabsPage> {
-  late AccountModel _me;
+  // int _selectedIndex = 0;
   // bool _isBizz = true;
-  int _selectedIndex = 0;
   // bool alreadyMatched = false;
 
   // @override
@@ -56,9 +56,10 @@ class _MainTabsPageState extends State<MainTabsPage> {
       // if (_me.verifiedId != null && _me.business != null && index == 1) {
       //   _selectedIndex = 0;
       // } else {
-        _selectedIndex = index;
+        // _selectedIndex = index;
       // }
     });
+    context.read<SettingsProvider>().setTabIndex(index);
   }
 
   List<Widget> getPages() {
@@ -66,7 +67,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
     pages.add(const DashboardPage());
     // pages.add(_isBizz ? const BusinessAccountPage() : const IndividualAccountPage());
     pages.add(const BusinessAccountPage());
-    pages.add(const Icon(Icons.currency_bitcoin, size: 150));
+    pages.add(const ManualPayPage());
     pages.add(const Icon(Icons.account_balance_wallet, size: 150));
     pages.add(const SettingsPage());
 
@@ -94,20 +95,16 @@ class _MainTabsPageState extends State<MainTabsPage> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      _me = context.watch<AccountProvider>().account;
-    });
+    int selectedTabIndex = Provider.of<SettingsProvider>(context, listen: false).selectedTabIndex;
 
     return Scaffold(
-      body: Center(
-        child: getPages().elementAt(_selectedIndex), //New
-      ),
+      body: Center(child: getPages().elementAt(selectedTabIndex)),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         decoration: const BoxDecoration(color: Colors.white),
         child: BottomNavigationBar(
           items: getBottomIcons(),
-          currentIndex: _selectedIndex,
+          currentIndex: selectedTabIndex,
           onTap: onPressedTabItem,
           iconSize: 24,
           backgroundColor: Colors.white,

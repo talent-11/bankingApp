@@ -12,6 +12,7 @@ import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/providers/account_provider.dart';
+import 'package:fotoc/providers/settings_provider.dart';
 
 
 class AppState {
@@ -21,10 +22,11 @@ class AppState {
 }
 
 class ScanPayPage extends StatefulWidget {
-  const ScanPayPage({Key? key, required this.seller, required this.buyer}) : super(key: key);
+  const ScanPayPage({Key? key, required this.receiver, required this.receiverType, required this.sender}) : super(key: key);
 
-  final AccountModel seller;
-  final AccountModel buyer;
+  final AccountModel receiver;
+  final String receiverType;
+  final AccountModel sender;
 
   @override
   State<ScanPayPage> createState() => _ScanPayPageState();
@@ -32,20 +34,24 @@ class ScanPayPage extends StatefulWidget {
 
 class _ScanPayPageState extends State<ScanPayPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final app = AppState(false);
-  String amount = "0.00";
+  final _app = AppState(false);
+  String _amount = "0.00";
 
-  Future<void> _pay() async {
-    if (app.loading) return;
+  Future<void> transfer() async {
+    if (_app.loading) return;
 
-    setState(() => app.loading = true);
+    bool isBusiness = Provider.of<SettingsProvider>(context, listen: false).bizzAccount == Ext.business;
+
+    setState(() => _app.loading = true);
     String params = jsonEncode(<String, dynamic>{
-      'seller': widget.seller.id,
-      'price': amount
+      'receiver_id': widget.receiver.id,
+      'receiver_type': widget.receiverType,
+      'sender_id': isBusiness ? widget.sender.business!.id : widget.sender.id,
+      'sender_type': isBusiness ? Ext.business : Ext.individual,
+      'price': _amount
     });
-    Response? response = await ApiService().post(ApiConstants.pay, widget.buyer.token, params);
-    setState(() => app.loading = false);
-    // Navigator.pushNamed(context, '/free/verify/2');
+    Response? response = await ApiService().post(ApiConstants.pay, widget.sender.token, params);
+    setState(() => _app.loading = false);
 
     if (response == null) {
       showDialog(
@@ -55,13 +61,16 @@ class _ScanPayPageState extends State<ScanPayPage> {
         }
       );
     } else if (response.statusCode == 200) {
-      const snackBar = SnackBar(
-        content: Text('Paid successfully'),
-      );
+      const snackBar = SnackBar(content: Text('Paid successfully'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      AccountModel me = widget.buyer;
-      me.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(amount) * 1.02));
+      AccountModel me = widget.sender;
+      double fee = (widget.receiver.business!.id == widget.sender.id || widget.receiver.id == widget.sender.business!.id) ? 0.2 : 0;
+      if (isBusiness) {
+        me.business!.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(_amount) * (1 + fee)));
+      } else {
+        me.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(_amount) * (1 + fee)));
+      }
       context.read<AccountProvider>().setAccount(me);
 
       Navigator.pop(context);
@@ -78,16 +87,19 @@ class _ScanPayPageState extends State<ScanPayPage> {
   }
 
   void onPressedNext(BuildContext context) {
+    bool isBusiness = Provider.of<SettingsProvider>(context, listen: false).bizzAccount == Ext.business;
     String error = "";
 
-    if (amount.isEmpty || double.parse(amount) == 0) {
+    if (_amount.isEmpty || double.parse(_amount) == 0) {
       error = 'Please enter amount';
-    } else if (double.parse(amount) < 0) {
+    } else if (double.parse(_amount) > (isBusiness ? widget.sender.business!.bank!.checking : widget.sender.bank!.checking)) {
+      error = 'Overflow your balance, currently your balance is {{s}}' + (isBusiness ? widget.sender.business!.bank!.checking.toString() : widget.sender.bank!.checking.toString());
+    } else if (double.parse(_amount) < 0) {
       error = 'Can not input negative';
     }
 
     if (error.isEmpty) {
-      _pay();
+      transfer();
     } else {
       showDialog(
         context: context, 
@@ -179,12 +191,12 @@ class _ScanPayPageState extends State<ScanPayPage> {
             width: 96,
             height: 24,
             child: TextFormField(
-              enabled: !app.loading,
+              enabled: !_app.loading,
               textAlign: TextAlign.right,
               decoration: inputDecoration(context),
               keyboardType: TextInputType.number,
-              initialValue: amount,
-              onChanged: (val) => setState(() => amount = val),
+              initialValue: _amount,
+              onChanged: (val) => setState(() => _amount = val),
               // validator: (value) {
               //   if (value == null || value.isEmpty || double.parse(value) == 0) {
               //     return 'Please enter amount';
@@ -201,14 +213,14 @@ class _ScanPayPageState extends State<ScanPayPage> {
   }
 
   List<Widget> decorateForm(BuildContext context) {
-    String sg = Ext.formatCurrency.format(double.parse(amount.isEmpty ? "0" : amount) * 0.015);
-    String cg = Ext.formatCurrency.format(double.parse(amount.isEmpty ? "0" : amount) * 0.005);
-    String total = Ext.formatCurrency.format(double.parse(amount.isEmpty ? "0" : amount) * 1.02);
+    String sg = Ext.formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 0.015);
+    String cg = Ext.formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 0.005);
+    String total = Ext.formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 1.02);
 
     var widgets = <Widget>[];
     widgets.add(const LogoBar());
-    widgets.add(decorateStaticValues(context, "Pay From", widget.buyer.name!));
-    widgets.add(decorateStaticValues(context, "Pay To", widget.seller.name!));
+    widgets.add(decorateStaticValues(context, "Pay From", widget.sender.name!));
+    widgets.add(decorateStaticValues(context, "Pay To", widget.receiver.name!));
     widgets.add(decorateAmountRow(context));
     widgets.add(decorateStaticCCValues(context, "SG Contribution (1.5%)", sg));
     widgets.add(decorateStaticCCValues(context, "CG Contribution (0.5%)", cg));
@@ -242,7 +254,7 @@ class _ScanPayPageState extends State<ScanPayPage> {
               child: SizedBox(
                 height: 48,
                 child: FotocButton(
-                  loading: app.loading,
+                  loading: _app.loading,
                   buttonText: "Pay",
                   onPressed: () {
                     onPressedNext(context);

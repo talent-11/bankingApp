@@ -8,25 +8,27 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
+import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/providers/account_provider.dart';
-import 'package:fotoc/components/ui/primary_button.dart';
+import 'package:fotoc/providers/settings_provider.dart';
 import 'package:fotoc/pages/dashboard/people.dart';
+import 'package:fotoc/pages/wizard/sidebar.dart';
 
 
 class AppState {
   bool loading;
-  AccountModel seller;
+  int receiverId;
+  String receiverName;
+  String receiverType;
 
-  AppState(this.loading, this.seller);
+  AppState(this.loading, this.receiverId, this.receiverName, this.receiverType);
 }
 
 class ManualPayPage extends StatefulWidget {
-  const ManualPayPage({Key? key, required this.buyer}) : super(key: key);
-
-  final AccountModel buyer;
+  const ManualPayPage({Key? key}) : super(key: key);
 
   @override
   State<ManualPayPage> createState() => _ManualPayPageState();
@@ -34,20 +36,33 @@ class ManualPayPage extends StatefulWidget {
 
 class _ManualPayPageState extends State<ManualPayPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _app = AppState(false, AccountModel(name: ""));
+  final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
+  final _app = AppState(false, 0, "", "");
+  late AccountModel _me;
   String _amount = "0.00";
+
+  @override
+  void initState() {
+    super.initState();
+
+    _me = Provider.of<AccountProvider>(context, listen: false).account;
+  }
 
   Future<void> transfer() async {
     if (_app.loading) return;
+    
+    bool isBusiness = Provider.of<SettingsProvider>(context, listen: false).bizzAccount == Ext.business;
 
     setState(() => _app.loading = true);
     String params = jsonEncode(<String, dynamic>{
-      'seller': _app.seller.id,
+      'receiver_id': _app.receiverId,
+      'receiver_type': _app.receiverType,
+      'sender_id': isBusiness ? _me.business!.id : _me.id,
+      'sender_type': isBusiness ? Ext.business : Ext.individual,
       'price': _amount
     });
-    Response? response = await ApiService().post(ApiConstants.pay, widget.buyer.token, params);
+    Response? response = await ApiService().post(ApiConstants.pay, _me.token, params);
     setState(() => _app.loading = false);
-    // Navigator.pushNamed(context, '/free/verify/2');
 
     if (response == null) {
       showDialog(
@@ -60,11 +75,15 @@ class _ManualPayPageState extends State<ManualPayPage> {
       const snackBar = SnackBar(content: Text('Paid successfully'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      AccountModel me = widget.buyer;
-      me.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(_amount) * 1.02));
+      AccountModel me = _me;
+      double fee = (_me.business == null || (_me.id! != _app.receiverId && _me.business!.id! != _app.receiverId)) ? 0 : 0.2;
+      if (isBusiness) {
+        me.business!.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(_amount) * (1 + fee)));
+      } else {
+        me.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(_amount) * (1 + fee)));
+      }
       context.read<AccountProvider>().setAccount(me);
-
-      Navigator.pop(context);
+      context.read<SettingsProvider>().setTabIndex(0);
     } else if (response.statusCode == 400) {
       showDialog(
         context: context, 
@@ -77,16 +96,17 @@ class _ManualPayPageState extends State<ManualPayPage> {
     }
   }
 
-  void onPressedNext(BuildContext context) {
+  void onPressedPay(BuildContext context) {
+    bool isBusiness = Provider.of<SettingsProvider>(context, listen: false).bizzAccount == Ext.business;
     String error = "";
 
     if (_amount.isEmpty || double.parse(_amount) == 0) {
       error = 'Please enter amount';
     } else if (double.parse(_amount) < 0) {
       error = 'Can not input negative';
-    } else if (double.parse(_amount) > widget.buyer.bank!.checking) {
-      error = 'Overflow your balance, currently your balance is {{s}}' + widget.buyer.bank!.checking.toString();
-    } else if (_app.seller.id == null) {
+    } else if (double.parse(_amount) > (isBusiness ? _me.business!.bank!.checking : _me.bank!.checking)) {
+      error = 'Overflow your balance, currently your balance is {{s}}' + (isBusiness ? _me.business!.bank!.checking.toString() : _me.bank!.checking.toString());
+    } else if (_app.receiverId == 0) {
       error = 'Please choose a person to pay';
     }
 
@@ -102,19 +122,29 @@ class _ManualPayPageState extends State<ManualPayPage> {
     }
   }
 
-  void onPressedCancel(BuildContext context) {
-    Navigator.pop(context);
+  void onPressedBar(BuildContext context) {
+    _scaffoldState.currentState?.openDrawer();
   }
 
   void onPressedSeller(BuildContext context) async {
-    final result = await Navigator.push(context, MaterialPageRoute(builder: (_) => PeoplePage(me: widget.buyer)));
+    final result = await Navigator.push(context, MaterialPageRoute(builder: (_) => PeoplePage(me: _me)));
 
     if (!mounted) return;
 
     if (result != null) {
-      setState(() => _app.seller = result as AccountModel);
+      setState(() => {
+        _app.receiverId = result["id"],
+        _app.receiverName = result["name"],
+        _app.receiverType = result["type"]
+      });
     }
   }
+
+  IconButton menuButton(BuildContext context) => IconButton(
+    icon: const Icon(Icons.menu, size: 32.0),
+    onPressed: () => onPressedBar(context), 
+    color: Colors.white,
+  );
 
   Widget decorateSellerButton(BuildContext context) {
     return Padding(
@@ -152,7 +182,7 @@ class _ManualPayPageState extends State<ManualPayPage> {
         width: 200,
         height: 32,
         child: FotocButton(
-          buttonText: _app.seller.id != null ? _app.seller.name! : "Choose a seller",
+          buttonText: _app.receiverId != 0 ? _app.receiverName : "Choose a seller",
           onPressed: () => onPressedSeller(context),
         ),
       )
@@ -232,19 +262,21 @@ class _ManualPayPageState extends State<ManualPayPage> {
   }
 
   List<Widget> decorateForm(BuildContext context) {
+    bool isBusiness = Provider.of<SettingsProvider>(context, listen: false).bizzAccount == Ext.business;
     String sg = Ext.formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 0.015);
     String cg = Ext.formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 0.005);
     String total = Ext.formatCurrency.format(double.parse(_amount.isEmpty ? "0" : _amount) * 1.02);
 
     var widgets = <Widget>[];
-    widgets.add(const LogoBar());
     widgets.add(const SizedBox(height: 8));
-    widgets.add(decorateStaticValues(context, "Pay From", widget.buyer.name!));
+    widgets.add(decorateStaticValues(context, "Pay From",  isBusiness ? _me.business!.name! : _me.name!));
     widgets.add(decorateLebalAndButton(context, "Pay To"));
     widgets.add(decorateAmountRow(context));
-    widgets.add(decorateStaticCCValues(context, "SG Contribution (1.5%)", sg));
-    widgets.add(decorateStaticCCValues(context, "CG Contribution (0.5%)", cg));
-    widgets.add(decorateStaticCCValues(context, "Total Amount", total));
+    if (_me.business == null || (_me.id! != _app.receiverId && _me.business!.id! != _app.receiverId)) {
+      widgets.add(decorateStaticCCValues(context, "SG Contribution (1.5%)", sg));
+      widgets.add(decorateStaticCCValues(context, "CG Contribution (0.5%)", cg));
+      widgets.add(decorateStaticCCValues(context, "Total Amount", total));
+    }
     // widgets.add(decoratePasswordRow(context));
     return widgets;
   }
@@ -253,36 +285,12 @@ class _ManualPayPageState extends State<ManualPayPage> {
     children: [
       Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 32),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: SizedBox(
-                height: 48,
-                child: FotocButton(
-                  outline: true,
-                  buttonText: "Cancel",
-                  onPressed: () {
-                    onPressedCancel(context);
-                  },
-                ),
-              )
-            ),
-            const SizedBox(width: 20),
-            Expanded(
-              flex: 1,
-              child: SizedBox(
-                height: 48,
-                child: FotocButton(
-                  loading: _app.loading,
-                  buttonText: "Pay",
-                  onPressed: () {
-                    onPressedNext(context);
-                  },
-                ),
-              )
-            ),
-          ]
+        child: PrimaryButton(
+          loading: _app.loading,
+          buttonText: "Pay",
+          onPressed: () {
+            onPressedPay(context);
+          },
         ),
       ),
       // const Dots(selectedIndex: 0, dots: 2),
@@ -293,8 +301,11 @@ class _ManualPayPageState extends State<ManualPayPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      key: _scaffoldState,
+      drawer: const SideBar(),
       body: Column(
         children: [
+          LogoBar(iconButton: menuButton(context)),
           Expanded(
             child: SingleChildScrollView(
               child: Form(

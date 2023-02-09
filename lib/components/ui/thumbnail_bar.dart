@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:fotoc/components/wizard/text_with_cc.dart';
 import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/providers/settings_provider.dart';
+import 'package:fotoc/constants.dart';
 
 class ThumbnailBar extends StatelessWidget {
   const ThumbnailBar(
@@ -16,6 +19,8 @@ class ThumbnailBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isBusiness = Provider.of<SettingsProvider>(context, listen: false).bizzAccount == Ext.business;
+
     return Row(
       children: [
         Container(
@@ -44,7 +49,7 @@ class ThumbnailBar extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              user.name!, 
+              isBusiness ? user.business!.name! : user.name!, 
               style: TextStyle(
                 color: Theme.of(context).primaryColor, 
                 decoration: TextDecoration.underline, 
@@ -54,13 +59,13 @@ class ThumbnailBar extends StatelessWidget {
               )
             ),
             Text(
-              "@" + user.username!,
+              (isBusiness ? "Owner: " : "") + "@" + user.username!,
               style: Theme.of(context).textTheme.headline6,
             ),
-            user.verifiedId != null ? const SizedBox(height: 2) : const SizedBox(width: 0, height: 0),
-            user.verifiedId != null ? Text("Your referral code is " + user.referralId!, style: Theme.of(context).textTheme.headline6) : const SizedBox(width: 0, height: 0),
-            user.verifiedId != null ? const SizedBox(height: 4) : const SizedBox(width: 0, height: 0),
-            user.verifiedId != null ? 
+            !isBusiness && user.verifiedId != null ? const SizedBox(height: 2) : const SizedBox(width: 0, height: 0),
+            !isBusiness && user.verifiedId != null ? Text("Your referral code is " + user.referralId!, style: Theme.of(context).textTheme.headline6) : const SizedBox(width: 0, height: 0),
+            !isBusiness && user.verifiedId != null ? const SizedBox(height: 4) : const SizedBox(width: 0, height: 0),
+            !isBusiness && user.verifiedId != null ? 
               const TextWithCC(text: ("Invite friends, earn {{s}}1,000"), fontSize: 14, color: Colors.lightBlue, lineHeight: 1.0) : 
               const SizedBox(width: 0, height: 0)
           ],

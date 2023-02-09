@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/search_bar.dart';
+import 'package:fotoc/providers/settings_provider.dart';
 import 'package:http/http.dart';
 
 import 'package:fotoc/components/ui/logo_bar.dart';
@@ -9,6 +10,7 @@ import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
+import 'package:provider/provider.dart';
 
 
 class AppState {
@@ -29,7 +31,7 @@ class PeoplePage extends StatefulWidget {
 class _PeoplePageState extends State<PeoplePage> {
   final _app = AppState(false);
   String _searchString = "";
-  List<AccountModel> _people = [];
+  List<AccountModel> _peoples = [];
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -41,14 +43,14 @@ class _PeoplePageState extends State<PeoplePage> {
   _getPeoples() async {
     if (_app.loading) return;
 
-    _people = [];
+    _peoples = [];
     setState(() => _app.loading = true);
     Response? response = await ApiService().get(ApiConstants.account, widget.me.token);
     setState(() => _app.loading = false);
 
     if (response != null && response.statusCode == 200) {
-      _people = userModelFromJson(response.body);
-      _people = _people.where((element) => element.verifiedId != "").toList();
+      _peoples = userModelFromJson(response.body);
+      _peoples = _peoples.where((element) => element.verifiedId != "").toList();
       return;
     }
 
@@ -72,8 +74,8 @@ class _PeoplePageState extends State<PeoplePage> {
     Navigator.pop(context);
   }
 
-  void onPressedAccount(BuildContext context, AccountModel account) {
-    Navigator.pop(context, account);
+  void onPressedAccount(BuildContext context, int id, String type, String name) {
+    Navigator.pop(context, {'id': id, 'name': name, 'type': type});
   }
 
   Widget decorateSearchBar(BuildContext context) {
@@ -96,12 +98,12 @@ class _PeoplePageState extends State<PeoplePage> {
     color: Colors.white,
   );
 
-  Widget decorateAccount(BuildContext context, AccountModel account) {
+  Widget decorateAccount(BuildContext context, int id, String type, String name, String username) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16), 
       child: TextButton(
         onPressed: () {
-          onPressedAccount(context, account);
+          onPressedAccount(context, id, type, name);
         },
         child: Row(
           children: [
@@ -116,7 +118,7 @@ class _PeoplePageState extends State<PeoplePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    account.name!, 
+                    name, 
                     style: TextStyle(
                       color: Theme.of(context).primaryColor, 
                       decoration: TextDecoration.underline, 
@@ -126,7 +128,7 @@ class _PeoplePageState extends State<PeoplePage> {
                     )
                   ),
                   Text(
-                    "@" + account.username!,
+                    (type == Ext.business ? "Owner: " : "") + "@" + username,
                     style: Theme.of(context).textTheme.headline6,
                   )
                 ],
@@ -139,18 +141,27 @@ class _PeoplePageState extends State<PeoplePage> {
   }
 
   Widget decorateList(BuildContext context) {
+    bool isBusiness = Provider.of<SettingsProvider>(context, listen: false).bizzAccount == Ext.business;
     List<Widget> widgets = [];
-    List<AccountModel> newPeople = _people.where((element) => 
-      (element.name!.toLowerCase().contains(_searchString.toLowerCase()) || element.username!.toLowerCase().contains(_searchString.toLowerCase())) && element.id != widget.me.id
+    int myId = isBusiness ? widget.me.business!.id! : widget.me.id!;
+    List<AccountModel> newPeoples = _peoples.where((element) => 
+      (element.name!.toLowerCase().contains(_searchString.toLowerCase()) || element.username!.toLowerCase().contains(_searchString.toLowerCase())) && element.id != myId
     ).toList();
     
-    for (var account in newPeople) {
-      // if (account.id != widget.me.id) {
-        widgets.add(decorateAccount(context, account));
-      // }
+    for (var account in newPeoples) {
+      widgets.add(decorateAccount(context, account.id!, Ext.individual, account.name!, account.username!));
+    }
+    
+    bool hasBusinesses = false;
+    for (var account in _peoples) {
+      BusinessModel bizz = account.business!;
+      if (bizz.verified! && bizz.name!.toLowerCase().contains(_searchString.toLowerCase()) && bizz.id != myId) {
+        hasBusinesses = true;
+        widgets.add(decorateAccount(context, bizz.id!, Ext.business, bizz.name!, account.username!));
+      }
     }
 
-    if (newPeople.isEmpty) {
+    if (newPeoples.isEmpty && !hasBusinesses) {
       widgets.add(
         Padding(
           padding: const EdgeInsets.only(top: 16),

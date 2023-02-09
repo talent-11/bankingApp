@@ -4,6 +4,7 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fotoc/providers/settings_provider.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,6 @@ import 'package:fotoc/constants.dart';
 import 'package:fotoc/pages/dashboard/scan_pay.dart';
 import 'package:fotoc/pages/dashboard/show_qr_code.dart';
 import 'package:fotoc/providers/account_provider.dart';
-import 'package:fotoc/pages/dashboard/manual_pay.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
 
 class AppState {
@@ -125,17 +125,20 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   void onPressedQrCode(BuildContext context) {
+    bool isBusiness = Provider.of<SettingsProvider>(context, listen: false).bizzAccount == Ext.business;
+    
     String params = jsonEncode(<String, dynamic>{
-      'id': _app.me.id,
-      'name': _app.me.name,
-      'username': _app.me.username,
-      'email': _app.me.email,
+      'id': isBusiness ? _app.me.business!.id : _app.me.id,
+      'name': isBusiness ? _app.me.business!.name : _app.me.name,
+      'email': isBusiness ? _app.me.business!.email : _app.me.email,
+      'account_type': isBusiness ? Ext.business : Ext.individual,
     });
     Navigator.push(context, MaterialPageRoute(builder: (_) => ShowQrCodeScreen(dataString: params)));
   }
 
   void onPressedPay(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => ManualPayPage(buyer: _app.me)));
+    // Navigator.push(context, MaterialPageRoute(builder: (_) => ManualPayPage(sender: _app.me)));
+    context.read<SettingsProvider>().setTabIndex(2);
   }
 
   void onPressedScan(BuildContext context) {
@@ -154,10 +157,11 @@ class _DashboardPageState extends State<DashboardPage> {
     try {
       ScanResult barcode = await BarcodeScanner.scan();
       dynamic sellerJson = json.decode(barcode.rawContent);
-      if (sellerJson.containsKey('id') && sellerJson.containsKey('name')) {
-        AccountModel seller = AccountModel(id: int.parse(sellerJson["id"]), name: sellerJson["name"]);
+      if (sellerJson.containsKey('id') && sellerJson.containsKey('name') && sellerJson.containsKey('email') && sellerJson.containsKey('account_type')) {
+        AccountModel receiver = AccountModel(id: int.parse(sellerJson["id"]), name: sellerJson["name"], email: sellerJson["email"]);
+        String receiverType = sellerJson["account_type"];
 
-        if (seller.id == _app.me.id) {
+        if (receiver.id == _app.me.id) {
           showDialog(
             context: context, 
             builder: (context) {
@@ -167,7 +171,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
           return;
         }
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ScanPayPage(seller: seller, buyer: _app.me)));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ScanPayPage(receiver: receiver, receiverType: receiverType, sender: _app.me)));
       }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
