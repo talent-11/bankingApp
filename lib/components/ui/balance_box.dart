@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:fotoc/components/wizard/text_with_cc.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/providers/settings_provider.dart';
 
 class BalanceBox extends StatelessWidget {
   const BalanceBox(
@@ -15,6 +17,8 @@ class BalanceBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isBusiness = Provider.of<SettingsProvider>(context, listen: false).bizzAccount == Ext.business;
+    
     return Container(
       alignment: Alignment.center,
       width: 240,
@@ -34,7 +38,12 @@ class BalanceBox extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextWithCC(text: ("{{s}}" + Ext.formatCurrency.format(user.bank!.checking)), fontSize: 20, color: Colors.black, lineHeight: 1.0,),
+          TextWithCC(
+            text: ("{{s}}" + Ext.formatCurrency.format(isBusiness ? user.business!.bank!.checking : user.bank!.checking)), 
+            fontSize: 20, 
+            color: Colors.black, 
+            lineHeight: 1.0
+          ),
           const SizedBox(height: 8),
           Text(
             user.verifiedId != null ? "Transactional Account Balance" : "Test Account Balance", 
