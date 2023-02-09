@@ -59,8 +59,8 @@ class _LoginPageState extends State<LoginPage> {
       dynamic result = json.decode(response.body);
       AccountModel user = AccountModel.fromJson(result['me']);
       user.token = result['token'];
-      context.read<CurrentAccount>().setAccount(user);
-      context.read<CurrentAccount>().login(true);
+      context.read<AccountProvider>().setAccount(user);
+      context.read<AccountProvider>().login(true);
 
       Navigator.pushNamedAndRemoveUntil(context, '/free/main', (route) => false);
     } else if (response.statusCode == 400) {
@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
-    fcmToken = context.watch<CurrentAccount>().fcmToken;
+    fcmToken = context.watch<AccountProvider>().fcmToken;
 
     return Scaffold(
       body: Container(

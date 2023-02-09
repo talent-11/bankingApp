@@ -37,7 +37,7 @@ class BalanceBox extends StatelessWidget {
           TextWithCC(text: ("{{s}}" + Ext.formatCurrency.format(user.bank!.checking)), fontSize: 20, color: Colors.black, lineHeight: 1.0,),
           const SizedBox(height: 8),
           Text(
-            user.verifiedId != "--" ? "Transactional Account Balance" : "Test Account Balance", 
+            user.verifiedId != null ? "Transactional Account Balance" : "Test Account Balance", 
             style: Theme.of(context).textTheme.headline6,
           )
         ]

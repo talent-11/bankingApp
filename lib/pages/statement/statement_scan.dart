@@ -34,14 +34,14 @@ class _StatementScanPageState extends State<StatementScanPage> {
   void initState() {
     super.initState();
 
-    StatementModel statement = Provider.of<CurrentStatement>(context, listen: false).statement;
+    StatementModel statement = Provider.of<StatementProvider>(context, listen: false).statement;
     setState(() { _statement = statement; });
   }
 
   Future<void> uploadFile(BuildContext context) async {
     if (_loading) return;
 
-    AccountModel me = Provider.of<CurrentAccount>(context, listen: false).account;
+    AccountModel me = Provider.of<AccountProvider>(context, listen: false).account;
 
     setState(() { _loading = true; });
     StreamedResponse? response = await ApiService().uploadFile(me.token!, _image.path, foldername: Folders.statements);
@@ -49,7 +49,7 @@ class _StatementScanPageState extends State<StatementScanPage> {
     if (response!.statusCode == 200) {
       String respStr = await response.stream.bytesToString();
       dynamic result = json.decode(respStr);
-      context.read<CurrentAccount>().setUploadedFilename(result['filename']);
+      context.read<AccountProvider>().setUploadedFilename(result['filename']);
       Navigator.push(context, MaterialPageRoute(builder: (_) => const StatementPreviewPage()));
     }
   }

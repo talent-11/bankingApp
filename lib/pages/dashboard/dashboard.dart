@@ -69,7 +69,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
     _transactions = [];
     setState(() => _app.loading = true);
-    AccountModel me = Provider.of<CurrentAccount>(context, listen: false).account;
+    AccountModel me = Provider.of<AccountProvider>(context, listen: false).account;
     Response? response = await ApiService().get(ApiConstants.transaction, me.token);
     setState(() => _app.loading = false);
 
@@ -221,7 +221,7 @@ class _DashboardPageState extends State<DashboardPage> {
   List<Widget> decorateBody(BuildContext context) {
     List<Widget> widgets = [];
 
-    if (_app.me.verifiedId != "--") {
+    if (_app.me.verifiedId != null) {
       widgets.add(
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -322,7 +322,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     setState(() {
-      _app.me = context.watch<CurrentAccount>().account;
+      _app.me = context.watch<AccountProvider>().account;
     });
     
     return Scaffold(

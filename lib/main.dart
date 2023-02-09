@@ -6,9 +6,10 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
 import 'package:fotoc/constants.dart';
+import 'package:fotoc/routes.dart';
 import 'package:fotoc/providers/statement_provider.dart';
 import 'package:fotoc/providers/account_provider.dart';
-import 'package:fotoc/routes.dart';
+import 'package:fotoc/providers/settings_provider.dart';
 
 
 class PushNotification {
@@ -30,8 +31,9 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<CurrentAccount>(create: (_) => CurrentAccount()),
-        ChangeNotifierProvider<CurrentStatement>(create: (_) => CurrentStatement()),
+        ChangeNotifierProvider<AccountProvider>(create: (_) => AccountProvider()),
+        ChangeNotifierProvider<StatementProvider>(create: (_) => StatementProvider()),
+        ChangeNotifierProvider<SettingsProvider>(create: (_) => SettingsProvider()),
       ],
       child: const MyApp()
     )
@@ -62,7 +64,7 @@ class MyApp extends StatelessWidget {
     
     try {
       String? token = await fcm.getToken();
-      context.read<CurrentAccount>().setFcmToken(token!);
+      context.read<AccountProvider>().setFcmToken(token!);
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
         // print('User granted permission');
@@ -90,7 +92,7 @@ class MyApp extends StatelessWidget {
           );
           if (notification.data!["type"] == Notifications.transaction) {
             double checking = double.parse(notification.data!["balance"]);
-            context.read<CurrentAccount>().updateAccountBank(checking);
+            context.read<AccountProvider>().updateAccountBank(checking);
           }
         });
 

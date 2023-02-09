@@ -49,6 +49,7 @@ dependencies:
   firebase_messaging: ^11.2.11
   overlay_support: ^2.0.1
   image_picker: ^0.8.6+1
+  dropdown_button2: ^1.9.2
 
 
 dev_dependencies:

@@ -57,14 +57,12 @@ class _ManualPayPageState extends State<ManualPayPage> {
         }
       );
     } else if (response.statusCode == 200) {
-      const snackBar = SnackBar(
-        content: Text('Paid successfully'),
-      );
+      const snackBar = SnackBar(content: Text('Paid successfully'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       AccountModel me = widget.buyer;
       me.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(_amount) * 1.02));
-      context.read<CurrentAccount>().setAccount(me);
+      context.read<AccountProvider>().setAccount(me);
 
       Navigator.pop(context);
     } else if (response.statusCode == 400) {

@@ -127,7 +127,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     setState(() {
-      app.me = context.watch<CurrentAccount>().account;
+      app.me = context.watch<AccountProvider>().account;
     });
 
     return Scaffold(

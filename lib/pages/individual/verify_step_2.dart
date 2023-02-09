@@ -31,7 +31,7 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
   Future<void> uploadFile(BuildContext context) async {
     if (_loading) return;
 
-    AccountModel me = Provider.of<CurrentAccount>(context, listen: false).account;
+    AccountModel me = Provider.of<AccountProvider>(context, listen: false).account;
 
     setState(() { _loading = true; });
     StreamedResponse? response = await ApiService().uploadFile(me.token!, _image.path, foldername: Folders.masterCards);
@@ -39,7 +39,7 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
     if (response!.statusCode == 200) {
       String respStr = await response.stream.bytesToString();
       dynamic result = json.decode(respStr);
-      context.read<CurrentAccount>().setUploadedFilename(result['filename']);
+      context.read<AccountProvider>().setUploadedFilename(result['filename']);
       Navigator.pushNamed(context, '/wizard/signup/agree');
     }
   }
@@ -84,8 +84,8 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
 
     setState(() => _loading = true);
 
-    AccountModel me = Provider.of<CurrentAccount>(context, listen: false).account;
-    String filename = Provider.of<CurrentAccount>(context, listen: false).uploadedFilename;
+    AccountModel me = Provider.of<AccountProvider>(context, listen: false).account;
+    String filename = Provider.of<AccountProvider>(context, listen: false).uploadedFilename;
     
     String params = jsonEncode(<String, dynamic>{
       // 'file': 'XkuvsPnR.jpg',   // test code
@@ -114,7 +114,7 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
         dynamic result = json.decode(res!.body);
         AccountModel user = AccountModel.fromJson(result['me']);
         user.token = me.token;
-        context.read<CurrentAccount>().setAccount(user);
+        context.read<AccountProvider>().setAccount(user);
 
         setState(() => _loading = false);
 

@@ -4,6 +4,7 @@ import 'package:country_list_pick/country_list_pick.dart';
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
+import 'package:fotoc/components/ui/radio_text.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
@@ -16,13 +17,6 @@ import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class AppState {
-  bool loading;
-  AccountModel user;
-
-  AppState(this.loading, this.user);
-}
-
 class VerifyStep1Page extends StatefulWidget {
   const VerifyStep1Page({Key? key}) : super(key: key);
 
@@ -32,48 +26,54 @@ class VerifyStep1Page extends StatefulWidget {
 
 class _VerifyStep1PageState extends State<VerifyStep1Page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final app = AppState(false, AccountModel());
+  bool _loading = false;
 
-  late String fullName, username, email, gender = 'Male', marital = 'Married', phone, suite, city, state, zipcode, country = 'US', newPassword, rePassword, fcmToken;
-  TextEditingController dateController = TextEditingController();
+  late String _gender = 'Male', _marital = 'Married', _phone, _suite, _city, _state, _zipcode, _country = 'US';
+  final TextEditingController _dateController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
-    dynamic showSignupMainPage() => {
-      if (app.user.email == null) {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupStartPage(from: "verify")))
-      }
-    };
+    // dynamic showSignupMainPage() => {
+    //   if (app.user.email == null) {
+    //     Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupStartPage(from: "verify")))
+    //   }
+    // };
 
-    Future.delayed(const Duration(milliseconds: 200), showSignupMainPage);
+    // Future.delayed(const Duration(milliseconds: 200), showSignupMainPage);
+    
+    if (Provider.of<AccountProvider>(context, listen: false).account.email != null) {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupStartPage(from: "verify")));
+    }
   }
 
   @override
   void dispose() {
-    dateController.dispose();
+    _dateController.dispose();
     super.dispose();
   }
 
-  void _update(BuildContext context, String token) async {
-    if (app.loading) return;
+  void _update(BuildContext context) async {
+    if (_loading) return;
 
-    setState(() => app.loading = true);
+    String token = Provider.of<AccountProvider>(context, listen: false).account.token!;
+
+    setState(() => _loading = true);
     String params = jsonEncode(<String, dynamic>{
-      'suite': suite,
-      'city': city,
-      'state': state,
-      'zipcode': zipcode,
-      'country': country,
-      'gender': gender,
-      'phone': phone,
-      'birth': dateController.text,
+      'suite': _suite,
+      'city': _city,
+      'state': _state,
+      'zipcode': _zipcode,
+      'country': _country,
+      'gender': _gender,
+      'phone': _phone,
+      'birth': _dateController.text,
       'minor': 'False',
-      'marital': marital
+      'marital': _marital
     });
     Response? response = await ApiService().put(ApiConstants.profile, token, params);
-    setState(() => app.loading = false);
+    setState(() => _loading = false);
 
     if (response == null) {
       showDialog(
@@ -85,8 +85,8 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
     } else if (response.statusCode == 200) {
       dynamic result = json.decode(response.body);
       AccountModel user = AccountModel.fromJson(result['me']);
-      context.read<CurrentAccount>().setAccount(user);
-      context.read<CurrentAccount>().login(true);
+      context.read<AccountProvider>().setAccount(user);
+      context.read<AccountProvider>().login(true);
 
       Navigator.pushNamed(context, '/free/verify/2');
     } else if (response.statusCode == 400) {
@@ -101,10 +101,10 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
     }
   }
 
-  void onPressedNext(BuildContext context, String? token) {
+  void onPressedNext(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      _update(context, token!);
+      _update(context);
     }
     // Navigator.pushNamed(context, '/free/verify/2');
   }
@@ -113,7 +113,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
   //   Navigator.pop(context);
   // }
 
-  List<Widget> decorateBody(BuildContext context, AccountModel user) {
+  List<Widget> decorateBody(BuildContext context) {
     var widgets = <Widget>[];
     widgets.add(const LogoBar());
     widgets.add(
@@ -146,9 +146,9 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
             )
           ),
           child: TextFormField(
-            enabled: !app.loading,
+            enabled: !_loading,
             readOnly: true,
-            controller: dateController,
+            controller: _dateController,
             onTap: () async {
               DateTime? pickedDate = await showDatePicker(
                 context: context,
@@ -160,18 +160,18 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
                 String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
                 
                 setState(() {
-                  dateController.text = formattedDate;
+                  _dateController.text = formattedDate;
                 });
               }
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your Birth of Date';
+                return 'Please enter your Date of Birth';
               }
               return null;
             },
             decoration: InputDecoration(
-              hintText: "Enter your Birth of Date",
+              hintText: "Enter your Date of Birth",
               hintStyle: Theme.of(context).textTheme.bodyText1,
               border: const OutlineInputBorder(
                 borderSide: BorderSide.none,
@@ -183,25 +183,25 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
       )
     );
 
-    List genders=["Male", "Female"];
-    Row addRadioButton(int btnValue, String title) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Radio<String>(
-            activeColor: Theme.of(context).primaryColor,
-            value: genders[btnValue],
-            groupValue: gender,
-            onChanged: (value){
-              setState(() {
-                gender = value.toString();
-              });
-            },
-          ),
-          Text(title)
-        ],
-      );
-    }
+    // List genders=["Male", "Female"];
+    // Row addRadioButton(int btnValue, String title) {
+    //   return Row(
+    //     mainAxisAlignment: MainAxisAlignment.start,
+    //     children: <Widget>[
+    //       Radio<String>(
+    //         activeColor: Theme.of(context).primaryColor,
+    //         value: genders[btnValue],
+    //         groupValue: _gender,
+    //         onChanged: (value){
+    //           setState(() {
+    //             _gender = value.toString();
+    //           });
+    //         },
+    //       ),
+    //       Text(title)
+    //     ],
+    //   );
+    // }
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
@@ -213,33 +213,47 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
           ),
           child: Row(
             children: <Widget>[
-              addRadioButton(0, 'Male'),
-              addRadioButton(1, 'Female'),
+              // addRadioButton(0, 'Male'),
+              // addRadioButton(1, 'Female'),
+              RadioText(
+                label: 'Male', 
+                groupValue: _gender, 
+                onChanged: (value) {
+                  _gender = value.toString();
+                }
+              ),
+              RadioText(
+                label: 'Female', 
+                groupValue: _gender, 
+                onChanged: (value) {
+                  _gender = value;
+                }
+              ),
             ],
           ),
         )
       )
     );
 
-    List maritals=["Married", "Single", "Widowed"];
-    Row addRadioButton1(int btnValue, String title) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Radio<String>(
-            activeColor: Theme.of(context).primaryColor,
-            value: maritals[btnValue],
-            groupValue: marital,
-            onChanged: (value){
-              setState(() {
-                marital = value.toString();
-              });
-            },
-          ),
-          Text(title)
-        ],
-      );
-    }
+    // List maritals=["Married", "Single", "Widowed"];
+    // Row addRadioButton1(int btnValue, String title) {
+    //   return Row(
+    //     mainAxisAlignment: MainAxisAlignment.start,
+    //     children: <Widget>[
+    //       Radio<String>(
+    //         activeColor: Theme.of(context).primaryColor,
+    //         value: maritals[btnValue],
+    //         groupValue: _marital,
+    //         onChanged: (value){
+    //           setState(() {
+    //             _marital = value.toString();
+    //           });
+    //         },
+    //       ),
+    //       Text(title)
+    //     ],
+    //   );
+    // }
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
@@ -251,9 +265,30 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
           ),
           child: Row(
             children: <Widget>[
-              addRadioButton1(0, 'Married'),
-              addRadioButton1(1, 'Single'),
-              addRadioButton1(2, 'Widowed'),
+              // addRadioButton1(0, 'Married'),
+              // addRadioButton1(1, 'Single'),
+              // addRadioButton1(2, 'Widowed'),
+              RadioText(
+                label: 'Married', 
+                groupValue: _marital, 
+                onChanged: (value) {
+                  _marital = value.toString();
+                }
+              ),
+              RadioText(
+                label: 'Single', 
+                groupValue: _marital, 
+                onChanged: (value) {
+                  _marital = value.toString();
+                }
+              ),
+              RadioText(
+                label: 'Widowed', 
+                groupValue: _marital, 
+                onChanged: (value) {
+                  _marital = value.toString();
+                }
+              ),
             ],
           ),
         )
@@ -264,10 +299,10 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: TextInputField(
-          enabled: !app.loading,
+          enabled: !_loading,
           hintText: "Enter your phone number",
           onChanged: (val) {
-            setState(() => phone = val!);
+            setState(() => _phone = val!);
           },
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -282,10 +317,10 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: TextInputField(
-          enabled: !app.loading,
+          enabled: !_loading,
           hintText: "Enter your house number and street name",
           onChanged: (val) {
-            setState(() => suite = val!);
+            setState(() => _suite = val!);
           },
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -301,10 +336,10 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         padding: const EdgeInsets.only(top: 8.0),
         child: TextInputField(
           // labelText: "Your name",
-          enabled: !app.loading,
+          enabled: !_loading,
           hintText: "Enter your city",
           onChanged: (val) {
-            setState(() => city = val!);
+            setState(() => _city = val!);
           },
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -319,10 +354,10 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: TextInputField(
-          enabled: !app.loading,
+          enabled: !_loading,
           hintText: "Enter your state or province",
           onChanged: (val) {
-            setState(() => state = val!);
+            setState(() => _state = val!);
           },
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -337,10 +372,10 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
       Padding(
         padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
         child: TextInputField(
-          enabled: !app.loading,
+          enabled: !_loading,
           hintText: "Enter your zip or postal code",
           onChanged: (val) {
-            setState(() => zipcode = val!);
+            setState(() => _zipcode = val!);
           },
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -399,8 +434,8 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
           showEnglishName: true,
         ),
         // Set default value
-        initialSelection: country,
-        onChanged: (countryCode) => country = countryCode!.code!,
+        initialSelection: _country,
+        onChanged: (countryCode) => _country = countryCode!.code!,
         // Whether to allow the widget to set a custom UI overlay
         useUiOverlay: true,
         // Whether the country list should be wrapped in a SafeArea
@@ -410,7 +445,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
     return widgets;
   }
 
-  Widget footer(BuildContext context, String? token) => Column(
+  Widget footer(BuildContext context) => Column(
     children: [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -435,10 +470,10 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
               child: SizedBox(
                 height: 48,
                 child: FotocButton(
-                  loading: app.loading,
+                  loading: _loading,
                   buttonText: "Next",
                   onPressed: () {
-                    onPressedNext(context, token);
+                    onPressedNext(context);
                   },
                 ),
               )
@@ -452,8 +487,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
 
   @override
   Widget build(BuildContext context) {
-    AccountModel me = context.watch<CurrentAccount>().account;
-    app.user = me;
+    AccountModel me = context.watch<AccountProvider>().account;
 
     return Scaffold(
       body: Column(
@@ -463,12 +497,12 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  children: decorateBody(context, me)
+                  children: decorateBody(context)
                 ),
               )
             )
           ),
-          footer(context, me.token)
+          footer(context)
         ],
       )
     );

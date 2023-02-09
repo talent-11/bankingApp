@@ -32,7 +32,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
   bool _agreed = false;
   bool _visiblePassword = false;
   bool _visibleConfirmPassword = false;
-  late String name, _email, _username, _newPassword;
+  late String _name, _email, _username, _newPassword;
 
   Future<void> _signup(BuildContext context) async {
     if (_loading) return;
@@ -47,11 +47,11 @@ class _SignupMainPageState extends State<SignupMainPage> {
       return;
     }
 
-    String fcmToken = Provider.of<CurrentAccount>(context, listen: false).fcmToken;
+    String fcmToken = Provider.of<AccountProvider>(context, listen: false).fcmToken;
 
     setState(() => _loading = true);
     String params = jsonEncode(<String, dynamic>{
-      'name': name,
+      'name': _name,
       'email': _email.toLowerCase(),
       'username': _username.toLowerCase(),
       'password': _newPassword,
@@ -71,7 +71,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
     } else if (response.statusCode == 200) {
       if (widget.from == "verify") {
         dynamic result = json.decode(response.body);
-        context.read<CurrentAccount>().setAccountToken(result['token']);
+        context.read<AccountProvider>().setAccountToken(result['token']);
         int count = 0;
         Navigator.popUntil(context, (route) {
           return count ++ == 2;
@@ -129,7 +129,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
           enabled: !_loading,
           keyboardType: TextInputType.name,
           hintText: "Enter your full name",
-          onChanged: (val) { setState(() => name = val!); },
+          onChanged: (val) { setState(() => _name = val!); },
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your full name';

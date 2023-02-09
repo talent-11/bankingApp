@@ -45,8 +45,8 @@ class _StatementPreviewPageState extends State<StatementPreviewPage> {
   void initState() {
     super.initState();
 
-    AccountModel me = Provider.of<CurrentAccount>(context, listen: false).account;
-    StatementModel statement = Provider.of<CurrentStatement>(context, listen: false).statement;
+    AccountModel me = Provider.of<AccountProvider>(context, listen: false).account;
+    StatementModel statement = Provider.of<StatementProvider>(context, listen: false).statement;
     setState(() { _me = me; _statement = statement; });
     
     Future.delayed(const Duration(milliseconds: 10), _getOcrData);
@@ -55,7 +55,7 @@ class _StatementPreviewPageState extends State<StatementPreviewPage> {
   void _getOcrData() async {
     setState(() { _loading = true; _errors = []; });
 
-    String filename = Provider.of<CurrentAccount>(context, listen: false).uploadedFilename;
+    String filename = Provider.of<AccountProvider>(context, listen: false).uploadedFilename;
 
     String params = jsonEncode(<String, dynamic>{ 
       'file': filename, 

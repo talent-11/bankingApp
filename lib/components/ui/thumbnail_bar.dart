@@ -57,10 +57,10 @@ class ThumbnailBar extends StatelessWidget {
               "@" + user.username!,
               style: Theme.of(context).textTheme.headline6,
             ),
-            user.verifiedId != "--" ? const SizedBox(height: 2) : const SizedBox(width: 0, height: 0),
-            user.verifiedId != "--" ? Text("Your referral code is " + user.referralId!, style: Theme.of(context).textTheme.headline6) : const SizedBox(width: 0, height: 0),
-            user.verifiedId != "--" ? const SizedBox(height: 4) : const SizedBox(width: 0, height: 0),
-            user.verifiedId != "--" ? 
+            user.verifiedId != null ? const SizedBox(height: 2) : const SizedBox(width: 0, height: 0),
+            user.verifiedId != null ? Text("Your referral code is " + user.referralId!, style: Theme.of(context).textTheme.headline6) : const SizedBox(width: 0, height: 0),
+            user.verifiedId != null ? const SizedBox(height: 4) : const SizedBox(width: 0, height: 0),
+            user.verifiedId != null ? 
               const TextWithCC(text: ("Invite friends, earn {{s}}1,000"), fontSize: 14, color: Colors.lightBlue, lineHeight: 1.0) : 
               const SizedBox(width: 0, height: 0)
           ],

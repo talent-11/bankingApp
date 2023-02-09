@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fotoc/models/account_model.dart';
 
-class CurrentAccount with ChangeNotifier {
+class AccountProvider with ChangeNotifier {
   AccountModel _account = AccountModel();
   bool _loggedIn = false;
   late String _fcmToken;

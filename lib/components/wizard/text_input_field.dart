@@ -60,11 +60,11 @@ class TextInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: const BoxDecoration(
-            border: Border(
-                bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0))),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: decorate(context)));
+      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: decorate(context)
+      )
+    );
   }
 }

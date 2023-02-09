@@ -44,7 +44,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
   Future<void> onPressedUpload(BuildContext context) async {
     if (_loading) return;
 
-    AccountModel me = Provider.of<CurrentAccount>(context, listen: false).account;
+    AccountModel me = Provider.of<AccountProvider>(context, listen: false).account;
 
     setState(() { _loading = true; });
     StreamedResponse? response = await ApiService().uploadFile(me.token!, _image.path, foldername: widget.folder);
@@ -52,7 +52,7 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
     if (response!.statusCode == 200) {
       String respStr = await response.stream.bytesToString();
       dynamic result = json.decode(respStr);
-      context.read<CurrentAccount>().setUploadedFilename(result['filename']);
+      context.read<AccountProvider>().setUploadedFilename(result['filename']);
       // context.read<CurrentAccount>().setUploadedFilename('AmericanExpressNationalBank.jpg');
       widget.action();
     }

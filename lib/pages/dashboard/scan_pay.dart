@@ -62,7 +62,7 @@ class _ScanPayPageState extends State<ScanPayPage> {
 
       AccountModel me = widget.buyer;
       me.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(amount) * 1.02));
-      context.read<CurrentAccount>().setAccount(me);
+      context.read<AccountProvider>().setAccount(me);
 
       Navigator.pop(context);
     } else if (response.statusCode == 400) {

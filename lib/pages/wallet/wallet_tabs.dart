@@ -1,18 +1,18 @@
 // import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fotoc/pages/business/business_account.dart';
-import 'package:fotoc/pages/settings/settings.dart';
 import 'package:provider/provider.dart';
-// import 'package:fotoc/constants.dart';
 // import 'package:fotoc/pages/statement/statement_Information.dart';
 // import 'package:fotoc/services/api_service.dart';
 // import 'package:http/http.dart';
 
+import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/pages/dashboard/dashboard.dart';
+import 'package:fotoc/pages/business/business_account.dart';
+import 'package:fotoc/pages/settings/settings.dart';
+import 'package:fotoc/providers/settings_provider.dart';
 import 'package:fotoc/providers/account_provider.dart';
-// import 'package:fotoc/providers/account_provider.dart';
 
 
 class MainTabsPage extends StatefulWidget {
@@ -50,14 +50,14 @@ class _MainTabsPageState extends State<MainTabsPage> {
 
   void onPressedTabItem(int index) {
     setState(() {
-      // if (_me.verifiedId != "--" && _me.business != null && _selectedIndex == 1 && index == 1) {
+      // if (_me.verifiedId != null && _me.business != null && _selectedIndex == 1 && index == 1) {
       //   _isBizz = !_isBizz;
       // }
-      if (_me.verifiedId != "--" && _me.business != null && index == 1) {
-        _selectedIndex = 0;
-      } else {
+      // if (_me.verifiedId != null && _me.business != null && index == 1) {
+      //   _selectedIndex = 0;
+      // } else {
         _selectedIndex = index;
-      }
+      // }
     });
   }
 
@@ -79,13 +79,13 @@ class _MainTabsPageState extends State<MainTabsPage> {
     // if (alreadyMatched == false) {
     //   icons.add(const BottomNavigationBarItem(icon: Icon(Icons.credit_card), label: "Match Funds"));
     // }
-    // icons.add(
-    //   BottomNavigationBarItem(
-    //     icon: Icon(_isBizz ? Icons.account_balance : Icons.account_balance_outlined), 
-    //     label: _isBizz ? "Bizz-Acct" : "Individual"
-    //   )
-    // );
-    icons.add(const BottomNavigationBarItem(icon: Icon(Icons.account_balance), label: "Bizz-Acct"));
+    icons.add(
+      BottomNavigationBarItem(
+        icon: Icon(context.watch<SettingsProvider>().bizzAccount == Ext.individual ? Icons.account_balance : Icons.account_balance_outlined), 
+        label: context.watch<SettingsProvider>().bizzAccount == Ext.individual ? "Bizz-Acct" : Ext.individual
+      )
+    );
+    // icons.add(const BottomNavigationBarItem(icon: Icon(Icons.account_balance), label: "Bizz-Acct"));
     icons.add(const BottomNavigationBarItem(icon: Icon(Icons.payments), label: "Pay/Request"));
     icons.add(const BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet), label: "Match Funds"));
     icons.add(const BottomNavigationBarItem(icon: Icon(Icons.account_circle_rounded), label: "Me"));
@@ -95,7 +95,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
   @override
   Widget build(BuildContext context) {
     setState(() {
-      _me = context.watch<CurrentAccount>().account;
+      _me = context.watch<AccountProvider>().account;
     });
 
     return Scaffold(

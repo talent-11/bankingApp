@@ -1,19 +1,12 @@
-import 'dart:convert';
-
+import 'package:country_list_pick/country_list_pick.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:provider/provider.dart';
 
-import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/dots.dart';
-import 'package:fotoc/components/wizard/labeled_checkbox.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
-import 'package:fotoc/constants.dart';
-import 'package:fotoc/services/api_service.dart';
+import 'package:fotoc/pages/business/business_verify_3.dart';
 import 'package:fotoc/services/validation_service.dart';
-import 'package:fotoc/providers/account_provider.dart';
 
 class BusinessVerify2Page extends StatefulWidget {
   const BusinessVerify2Page({Key? key}) : super(key: key);
@@ -24,58 +17,7 @@ class BusinessVerify2Page extends StatefulWidget {
 
 class _BusinessVerify2PageState extends State<BusinessVerify2Page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _loading = false;
-  bool _agreed = false;
-  bool _visiblePassword = false;
-  bool _visibleConfirmPassword = false;
-  late String name, _email, _username, _newPassword;
-
-  Future<void> _signup(BuildContext context) async {
-    if (_loading) return;
-
-    if (!_agreed) {
-      showDialog(
-        context: context, 
-        builder: (context) {
-          return const ErrorDialog(text: "You must agree with terms and conditions");
-        }
-      );
-      return;
-    }
-
-    String fcmToken = Provider.of<CurrentAccount>(context, listen: false).fcmToken;
-
-    setState(() => _loading = true);
-    String params = jsonEncode(<String, dynamic>{
-      'name': name,
-      'email': _email.toLowerCase(),
-      'username': _username.toLowerCase(),
-      'password': _newPassword,
-      'fcm_token': fcmToken,
-    });
-    Response? response = await ApiService().post(ApiConstants.signup, '', params);
-    setState(() => _loading = false);
-
-    if (response == null) {
-      showDialog(
-        context: context, 
-        builder: (context) {
-          return const ErrorDialog(text: "Please check your network connection");
-        }
-      );
-    } else if (response.statusCode == 200) {
-      
-    } else if (response.statusCode == 400) {
-      showDialog(
-        context: context, 
-        builder: (context) {
-          dynamic res = json.decode(response.body);
-          String text = res["message"];
-          return ErrorDialog(text: text);
-        }
-      );
-    }
-  }
+  late String _tax, _name, _email, _suite, _city, _state, _country = 'US';
 
   void onPressedBack(BuildContext context) {
     Navigator.pop(context);
@@ -83,35 +25,36 @@ class _BusinessVerify2PageState extends State<BusinessVerify2Page> {
 
   void onPressedNext(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      _signup(context);
+      Navigator.push(
+        context, 
+        MaterialPageRoute(
+          builder: (_) => BusinessVerify3Page(
+            tax: _tax,
+            email: _email,
+            name: _name,
+            suite: _suite,
+            city: _city,
+            state: _state,
+            country: _country,
+          )
+        )
+      );
     }
   }
-
-  void onPressedSignin(BuildContext context) {
-    Navigator.pushNamed(context, '/wizard/login');
-  }
   
-  void onPressedShowPassword(BuildContext context) {
-    setState(() { _visiblePassword = !_visiblePassword; });
-  }
-
-  void onPressedShowConfirmPassword(BuildContext context) {
-    setState(() { _visibleConfirmPassword = !_visibleConfirmPassword; });
-  }
-
   IconButton backButton(BuildContext context) => IconButton(
     icon: const Icon(Icons.arrow_back_ios, size: 32.0),
     onPressed: () => onPressedBack(context), 
     color: Colors.white,
   );
 
-  List<Widget> decorate(BuildContext context) {
+  List<Widget> decorateBody(BuildContext context) {
     var widgets = <Widget>[];
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 24.0, bottom: 16),
         child: Text(
-          "Account details",
+          "Business details",
           style: Theme.of(context).textTheme.headline1,
           textAlign: TextAlign.center,
         )
@@ -121,13 +64,11 @@ class _BusinessVerify2PageState extends State<BusinessVerify2Page> {
       Padding(
         padding: const EdgeInsets.only(top: 0.0),
         child: TextInputField(
-          enabled: !_loading,
-          keyboardType: TextInputType.name,
-          hintText: "Enter your full name",
-          onChanged: (val) { setState(() => name = val!); },
+          hintText: "Tax ID Number",
+          onChanged: (val) { setState(() => _tax = val!); },
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter your full name';
+              return 'Please enter your tax ID number';
             }
             return null;
           },
@@ -138,9 +79,8 @@ class _BusinessVerify2PageState extends State<BusinessVerify2Page> {
       Padding(
         padding: const EdgeInsets.only(top: 0.0),
         child: TextInputField(
-          enabled: !_loading,
-          hintText: "Enter your email",
           keyboardType: TextInputType.emailAddress,
+          hintText: "Business Email",
           onChanged: (val) { setState(() => _email = val!); },
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -157,12 +97,12 @@ class _BusinessVerify2PageState extends State<BusinessVerify2Page> {
       Padding(
         padding: const EdgeInsets.only(top: 0.0),
         child: TextInputField(
-          enabled: !_loading,
-          hintText: "Enter your username",
-          onChanged: (val) { setState(() => _username = val!); },
+          keyboardType: TextInputType.name,
+          hintText: "Business Name",
+          onChanged: (val) { setState(() => _name = val!); },
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter username';
+              return 'Please enter your business name';
             }
             return null;
           },
@@ -171,24 +111,15 @@ class _BusinessVerify2PageState extends State<BusinessVerify2Page> {
     );
     widgets.add(
       Padding(
-        padding: const EdgeInsets.only(top: 0.0),
+        padding: const EdgeInsets.only(top: 8.0),
         child: TextInputField(
-          enabled: !_loading,
-          obscureText: !_visiblePassword,
-          hintText: "Enter your password",
-          suffixIcon: IconButton(
-            icon: Icon(
-              _visiblePassword ? Icons.visibility : Icons.visibility_off,
-              color: Theme.of(context).primaryColor,
-            ),
-            onPressed: () { onPressedShowPassword(context); },
-          ),
-          onChanged: (val) { setState(() => _newPassword = val!); },
+          hintText: "Enter your house number and street name",
+          onChanged: (val) {
+            setState(() => _suite = val!);
+          },
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter password';
-            } else if (!value.isValidPassword) {
-              return 'Please enter valid password(At least a letter and a number, and 8 characters)';
+              return 'Please enter your address';
             }
             return null;
           },
@@ -197,23 +128,15 @@ class _BusinessVerify2PageState extends State<BusinessVerify2Page> {
     );
     widgets.add(
       Padding(
-        padding: const EdgeInsets.only(top: 0.0),
+        padding: const EdgeInsets.only(top: 8.0),
         child: TextInputField(
-          enabled: !_loading,
-          obscureText: !_visibleConfirmPassword,
-          hintText: "Confirm your password",
-          suffixIcon: IconButton(
-            icon: Icon(
-              _visibleConfirmPassword ? Icons.visibility : Icons.visibility_off,
-              color: Theme.of(context).primaryColor,
-            ),
-            onPressed: () { onPressedShowConfirmPassword(context); },
-          ),
+          hintText: "Enter your city",
+          onChanged: (val) {
+            setState(() => _city = val!);
+          },
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please reenter your password';
-            } else if (value != _newPassword) {
-              return 'Confirm password doesn\'t match';
+              return 'Please enter your city';
             }
             return null;
           },
@@ -222,28 +145,72 @@ class _BusinessVerify2PageState extends State<BusinessVerify2Page> {
     );
     widgets.add(
       Padding(
-        padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-        child: LabeledCheckbox(
-          labelText: "I agree with terms & conditions",
-          checked: _agreed,
-          valueChanged: (bool? value) { setState(() => _agreed = value!); }
+        padding: const EdgeInsets.only(top: 8.0),
+        child: TextInputField(
+          hintText: "Enter your state or province",
+          onChanged: (val) {
+            setState(() => _state = val!);
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your state or province';
+            }
+            return null;
+          },
         )
       )
     );
+    widgets.add(
+      CountryListPick(
+        appBar: AppBar(backgroundColor: Theme.of(context).primaryColor, title: const Text('Select your country')),
+        
+        pickerBuilder: (context, CountryCode? countryCode) {
+          String code = "", flagUrl = "";
+
+          if (countryCode != null) {
+            code = countryCode.name!;
+            flagUrl = countryCode.flagUri!;
+          }
+
+          return Container(
+            decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0))),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 12.0),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                    child: Image.asset(flagUrl, package: 'country_list_pick', height: 14, fit: BoxFit.fitHeight),
+                  ),
+                  Expanded(child: Text(code, style: Theme.of(context).textTheme.headline6)),
+                  Icon(Icons.arrow_drop_down, size: 20, color: Theme.of(context).primaryColor),
+                ],
+              ),
+            )
+          );
+        },
+
+        // To disable option set to false
+        theme: CountryTheme(
+          labelColor: const Color(0xff98a9bc),
+          showEnglishName: true,
+        ),
+        // Set default value
+        initialSelection: _country,
+        onChanged: (countryCode) => _country = countryCode!.code!,
+        // Whether to allow the widget to set a custom UI overlay
+        useUiOverlay: true,
+        // Whether the country list should be wrapped in a SafeArea
+        useSafeArea: true
+      ),
+    );
+    widgets.add(const SizedBox(height: 16.0));
     return widgets;
   }
 
   List<Widget> decorateFooter(BuildContext context) {
     var widgets = <Widget>[];
-    widgets.add(
-      PrimaryButton(
-        loading: _loading,
-        buttonText: "NEXT",
-        onPressed: () {
-          onPressedNext(context);
-        }
-      )
-    );
+    widgets.add(PrimaryButton(buttonText: "NEXT", onPressed: () { onPressedNext(context); }));
     widgets.add(const Dots(selectedIndex: 1, dots: 6));
     return widgets;
   }
@@ -260,7 +227,7 @@ class _BusinessVerify2PageState extends State<BusinessVerify2Page> {
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: decorate(context),
+                  children: decorateBody(context),
                 )
               )
             )

@@ -45,7 +45,7 @@ class AccountModel {
   String? state;
   String? country;
   Bank? bank = Bank(checking: 0, saving: 0);
-  Business? business;
+  BusinessModel? business;
 
   factory AccountModel.fromJson(Map<String, dynamic> json) => AccountModel(
     id: json["id"],
@@ -64,6 +64,7 @@ class AccountModel {
     state: json["state"],
     country: json["country"],
     bank: Bank.fromJson(json["bank"]),
+    business: json["business"] != null ? BusinessModel.fromJson(json["business"]) : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -124,6 +125,41 @@ class Bank {
   };
 }
 
-class Business {
-  Business();
+class BusinessModel {
+  BusinessModel({
+    this.id,
+    this.name,
+    this.email,
+    this.verifiedId,
+    this.verified,
+    this.suite,
+    this.city,
+    this.state,
+    this.country,
+    this.bank
+  });
+
+  int? id;
+  String? name;
+  String? email;
+  String? verifiedId;
+  bool? verified;
+  String? suite;
+  String? city;
+  String? state;
+  String? country;
+  Bank? bank = Bank(checking: 0, saving: 0);
+
+  factory BusinessModel.fromJson(Map<String, dynamic> json) => BusinessModel(
+    id: json["id"],
+    name: json["name"],
+    email: json["email"],
+    verifiedId: json["verified_id"],
+    verified: json["verified"],
+    suite: json["suite"],
+    city: json["city"],
+    state: json["state"],
+    country: json["country"],
+    bank: Bank.fromJson(json["bank"]),
+  );
 }
