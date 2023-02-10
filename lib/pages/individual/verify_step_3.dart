@@ -4,6 +4,7 @@ import 'package:fotoc/components/gradient_rectangle.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/pages/statement/statement_Information.dart';
+import 'package:fotoc/pages/wallet/wallet_tabs.dart';
 // import 'package:fotoc/components/wizard/footer.dart';
 
 const description = "Review";
@@ -11,7 +12,9 @@ const link = "Verified Account Holder:";
 const notify = "We are reviewing your profile. Please wait 3 business days.";
 
 class VerifyStep3Page extends StatefulWidget {
-  const VerifyStep3Page({Key? key}) : super(key: key);
+  const VerifyStep3Page({Key? key, required this.from}) : super(key: key);
+
+  final String from;
 
   @override
   State<VerifyStep3Page> createState() => _VerifyStep3PageState();
@@ -19,11 +22,11 @@ class VerifyStep3Page extends StatefulWidget {
 
 class _VerifyStep3PageState extends State<VerifyStep3Page> {
   void onPressedYes(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const StatementInformationPage()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const StatementInformationPage()));
   }
 
   void onPressedLater(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/free/main');
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const MainTabsPage()), (route) => false);
   }
 
   @override

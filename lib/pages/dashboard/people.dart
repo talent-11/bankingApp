@@ -154,6 +154,7 @@ class _PeoplePageState extends State<PeoplePage> {
     
     bool hasBusinesses = false;
     for (var account in _peoples) {
+      if (account.business == null) continue;
       BusinessModel bizz = account.business!;
       if (bizz.verified! && bizz.name!.toLowerCase().contains(_searchString.toLowerCase()) && bizz.id != myId) {
         hasBusinesses = true;

@@ -1,18 +1,23 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
+
 import 'package:fotoc/components/ui/error_dialog.dart';
-import 'package:fotoc/pages/wizard/signup_almost.dart';
-import 'package:fotoc/providers/account_provider.dart';
-import 'package:fotoc/services/api_service.dart';
-import 'package:fotoc/services/validation_service.dart';
 import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/wizard/footer.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
+import 'package:fotoc/pages/wallet/wallet_tabs.dart';
+import 'package:fotoc/pages/wizard/signup_almost.dart';
+import 'package:fotoc/pages/individual/verify_step_0.dart';
+import 'package:fotoc/pages/individual/verify_step_1.dart';
+import 'package:fotoc/pages/individual/verify_step_2.dart';
+import 'package:fotoc/providers/account_provider.dart';
+import 'package:fotoc/services/api_service.dart';
+import 'package:fotoc/services/validation_service.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
-import 'package:http/http.dart';
-import 'package:provider/provider.dart';
 
 class AppState {
   bool loading;
@@ -62,7 +67,13 @@ class _LoginPageState extends State<LoginPage> {
       context.read<AccountProvider>().setAccount(user);
       context.read<AccountProvider>().login(true);
 
-      Navigator.pushNamedAndRemoveUntil(context, '/free/main', (route) => false);
+      if (user.phone == null) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep1Page()));
+      } else if (user.verifiedId == null) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep2Page()));
+      } else {
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const MainTabsPage()), (route) => false);
+      }
     } else if (response.statusCode == 400) {
       showDialog(
         context: context, 
@@ -90,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void onPressedSignup(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wizard/signup/start');
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep0Page()));
   }
 
   void onPressedShowPassword(BuildContext context) {

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/pages/individual/verify_step_3.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -92,7 +93,7 @@ class _BusinessVerify3PageState extends State<BusinessVerify3Page> {
       const snackBar = SnackBar(content: Text('We\'ve just sent a verification email'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      Navigator.pushNamed(context, '/free/verify/3');
+      Navigator.push(context, MaterialPageRoute(builder: (_) => VerifyStep3Page(from: Ext.business)));
     } else if (response.statusCode == 400) {
       showDialog(
         context: context, 

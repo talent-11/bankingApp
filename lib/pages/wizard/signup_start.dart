@@ -4,6 +4,7 @@ import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/footer.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
+import 'package:fotoc/pages/wizard/login.dart';
 import 'package:fotoc/pages/wizard/signup_main.dart';
 import 'package:fotoc/services/validation_service.dart';
 
@@ -35,7 +36,7 @@ class _SignupStartPageState extends State<SignupStartPage> {
   }
 
   void onPressedSignin(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wizard/login');
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginPage()));
   }
 
   Widget body(BuildContext context) => Column(

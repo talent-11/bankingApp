@@ -4,8 +4,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/text_spans.dart';
-import 'package:fotoc/pages/individual/verify_step_0.dart';
+import 'package:fotoc/pages/wizard/login.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
+// import 'package:fotoc/pages/wizard/signup_start.dart';
+import 'package:fotoc/pages/individual/verify_step_0.dart';
 
 const titles = [
   "FOTOC Bank is the Monetary System for all the People and all of the Constitutional Governments throughout the world, authorized by We the People.",
@@ -31,13 +33,12 @@ class _WelcomePageState extends State<WelcomePage> {
     _scaffoldState.currentState?.openDrawer();
   }
 
-  void onPressedTest(BuildContext context) {
-    Navigator.pushNamed(context, '/wizard/signup/start');
-  }
+  // void onPressedTest(BuildContext context) {
+  //   Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupStartPage()));
+  // }
 
   void onPressedLogin(BuildContext context) {
-    // Navigator.pushReplacementNamed(context, '/wizard/login');
-    Navigator.pushNamed(context, '/wizard/login');
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginPage()));
   }
 
   void onPressedSignup(BuildContext context) {
@@ -204,21 +205,22 @@ class _WelcomePageState extends State<WelcomePage> {
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: descriptionText1(context),
       ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-        child: titleText1(context),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-        child: SizedBox(
-          width: 200,
-          height: 46,
-          child: FotocButton(
-            buttonText: "Get Test Account",
-            onPressed: () => onPressedTest(context),
-          )
-        )
-      )
+      // const Spacer(flex: 1),
+      // Padding(
+      //   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      //   child: titleText1(context),
+      // ),
+      // Padding(
+      //   padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+      //   child: SizedBox(
+      //     width: 200,
+      //     height: 46,
+      //     child: FotocButton(
+      //       buttonText: "Get Test Account",
+      //       onPressed: () => onPressedTest(context),
+      //     )
+      //   )
+      // )
     ],
   );
 
@@ -227,15 +229,22 @@ class _WelcomePageState extends State<WelcomePage> {
     return Scaffold(
       key: _scaffoldState,
       drawer: const SideBar(),
-      body: Container(
-        color: Colors.white,
-        child: SingleChildScrollView(
-          child: Column(children: [
-            LogoBar(iconButton: menuButton(context)),
-            body(context),
-          ]),
-        ),
-      ),
+      body: Column(
+        children: [
+          LogoBar(iconButton: menuButton(context)),
+          Expanded(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    body(context),
+                  ]
+                )
+              )
+            )
+          )
+        ]
+      )
     );
   }
 }

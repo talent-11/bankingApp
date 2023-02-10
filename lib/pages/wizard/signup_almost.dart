@@ -7,6 +7,7 @@ import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/footer.dart';
 import 'package:fotoc/constants.dart';
+import 'package:fotoc/pages/wizard/login.dart';
 import 'package:fotoc/services/api_service.dart';
 
 import 'package:http/http.dart';
@@ -25,21 +26,21 @@ class SignupAlmostPage extends StatefulWidget {
 }
 
 class _SignupAlmostPageState extends State<SignupAlmostPage> {
-  bool loading = false;
+  bool _loading = false;
   
   void onPressedSignin(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wizard/login');
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginPage()));
   }
  
   void onPressedResend(BuildContext context) async {
-    if (loading) return;
+    if (_loading) return;
 
-    setState(() => loading = true);
+    setState(() => _loading = true);
     String params = jsonEncode(<String, dynamic>{
       'email': widget.email,
     });
     Response? response = await ApiService().post(ApiConstants.reVerify, '', params);
-    setState(() => loading = false);
+    setState(() => _loading = false);
 
     if (response == null) {
       showDialog(
@@ -49,7 +50,7 @@ class _SignupAlmostPageState extends State<SignupAlmostPage> {
         }
       );
     } else if (response.statusCode == 200) {
-      Navigator.pushReplacementNamed(context, '/wizard/login');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginPage()));
     }
   }
 
@@ -68,7 +69,7 @@ class _SignupAlmostPageState extends State<SignupAlmostPage> {
       widgets.add(const Spacer(flex: 1));
       widgets.add(Text("If you didn't receive the email, please click the below button.", style: Theme.of(context).textTheme.headline5, textAlign: TextAlign.center));
       widgets.add(const Spacer(flex: 1));
-      widgets.add(PrimaryButton(loading: loading, buttonText: 'Resend Email', onPressed: () => onPressedResend(context)));
+      widgets.add(PrimaryButton(loading: _loading, buttonText: 'Resend Email', onPressed: () => onPressedResend(context)));
       widgets.add(const Spacer(flex: 1));
     } else {
       // widgets.add(Text(description, style: Theme.of(context).textTheme.headline5, textAlign: TextAlign.center));

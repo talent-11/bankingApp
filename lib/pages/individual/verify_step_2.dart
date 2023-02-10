@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/pages/camera/display_picture.dart';
+import 'package:fotoc/pages/wizard/signup_agree.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,7 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
       String respStr = await response.stream.bytesToString();
       dynamic result = json.decode(respStr);
       context.read<AccountProvider>().setUploadedFilename(result['filename']);
-      Navigator.pushNamed(context, '/wizard/signup/agree');
+      Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupAgreePage()));
     }
   }
 
@@ -118,14 +119,19 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
 
         setState(() => _loading = false);
 
-        Navigator.pushNamed(context, '/wizard/signup/agree');
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const SignupAgreePage()));
       } else {
+        String error = "";
+        if (errors.length == 2) {
+          error = "We counldn't fetch your information from the picture. Please use more clear picture";
+        } else {
+          error = (errors[0] == 'name' ? "Your name" : "Your birthday") + " didn't match. Please user the other picture.";
+        }
         setState(() => _loading = false);
         showDialog(
           context: context, 
           builder: (context) {
-            String text = "Please use more clear picture";
-            return ErrorDialog(text: text);
+            return ErrorDialog(text: error);
           }
         );
       }

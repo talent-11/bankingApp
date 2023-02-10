@@ -1,12 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/bullet_row.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/emphatic_row.dart';
 import 'package:fotoc/components/wizard/text_with_cc.dart';
+import 'package:fotoc/constants.dart';
+import 'package:fotoc/pages/individual/verify_step_3.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
 
 class SignupAgreePage extends StatefulWidget {
@@ -18,12 +21,11 @@ class SignupAgreePage extends StatefulWidget {
 
 class _SignupAgreePageState extends State<SignupAgreePage> {
   void onPressedNext(BuildContext context) {
-    // Navigator.pushNamed(context, '/wizard/signup/start');
-    Navigator.pushNamed(context, '/free/verify/3');
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => VerifyStep3Page(from: Ext.individual)));
   }
 
   void onPressedCancel(BuildContext context) {
-    exit(0);
+    Navigator.pop(context);
   }
 
   Padding commonRow(BuildContext context, String text) => Padding(

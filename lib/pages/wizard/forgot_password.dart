@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/primary_button.dart';
 import 'package:fotoc/components/wizard/footer.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
+import 'package:fotoc/pages/individual/verify_step_0.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);
@@ -14,7 +15,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void onPressedSignup(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wizard/signup/start');
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep0Page()));
   }
 
   @override

@@ -15,8 +15,9 @@ import 'package:fotoc/constants.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/services/validation_service.dart';
 import 'package:fotoc/providers/account_provider.dart';
-import 'package:fotoc/pages/individual/verify_step_1.dart';
 import 'package:fotoc/pages/wizard/signup_almost.dart';
+import 'package:fotoc/pages/wizard/login.dart';
+import 'package:fotoc/pages/individual/verify_step_1.dart';
 
 class SignupMainPage extends StatefulWidget {
   const SignupMainPage({Key? key, this.from, this.friendId}) : super(key: key);
@@ -102,7 +103,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
   }
 
   void onPressedSignin(BuildContext context) {
-    Navigator.pushNamed(context, '/wizard/login');
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginPage()));
   }
   
   void onPressedShowPassword(BuildContext context) {
