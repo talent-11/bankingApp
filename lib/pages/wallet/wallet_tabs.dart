@@ -1,19 +1,14 @@
 // import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fotoc/pages/dashboard/manual_pay.dart';
 import 'package:provider/provider.dart';
-// import 'package:fotoc/pages/statement/statement_Information.dart';
-// import 'package:fotoc/services/api_service.dart';
-// import 'package:http/http.dart';
 
 import 'package:fotoc/constants.dart';
-import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/providers/settings_provider.dart';
+import 'package:fotoc/pages/dashboard/manual_pay.dart';
 import 'package:fotoc/pages/dashboard/dashboard.dart';
 import 'package:fotoc/pages/business/business_account.dart';
 import 'package:fotoc/pages/settings/settings.dart';
-import 'package:fotoc/providers/settings_provider.dart';
-import 'package:fotoc/providers/account_provider.dart';
 
 
 class MainTabsPage extends StatefulWidget {
@@ -65,7 +60,6 @@ class _MainTabsPageState extends State<MainTabsPage> {
   List<Widget> getPages() {
     List<Widget> pages = [];
     pages.add(const DashboardPage());
-    // pages.add(_isBizz ? const BusinessAccountPage() : const IndividualAccountPage());
     pages.add(const BusinessAccountPage());
     pages.add(const ManualPayPage());
     pages.add(const Icon(Icons.account_balance_wallet, size: 150));
