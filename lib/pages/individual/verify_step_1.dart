@@ -5,6 +5,11 @@ import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+
+import 'package:fotoc/constants.dart';
+import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/providers/account_provider.dart';
+import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/ui/radio_text.dart';
@@ -12,10 +17,6 @@ import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
 import 'package:fotoc/pages/individual/verify_step_2.dart';
-import 'package:fotoc/constants.dart';
-import 'package:fotoc/models/account_model.dart';
-import 'package:fotoc/providers/account_provider.dart';
-import 'package:fotoc/services/api_service.dart';
 
 class VerifyStep1Page extends StatefulWidget {
   const VerifyStep1Page({Key? key}) : super(key: key);
@@ -98,7 +99,9 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
 
   List<Widget> decorateBody(BuildContext context) {
     var widgets = <Widget>[];
+
     widgets.add(const LogoBar());
+
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 24.0),
@@ -109,6 +112,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         )
       )
     );
+
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
@@ -119,15 +123,12 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         )
       )
     );
+
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Container(
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0)
-            )
-          ),
+          decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0))),
           child: TextFormField(
             enabled: !_loading,
             readOnly: true,
@@ -141,10 +142,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
               );
               if (pickedDate != null) {
                 String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                
-                setState(() {
-                  _dateController.text = formattedDate;
-                });
+                setState(() { _dateController.text = formattedDate; });
               }
             },
             validator: (value) {
@@ -166,54 +164,25 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
       )
     );
 
-    // List genders=["Male", "Female"];
-    // Row addRadioButton(int btnValue, String title) {
-    //   return Row(
-    //     mainAxisAlignment: MainAxisAlignment.start,
-    //     children: <Widget>[
-    //       Radio<String>(
-    //         activeColor: Theme.of(context).primaryColor,
-    //         value: genders[btnValue],
-    //         groupValue: _gender,
-    //         onChanged: (value){
-    //           setState(() {
-    //             _gender = value.toString();
-    //           });
-    //         },
-    //       ),
-    //       Text(title)
-    //     ],
-    //   );
-    // }
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Container(
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0)
-            )
-          ),
+          decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0))),
           child: Row(
             children: <Widget>[
-              // addRadioButton(0, 'Male'),
-              // addRadioButton(1, 'Female'),
               RadioText(
                 label: 'Male', 
                 groupValue: _gender, 
                 onChanged: (value) {
-                  setState(() {
-                    _gender = value.toString();
-                  });
+                  setState(() { _gender = value.toString(); });
                 }
               ),
               RadioText(
                 label: 'Female', 
                 groupValue: _gender, 
                 onChanged: (value) {
-                  setState(() {
-                    _gender = value.toString();
-                  });
+                  setState(() => _gender = value.toString());
                 }
               ),
             ],
@@ -221,65 +190,33 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         )
       )
     );
-
-    // List maritals=["Married", "Single", "Widowed"];
-    // Row addRadioButton1(int btnValue, String title) {
-    //   return Row(
-    //     mainAxisAlignment: MainAxisAlignment.start,
-    //     children: <Widget>[
-    //       Radio<String>(
-    //         activeColor: Theme.of(context).primaryColor,
-    //         value: maritals[btnValue],
-    //         groupValue: _marital,
-    //         onChanged: (value){
-    //           setState(() {
-    //             _marital = value.toString();
-    //           });
-    //         },
-    //       ),
-    //       Text(title)
-    //     ],
-    //   );
-    // }
+    
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Container(
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0)
-            )
-          ),
+          decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0))),
           child: Row(
             children: <Widget>[
-              // addRadioButton1(0, 'Married'),
-              // addRadioButton1(1, 'Single'),
-              // addRadioButton1(2, 'Widowed'),
               RadioText(
                 label: 'Married', 
                 groupValue: _marital, 
                 onChanged: (value) {
-                  setState(() {
-                    _marital = value.toString();
-                  });
+                  setState(() { _marital = value.toString(); });
                 }
               ),
               RadioText(
                 label: 'Single', 
                 groupValue: _marital, 
                 onChanged: (value) {
-                  setState(() {
-                    _marital = value.toString();
-                  });
+                  setState(() { _marital = value.toString(); });
                 }
               ),
               RadioText(
                 label: 'Widowed', 
                 groupValue: _marital, 
                 onChanged: (value) {
-                  setState(() {
-                    _marital = value.toString();
-                  });
+                  setState(() { _marital = value.toString(); });
                 }
               ),
             ],
@@ -306,6 +243,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         )
       )
     );
+    
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
@@ -324,6 +262,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         )
       )
     );
+    
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
@@ -343,6 +282,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         )
       )
     );
+    
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
@@ -361,6 +301,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         )
       )
     );
+    
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
@@ -379,6 +320,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         )
       )
     );
+    
     widgets.add(
       CountryListPick(
         appBar: AppBar(
@@ -435,6 +377,7 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         useSafeArea: true
       ),
     );
+    
     return widgets;
   }
 
@@ -444,20 +387,6 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
           children: [
-            // Expanded(
-            //   flex: 1,
-            //   child: SizedBox(
-            //     height: 48,
-            //     child: FotocButton(
-            //       outline: true,
-            //       buttonText: "Cancel",
-            //       onPressed: () {
-            //         onPressedCancel(context);
-            //       },
-            //     ),
-            //   )
-            // ),
-            // const SizedBox(width: 20),
             Expanded(
               flex: 1,
               child: SizedBox(
