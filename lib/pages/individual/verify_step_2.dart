@@ -123,9 +123,9 @@ class _VerifyStep2PageState extends State<VerifyStep2Page> {
       } else {
         String error = "";
         if (errors.length == 2) {
-          error = "We counldn't fetch your information from the picture. Please use more clear picture";
+          error = "Failed to fetch information from provided image. Please use a clearer one.";
         } else {
-          error = (errors[0] == 'name' ? "Your name" : "Your birthday") + " didn't match. Please user the other picture.";
+          error = (errors[0] == 'name' ? "Your Name" : "Your Birthdate") + " doesn't match. Please user another image.";
         }
         setState(() => _loading = false);
         showDialog(
