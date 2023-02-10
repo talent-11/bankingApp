@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SideBar extends StatelessWidget {
   const SideBar({Key? key}) : super(key: key);
@@ -21,7 +22,12 @@ class SideBar extends StatelessWidget {
             height: 176.0,
             child: DrawerHeader(
               child: Center(
-                child: Image.asset("assets/images/logo.png"),
+                child: SvgPicture.asset(
+                  "assets/svgs/logo.svg",
+                  width: 118,
+                  height: 120,
+                  color: Colors.white,
+                ),
               ),
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,

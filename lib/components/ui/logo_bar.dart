@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 const double logoHeight = 168;
 
@@ -15,7 +16,12 @@ class LogoBar extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
       decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-      child: Image.asset("assets/images/logo.png"),
+      child: SvgPicture.asset(
+        "assets/svgs/logo.svg",
+        width: 118,
+        height: 120,
+        color: Colors.white,
+      ),
     ));
 
     if (iconButton != null) {

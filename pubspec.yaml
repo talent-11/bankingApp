@@ -87,10 +87,10 @@ flutter:
     - assets/images/wizard05.png
     - assets/images/wizard07.png
     - assets/images/fingerprint.png
-    - assets/images/logo.png
     - assets/images/profile_men.png
     - assets/images/profile_women.png
     - assets/svgs/cc.svg
+    - assets/svgs/logo.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
