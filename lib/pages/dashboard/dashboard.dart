@@ -85,7 +85,7 @@ class _DashboardPageState extends State<DashboardPage> {
         dynamic receiver = trans['receiver'];
         dynamic receiver2 = trans['receiver2'];
 
-        bool paid = sender['id'] == me.id || (me.business != null && sender2 != null && sender2['id'] == me.business!.id);
+        bool paid = (sender != null && sender['id'] == me.id) || (me.business != null && sender2 != null && sender2['id'] == me.business!.id);
         String receiverName = paid ? receiver != null ? receiver['name'] : receiver2['name'] : sender != null ? sender['name'] : sender2['name'];
         _transactions.add(
           TransactionModel(
