@@ -14,27 +14,28 @@ import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
-import 'package:fotoc/pages/individual/verify_step_0.dart';
+// import 'package:fotoc/pages/individual/verify_step_0.dart';
 import 'package:fotoc/pages/business/business_verify_0.dart';
 
-class BusinessAccountPage extends StatefulWidget {
-  const BusinessAccountPage({Key? key}) : super(key: key);
+class AccountSwitchPage extends StatefulWidget {
+  const AccountSwitchPage({Key? key}) : super(key: key);
 
   @override
-  State<BusinessAccountPage> createState() => _BusinessAccountPageState();
+  State<AccountSwitchPage> createState() => _AccountSwitchPageState();
 }
 
-class _BusinessAccountPageState extends State<BusinessAccountPage> {
+class _AccountSwitchPageState extends State<AccountSwitchPage> {
   final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   late AccountModel _me;
   bool _loading = false;
-  late String _bizzAccount;
 
   @override
   void initState() {
     super.initState();
 
-    _me = Provider.of<AccountProvider>(context, listen: false).account;
+    setState(() {
+      _me = Provider.of<AccountProvider>(context, listen: false).account;
+    });
   }
 
   void onPressedBar(BuildContext context) {
@@ -45,9 +46,9 @@ class _BusinessAccountPageState extends State<BusinessAccountPage> {
     Navigator.push(context, MaterialPageRoute(builder: (_) => const BusinessVerify0Page()));
   }
 
-  void onPressedVerified(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const VerifyStep0Page()));
-  }
+  // void onPressedVerified(BuildContext context) {
+  //   Navigator.push(context, MaterialPageRoute(builder: (_) => const VerifyStep0Page()));
+  // }
 
   void onPressedResend(BuildContext context) async {
     if (_loading) return;
@@ -120,30 +121,30 @@ class _BusinessAccountPageState extends State<BusinessAccountPage> {
     color: Colors.white,
   );
 
-  Widget decorateVerify(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20), 
-          child: Text(
-            "Please sign up for a verified individual account first.",
-            style: Theme.of(context).textTheme.headline2,
-            textAlign: TextAlign.center,
-          )
-        ),
-        const SizedBox(height: 48),
-        SizedBox(
-          width: 200,
-          height: 40,
-          child: FotocButton(
-            buttonText: "Get Full Account", 
-            onPressed: () => onPressedVerified(context)
-          ),
-        )
-      ]
-    );
-  }
+  // Widget decorateVerify(BuildContext context) {
+  //   return Column(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     children: [
+  //       Padding(
+  //         padding: const EdgeInsets.symmetric(horizontal: 20), 
+  //         child: Text(
+  //           "Please sign up for a verified individual account first.",
+  //           style: Theme.of(context).textTheme.headline2,
+  //           textAlign: TextAlign.center,
+  //         )
+  //       ),
+  //       const SizedBox(height: 48),
+  //       SizedBox(
+  //         width: 200,
+  //         height: 40,
+  //         child: FotocButton(
+  //           buttonText: "Get Full Account", 
+  //           onPressed: () => onPressedVerified(context)
+  //         ),
+  //       )
+  //     ]
+  //   );
+  // }
 
   Widget decorateVerifyBusiness(BuildContext context) {
     return Column(
@@ -263,9 +264,9 @@ class _BusinessAccountPageState extends State<BusinessAccountPage> {
           LogoBar(iconButton: menuButton(context)),
           Expanded(
             child: _me.business == null ? 
-              _me.verifiedId != null ? 
+              // _me.verifiedId != null ? 
                 decorateCreateBusiness(context) : 
-                decorateVerify(context) : 
+                // decorateVerify(context) : 
               _me.business!.verified == true ?
                 decorateBody(context) :
                 decorateVerifyBusiness(context)

@@ -211,7 +211,7 @@ class _BusinessVerify2PageState extends State<BusinessVerify2Page> {
   List<Widget> decorateFooter(BuildContext context) {
     var widgets = <Widget>[];
     widgets.add(PrimaryButton(buttonText: "NEXT", onPressed: () { onPressedNext(context); }));
-    widgets.add(const Dots(selectedIndex: 1, dots: 6));
+    // widgets.add(const Dots(selectedIndex: 1, dots: 6));
     return widgets;
   }
 

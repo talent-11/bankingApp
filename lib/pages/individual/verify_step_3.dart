@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fotoc/components/gradient_rectangle.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
+import 'package:fotoc/constants.dart';
 import 'package:fotoc/pages/statement/statement_Information.dart';
 import 'package:fotoc/pages/wallet/wallet_tabs.dart';
 // import 'package:fotoc/components/wizard/footer.dart';
@@ -132,8 +133,8 @@ class _VerifyStep3PageState extends State<VerifyStep3Page> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const Spacer(flex: 1),
-                  const Dots(selectedIndex: 5, dots: 6),
+                  widget.from == Ext.individual ? const Spacer(flex: 1) : const SizedBox(width: 0, height: 0),
+                  widget.from == Ext.individual ? const Dots(selectedIndex: 5, dots: 6) : const SizedBox(width: 0, height: 0),
                   // WizardFooter(
                   //   description: "",
                   //   buttonText: "Go to home page",

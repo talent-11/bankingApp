@@ -7,7 +7,7 @@ import 'package:fotoc/constants.dart';
 import 'package:fotoc/providers/settings_provider.dart';
 import 'package:fotoc/pages/dashboard/manual_pay.dart';
 import 'package:fotoc/pages/dashboard/dashboard.dart';
-import 'package:fotoc/pages/business/business_account.dart';
+import 'package:fotoc/pages/business/account_switch.dart';
 import 'package:fotoc/pages/settings/settings.dart';
 
 
@@ -60,7 +60,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
   List<Widget> getPages() {
     List<Widget> pages = [];
     pages.add(const DashboardPage());
-    pages.add(const BusinessAccountPage());
+    pages.add(const AccountSwitchPage());
     pages.add(const ManualPayPage());
     pages.add(const Icon(Icons.account_balance_wallet, size: 150));
     pages.add(const SettingsPage());

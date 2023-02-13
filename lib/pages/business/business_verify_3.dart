@@ -252,7 +252,7 @@ class _BusinessVerify3PageState extends State<BusinessVerify3Page> {
         }
       )
     );
-    widgets.add(const Dots(selectedIndex: 1, dots: 6));
+    // widgets.add(const Dots(selectedIndex: 1, dots: 6));
     return widgets;
   }
 
