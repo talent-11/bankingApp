@@ -11,6 +11,7 @@ class ApiConstants {
   static String reVerify = '/account/re-verify';
   static String businessReVerify = '/account/business/re-verify';
   static String profile = '/account/update';
+  static String changePassword = '/account/change-password';
   static String upgrade = '/account/upgrade';
   static String statement = '/account/statement';
   static String transaction = '/transaction';
@@ -35,6 +36,8 @@ class Ext {
   static NumberFormat formatCurrency = NumberFormat.currency(locale: "en_US", symbol: "");
   static String individual = "Individual";
   static String business = "Business";
+  static String male = "Male";
+  static String female = "Female";
   static List<String> businessType = ["Corp", "LLC", "Sole Proprietor"];
   static List<String> businessOrIndustry = ["Restaurant", "Construction", "Software developer", "Shipping"];
 }

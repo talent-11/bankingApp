@@ -87,6 +87,7 @@ flutter:
     - assets/images/wizard05.png
     - assets/images/wizard07.png
     - assets/images/fingerprint.png
+    - assets/images/profile_business.png
     - assets/images/profile_men.png
     - assets/images/profile_women.png
     - assets/svgs/cc.svg

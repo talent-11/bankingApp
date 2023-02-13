@@ -37,7 +37,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
   bool _visibleConfirmPassword = false;
   late String _name, _email, _username, _newPassword;
 
-  Future<void> _signup(BuildContext context) async {
+  Future<void> signup(BuildContext context) async {
     if (_loading) return;
 
     if (!_agreed) {
@@ -98,7 +98,7 @@ class _SignupMainPageState extends State<SignupMainPage> {
 
   void onPressedNext(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      _signup(context);
+      signup(context);
     }
   }
 
