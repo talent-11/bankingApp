@@ -2,20 +2,20 @@ import 'dart:convert';
 
 import 'package:country_list_pick/country_list_pick.dart';
 import 'package:flutter/material.dart';
-import 'package:fotoc/components/ui/dropdown.dart';
-import 'package:fotoc/components/ui/error_dialog.dart';
-import 'package:fotoc/components/wizard/button.dart';
-import 'package:fotoc/constants.dart';
-import 'package:fotoc/services/api_service.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'package:fotoc/components/ui/logo_bar.dart';
-import 'package:fotoc/components/wizard/text_input_field.dart';
+import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
-import 'package:fotoc/providers/account_provider.dart';
+import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/services/validation_service.dart';
+import 'package:fotoc/providers/account_provider.dart';
+import 'package:fotoc/components/ui/logo_bar.dart';
+import 'package:fotoc/components/ui/dropdown.dart';
+import 'package:fotoc/components/ui/error_dialog.dart';
+import 'package:fotoc/components/wizard/text_input_field.dart';
+import 'package:fotoc/components/wizard/button.dart';
 
 class BusinessProfilePage extends StatefulWidget {
   const BusinessProfilePage({Key? key}) : super(key: key);

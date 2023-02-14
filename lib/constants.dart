@@ -20,6 +20,7 @@ class ApiConstants {
   static String upload = '/service/upload';
   static String ocrStatement = '/service/ocr/statement';
   static String ocrIdCard = '/service/ocr/master';
+  static String notifications = '/service/notifications';
 }
 
 class Notifications {

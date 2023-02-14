@@ -37,10 +37,10 @@ class _PeoplePageState extends State<PeoplePage> {
   @override
   void initState() {
     super.initState();
-    _getPeoples();
+    getPeoples();
   }
 
-  _getPeoples() async {
+  getPeoples() async {
     if (_app.loading) return;
 
     _peoples = [];

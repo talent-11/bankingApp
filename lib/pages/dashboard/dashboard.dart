@@ -4,6 +4,7 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fotoc/pages/notification/notifications_list.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -158,7 +159,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   void onPressedHome(BuildContext context) {
-
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsListPage()));
   }
 
   Future scan() async {
