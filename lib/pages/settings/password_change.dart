@@ -90,7 +90,6 @@ class _PasswordChangePageState extends State<PasswordChangePage> {
 
   void onPressedChange(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
       changePassword(context);
     }
   }

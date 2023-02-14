@@ -54,7 +54,7 @@ class _BusinessVerify3PageState extends State<BusinessVerify3Page> {
     super.dispose();
   }
 
-  Future<void> _signup(BuildContext context) async {
+  Future<void> register(BuildContext context) async {
     if (_loading) return;
 
     String token = Provider.of<AccountProvider>(context, listen: false).account.token!;
@@ -129,7 +129,7 @@ class _BusinessVerify3PageState extends State<BusinessVerify3Page> {
     }
 
     if (_formKey.currentState!.validate()) {
-      _signup(context);
+      register(context);
     }
   }
 

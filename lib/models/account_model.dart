@@ -1,10 +1,8 @@
 import 'dart:convert';
 
-List<AccountModel> userModelFromJson(String str) => List<AccountModel>.from(
-    json.decode(str).map((x) => AccountModel.fromJson(x)));
+List<AccountModel> userModelFromJson(String str) => List<AccountModel>.from(json.decode(str).map((x) => AccountModel.fromJson(x)));
 
-String userModelToJson(List<AccountModel> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String userModelToJson(List<AccountModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class AccountModel {
   AccountModel({
@@ -23,6 +21,9 @@ class AccountModel {
     this.zipcode,
     this.state,
     this.country,
+    this.gender,
+    this.birth,
+    this.marital,
     this.bank,
     this.business,
     // required this.website,
@@ -44,6 +45,9 @@ class AccountModel {
   String? zipcode;
   String? state;
   String? country;
+  String? gender;
+  String? birth;
+  String? marital;
   Bank? bank = Bank(checking: 0, saving: 0);
   BusinessModel? business;
 
@@ -63,8 +67,13 @@ class AccountModel {
     zipcode: json["zipcode"],
     state: json["state"],
     country: json["country"],
+    gender: json["gender"],
+    birth: json["birth"],
+    marital: json["marital"],
     bank: Bank.fromJson(json["bank"]),
-    business: json["business"] != null ? BusinessModel.fromJson(json["business"]) : null,
+    business: json["business"] != null
+      ? BusinessModel.fromJson(json["business"])
+      : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -100,9 +109,9 @@ class Geo {
   );
 
   Map<String, dynamic> toJson() => {
-    "lat": lat,
-    "lng": lng,
-  };
+        "lat": lat,
+        "lng": lng,
+      };
 }
 
 class Bank {
@@ -120,9 +129,9 @@ class Bank {
   );
 
   Map<String, dynamic> toJson() => {
-    "checking": checking,
-    "saving": saving,
-  };
+        "checking": checking,
+        "saving": saving,
+      };
 }
 
 class BusinessModel {
@@ -130,36 +139,51 @@ class BusinessModel {
     this.id,
     this.name,
     this.email,
+    this.taxId,
+    this.phone,
     this.verifiedId,
     this.verified,
     this.suite,
     this.city,
     this.state,
     this.country,
+    this.doo,
+    this.type,
+    this.boi,
     this.bank
   });
 
   int? id;
   String? name;
   String? email;
+  String? taxId;
+  String? phone;
   String? verifiedId;
   bool? verified;
   String? suite;
   String? city;
   String? state;
   String? country;
+  String? doo;
+  String? type;
+  String? boi;
   Bank? bank = Bank(checking: 0, saving: 0);
 
   factory BusinessModel.fromJson(Map<String, dynamic> json) => BusinessModel(
     id: json["id"],
     name: json["name"],
     email: json["email"],
+    taxId: json["tax_id"],
+    phone: json["phone"],
     verifiedId: json["verified_id"],
     verified: json["verified"],
     suite: json["suite"],
     city: json["city"],
     state: json["state"],
     country: json["country"],
+    doo: json["doo"],
+    type: json["type"],
+    boi: json["boi"],
     bank: Bank.fromJson(json["bank"]),
   );
 }

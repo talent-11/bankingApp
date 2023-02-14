@@ -14,54 +14,90 @@ import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/ui/radio_text.dart';
 import 'package:fotoc/components/wizard/button.dart';
-import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
-import 'package:fotoc/pages/individual/verify_step_2.dart';
 
-class VerifyStep1Page extends StatefulWidget {
-  const VerifyStep1Page({Key? key}) : super(key: key);
+class IndividualProfilePage extends StatefulWidget {
+  const IndividualProfilePage({Key? key}) : super(key: key);
 
   @override
-  State<VerifyStep1Page> createState() => _VerifyStep1PageState();
+  State<IndividualProfilePage> createState() => _IndividualProfilePageState();
 }
 
-class _VerifyStep1PageState extends State<VerifyStep1Page> {
+class _IndividualProfilePageState extends State<IndividualProfilePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late AccountModel _me;
   bool _loading = false;
-
-  late String _gender = 'Male', _marital = 'Married', _phone, _suite, _city, _state, _zipcode, _country = 'US';
-  final TextEditingController _birthController = TextEditingController();
+  late String _name, _email, _username, _birth, _gender, _marital, _phone, _suite, _city, _state, _zipcode, _country;
+  late TextEditingController _nameController, _emailController, _usernameController, _birthController, _phoneController, _suiteController, _cityController, _stateController, _zipcodeController;
 
   @override
   void initState() {
     super.initState();
+
+    AccountModel me = Provider.of<AccountProvider>(context, listen: false).account;
+    _nameController = TextEditingController(text: me.name!);
+    _emailController = TextEditingController(text: me.email!);
+    _usernameController = TextEditingController(text: me.username!);
+    _phoneController = TextEditingController(text: me.phone!);
+    _suiteController = TextEditingController(text: me.suite!);
+    _cityController = TextEditingController(text: me.city!);
+    _stateController = TextEditingController(text: me.state!);
+    _zipcodeController = TextEditingController(text: me.zipcode!);
+    _birthController = TextEditingController(text: me.birth!);
+    
+    setState(() {
+      _me = me;
+      _name = _me.name!;
+      _email = _me.email!;
+      _username = _me.username!;
+      _birth = _me.birth!;
+      _gender = _me.gender!;
+      _marital = _me.marital!;
+      _phone = _me.phone!;
+      _suite = _me.suite!;
+      _city = _me.city!;
+      _state = _me.state!;
+      _zipcode = _me.zipcode!;
+      _country = _me.country!;
+    });
   }
 
   @override
   void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _usernameController.dispose();
+    _phoneController.dispose();
+    _suiteController.dispose();
+    _cityController.dispose();
+    _stateController.dispose();
+    _zipcodeController.dispose();
     _birthController.dispose();
     super.dispose();
   }
 
-  void _update(BuildContext context) async {
+  void onPressedBack(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  void updateProfile(BuildContext context) async {
     if (_loading) return;
 
-    AccountModel me = Provider.of<AccountProvider>(context, listen: false).account;
-    String token = me.token!;
+    String token = Provider.of<AccountProvider>(context, listen: false).account.token!;
 
     setState(() => _loading = true);
     String params = jsonEncode(<String, dynamic>{
-      'name': me.name,
-      'email': me.email,
-      'username': me.username,
-      'suite': _suite,
-      'city': _city,
-      'state': _state,
-      'zipcode': _zipcode,
+      'name': _name,
+      'email': _email,
+      'username': _username,
+      'birth': _birth,
+      'suite': _suiteController.text,
+      'city': _cityController.text,
+      'state': _stateController.text,
+      'zipcode': _zipcodeController.text,
       'country': _country,
       'gender': _gender,
-      'phone': _phone,
-      'birth': _birthController.text,
+      'phone': _phoneController.text,
       'minor': 'False',
       'marital': _marital
     });
@@ -79,9 +115,9 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
       dynamic result = json.decode(response.body);
       AccountModel user = AccountModel.fromJson(result['me']);
       context.read<AccountProvider>().setAccount(user);
-      context.read<AccountProvider>().login(true);
 
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep2Page()));
+      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep2Page()));
+      Navigator.pop(context);
     } else if (response.statusCode == 400) {
       showDialog(
         context: context, 
@@ -94,24 +130,49 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
     }
   }
 
-  void onPressedNext(BuildContext context) {
+  void onPressedUpdate(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      _update(context);
+      updateProfile(context);
     }
   }
+
+  IconButton backButton(BuildContext context) => IconButton(
+    icon: const Icon(Icons.arrow_back_ios, size: 32.0),
+    onPressed: () => onPressedBack(context), 
+    color: Colors.white,
+  );
 
   List<Widget> decorateBody(BuildContext context) {
     var widgets = <Widget>[];
 
-    widgets.add(const LogoBar());
-
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 24.0),
-        child: Text(
-          "Account details",
-          style: Theme.of(context).textTheme.headline1,
-          textAlign: TextAlign.center,
+        child: Text("Update Profile", style: Theme.of(context).textTheme.headline1, textAlign: TextAlign.center)
+      )
+    );
+
+    widgets.add(
+      Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Text("Information entered must match your I.D. uploaded:", style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.center)
+      )
+    );
+
+    widgets.add(
+      Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: TextInputField(
+          enabled: false,
+          controller: _nameController,
+          hintText: "Enter your name",
+          onChanged: (val) => setState(() => _name = val!),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your name';
+            }
+            return null;
+          },
         )
       )
     );
@@ -119,10 +180,35 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
     widgets.add(
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
-        child: Text(
-          "Information entered must match your I.D. uploaded in Step 3:",
-          style: Theme.of(context).textTheme.bodyText2,
-          textAlign: TextAlign.center,
+        child: TextInputField(
+          enabled: false,
+          controller: _emailController,
+          hintText: "Enter your email",
+          onChanged: (val) => setState(() => _name = val!),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your email';
+            }
+            return null;
+          },
+        )
+      )
+    );
+
+    widgets.add(
+      Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: TextInputField(
+          enabled: false,
+          controller: _usernameController,
+          hintText: "Enter your username",
+          onChanged: (val) => setState(() => _username = val!),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your username';
+            }
+            return null;
+          },
         )
       )
     );
@@ -178,14 +264,14 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
                 label: 'Male', 
                 groupValue: _gender, 
                 onChanged: (value) {
-                  setState(() { _gender = value.toString(); });
+                  // setState(() { _gender = value.toString(); });
                 }
               ),
               RadioText(
                 label: 'Female', 
                 groupValue: _gender, 
                 onChanged: (value) {
-                  setState(() => _gender = value.toString());
+                  // setState(() => _gender = value.toString());
                 }
               ),
             ],
@@ -201,27 +287,9 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
           decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0))),
           child: Row(
             children: <Widget>[
-              RadioText(
-                label: 'Married', 
-                groupValue: _marital, 
-                onChanged: (value) {
-                  setState(() { _marital = value.toString(); });
-                }
-              ),
-              RadioText(
-                label: 'Single', 
-                groupValue: _marital, 
-                onChanged: (value) {
-                  setState(() { _marital = value.toString(); });
-                }
-              ),
-              RadioText(
-                label: 'Widowed', 
-                groupValue: _marital, 
-                onChanged: (value) {
-                  setState(() { _marital = value.toString(); });
-                }
-              ),
+              RadioText(label: 'Married', groupValue: _marital, onChanged: (value) => setState(() { _marital = value.toString(); })),
+              RadioText(label: 'Single', groupValue: _marital, onChanged: (value) => setState(() { _marital = value.toString(); })),
+              RadioText(label: 'Widowed', groupValue: _marital, onChanged: (value) => setState(() { _marital = value.toString(); })),
             ],
           ),
         )
@@ -233,10 +301,9 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         padding: const EdgeInsets.only(top: 8.0),
         child: TextInputField(
           enabled: !_loading,
+          controller: _phoneController,
           hintText: "Enter your phone number",
-          onChanged: (val) {
-            setState(() => _phone = val!);
-          },
+          onChanged: (val) => setState(() => _phone = val!),
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your phone number';
@@ -252,10 +319,9 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         padding: const EdgeInsets.only(top: 8.0),
         child: TextInputField(
           enabled: !_loading,
+          controller: _suiteController,
           hintText: "Enter your house number and street name",
-          onChanged: (val) {
-            setState(() => _suite = val!);
-          },
+          onChanged: (val) => setState(() => _suite = val!),
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your address';
@@ -270,12 +336,10 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
       Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: TextInputField(
-          // labelText: "Your name",
           enabled: !_loading,
+          controller: _cityController,
           hintText: "Enter your city",
-          onChanged: (val) {
-            setState(() => _city = val!);
-          },
+          onChanged: (val) => setState(() => _city = val!),
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your city';
@@ -291,10 +355,9 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         padding: const EdgeInsets.only(top: 8.0),
         child: TextInputField(
           enabled: !_loading,
+          controller: _stateController,
           hintText: "Enter your state or province",
-          onChanged: (val) {
-            setState(() => _state = val!);
-          },
+          onChanged: (val) => setState(() => _state = val!),
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your state or province';
@@ -310,10 +373,9 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
         child: TextInputField(
           enabled: !_loading,
+          controller: _zipcodeController,
           hintText: "Enter your zip or postal code",
-          onChanged: (val) {
-            setState(() => _zipcode = val!);
-          },
+          onChanged: (val) => setState(() => _zipcode = val!),
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your zip or postal code';
@@ -380,54 +442,41 @@ class _VerifyStep1PageState extends State<VerifyStep1Page> {
         useSafeArea: true
       ),
     );
+
+    widgets.add(
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: SizedBox(
+          width: 200,
+          height: 48,
+          child: FotocButton(
+            loading: _loading,
+            buttonText: "Update",
+            onPressed: () {
+              onPressedUpdate(context);
+            },
+          ),
+        )
+      )
+    );
     
     return widgets;
   }
 
-  Widget footer(BuildContext context) => Column(
-    children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: SizedBox(
-                height: 48,
-                child: FotocButton(
-                  loading: _loading,
-                  buttonText: "Next",
-                  onPressed: () {
-                    onPressedNext(context);
-                  },
-                ),
-              )
-            ),
-          ]
-        ),
-      ),
-      const Dots(selectedIndex: 2, dots: 6),
-    ],
-  );
-
   @override
   Widget build(BuildContext context) {
-    AccountModel me = context.watch<AccountProvider>().account;
-
     return Scaffold(
       body: Column(
         children: [
+          LogoBar(iconButton: backButton(context)),
           Expanded(
             child: SingleChildScrollView(
               child: Form(
                 key: _formKey,
-                child: Column(
-                  children: decorateBody(context)
-                ),
+                child: Column(children: decorateBody(context)),
               )
             )
           ),
-          footer(context)
         ],
       )
     );

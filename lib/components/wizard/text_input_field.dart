@@ -4,6 +4,7 @@ class TextInputField extends StatelessWidget {
   const TextInputField({
     Key? key, 
     this.enabled, 
+    this.controller,
     this.labelText, 
     this.hintText, 
     this.obscureText, 
@@ -15,6 +16,7 @@ class TextInputField extends StatelessWidget {
   }) : super(key: key);
 
   final bool? enabled;
+  final TextEditingController? controller;
   final String? labelText;
   final String? hintText;
   final bool? obscureText;
@@ -37,6 +39,7 @@ class TextInputField extends StatelessWidget {
     widget.add(
       TextFormField(
         enabled: enabled,
+        controller: controller,
         obscureText: obscureText ?? false,
         keyboardType: keyboardType,
         validator: validator,

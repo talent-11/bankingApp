@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fotoc/models/account_model.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
@@ -75,7 +76,9 @@ class _SignupMainPageState extends State<SignupMainPage> {
       int count = 0;
       if (widget.from == "verify") {
         dynamic result = json.decode(response.body);
-        context.read<AccountProvider>().setAccountToken(result['token']);
+        AccountModel user = AccountModel.fromJson(result['me']);
+        user.token = result['token'];
+        context.read<AccountProvider>().setAccount(user);
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const VerifyStep1Page()), (route) {
           return count ++ == 2;
         });

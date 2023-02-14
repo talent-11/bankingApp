@@ -8,6 +8,7 @@ class ApiConstants {
   static String login = '/account/login';
   static String signup = '/account/register';
   static String businessSignup = '/account/business/register';
+  static String businessUpdate = '/account/business/update';
   static String reVerify = '/account/re-verify';
   static String businessReVerify = '/account/business/re-verify';
   static String profile = '/account/update';
