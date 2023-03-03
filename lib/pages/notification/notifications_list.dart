@@ -31,10 +31,7 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
     super.initState();
 
     AccountModel me = Provider.of<AccountProvider>(context, listen: false).account;
-    
-    setState(() {
-      _me = me;
-    });
+    setState(() => _me = me);
 
     getNotifications();
   }

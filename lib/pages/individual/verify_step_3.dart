@@ -69,14 +69,14 @@ class _VerifyStep3PageState extends State<VerifyStep3Page> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const Spacer(flex: 3),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
-                    child: Text(
-                      notify,
-                      style: Theme.of(context).textTheme.headline5,
-                      textAlign: TextAlign.center),
-                  ),
+                  // const Spacer(flex: 3),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
+                  //   child: Text(
+                  //     notify,
+                  //     style: Theme.of(context).textTheme.headline5,
+                  //     textAlign: TextAlign.center),
+                  // ),
                   const Spacer(flex: 3),
                   Padding(
                     padding: const EdgeInsets.only(top: 16, left: 32, right: 32),

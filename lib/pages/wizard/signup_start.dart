@@ -43,7 +43,7 @@ class _SignupStartPageState extends State<SignupStartPage> {
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
       Text(
-        "Get your Test Account here",
+        "Get your Account here",
         style: Theme.of(context).textTheme.headline1
       ),
       Column(

@@ -5,7 +5,7 @@ import 'package:fotoc/components/wizard/text_spans.dart';
 const titles = [
   "How do I get the money I have now into FOTOC Bank?",
   "In addition (For Businesses only):",
-  "What about Cash? How can I get my Cash converted to (CC's)",
+  "What about Cash?\nHow can I get my Cash converted to (CC's)",
   "But, before Banks are accepted into the FOTOC Banking System and for a Limited time only:",
 ];
 
@@ -53,13 +53,7 @@ class _VerifyStepNeedPageState extends State<VerifyStepNeedPage> {
           )
         )
       );
-      widgets.add(
-        RichText(
-          text: TextSpan(
-            children: decorateArticle(context, descriptions[i])
-          )
-        )
-      );
+      widgets.add(RichText(text: TextSpan(children: decorateArticle(context, descriptions[i]))));
     }
        
     return widgets;

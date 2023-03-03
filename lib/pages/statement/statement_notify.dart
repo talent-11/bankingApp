@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 
-const description = "Before you begin, make sure you have one monthly statement for every account that you want matched. You will not be able to com back and upload monthly statements a second time. We only match funds one time! Once you upload all your statements and submit, your one time matching is complete!";
+const description = "Before you begin, make sure you have one monthly statement for every account that you want matched. You will not be able to come back and upload monthly statements a second time. We only match funds one time! Once you upload all your statements and submit, your one time matching is complete!";
 
 class StatementNotifyPage extends StatefulWidget {
   const StatementNotifyPage({Key? key}) : super(key: key);
@@ -86,7 +86,7 @@ class _StatementNotifyPageState extends State<StatementNotifyPage> {
         padding: const EdgeInsets.only(top: 0.0),
         child: TextInputField(
           keyboardType: TextInputType.name,
-          hintText: "Enter You Full Name in Statement",
+          hintText: "Enter Your Full Name in Statement",
           onChanged: (val) {
             setState(() => _name = val!);
           },
@@ -105,7 +105,7 @@ class _StatementNotifyPageState extends State<StatementNotifyPage> {
         padding: const EdgeInsets.only(top: 0.0),
         child: TextInputField(
           keyboardType: TextInputType.number,
-          hintText: "Enter You Ending Balance",
+          hintText: "Enter Your Ending Balance",
           onChanged: (val) {
             setState(() => _balance = double.parse(val!));
           },
@@ -134,7 +134,7 @@ class _StatementNotifyPageState extends State<StatementNotifyPage> {
             }
             if (int.parse(value) < 2019 || int.parse(value) > 2023)
             {
-              return 'Please input lateset statement year';
+              return 'Statement year must be 2019 or after';
             }
             return null;
           },
