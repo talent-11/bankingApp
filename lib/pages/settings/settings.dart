@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
@@ -42,6 +43,10 @@ class _SettingsPageState extends State<SettingsPage> {
     // Future.delayed(const Duration(milliseconds: 10), _getStatements);
   }
 
+  canCloseAccount(Bank bank) {
+    return bank.checking <= 0 && bank.saving <= 0;
+  }
+
   // void _getStatements() async {
   //   Response? response = await ApiService().get(ApiConstants.statement, _me.token);
   //   if (response != null && response.statusCode == 200) {
@@ -67,6 +72,32 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void onPressedChangePassword(BuildContext context) {
     Navigator.push(context, MaterialPageRoute(builder: (_) => const PasswordChangePage()));
+  }
+
+  void onPressedCloseAccount(BuildContext context) {
+    if (!canCloseAccount(_me.bank!)) {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          String text = "Can not close your account because you have some money in your account";
+          return ErrorDialog(text: text);
+        }
+      );
+      return;
+    }
+  }
+
+  void onPressedCloseBusinessAccount(BuildContext context) {
+    if (!canCloseAccount(_me.business!.bank!)) {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          String text = "Can not close your account because you have some money in your business account";
+          return ErrorDialog(text: text);
+        }
+      );
+      return;
+    }
   }
 
   void onPressedLogout(BuildContext context) {
@@ -141,6 +172,11 @@ class _SettingsPageState extends State<SettingsPage> {
     widgets.add(const SizedBox(height: 1));
     if (!_isBizzAccount) {
       widgets.add(decorateMenuItem(context, "Change Password", () { onPressedChangePassword(context); }));
+      widgets.add(const SizedBox(height: 1));
+      widgets.add(decorateMenuItem(context, "Close account", () { onPressedCloseAccount(context); }));
+      widgets.add(const SizedBox(height: 1));
+    } else {
+      widgets.add(decorateMenuItem(context, "Close business account", () { onPressedCloseBusinessAccount(context); }));
       widgets.add(const SizedBox(height: 1));
     }
     widgets.add(decorateMenuItem(context, "Logout", () { onPressedLogout(context); }));
