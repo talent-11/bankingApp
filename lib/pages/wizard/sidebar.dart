@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fotoc/components/ui/confirm_dialog.dart';
 
 class SideBar extends StatelessWidget {
   const SideBar({Key? key}) : super(key: key);
@@ -8,8 +9,18 @@ class SideBar extends StatelessWidget {
   TextStyle textStyle(BuildContext context) => TextStyle(color: Theme.of(context).primaryColor);
 
   void onPressedMenuItem(BuildContext context, String kind) {
-    Navigator.pop(context);
     Navigator.pushNamed(context, '/wizard/$kind');
+  }
+
+  void onPressedExit(BuildContext context) {
+    showDialog(
+      context: context, 
+      builder: (context) {
+        String text = "Are you sure you want to exit app and log off?";
+        return ConfirmDialog(text: text, onPressedYes: () => exit(0), onPressedNo: () => Navigator.of(context).pop(),);
+      }
+    );
+    // exit(0);
   }
 
   @override
@@ -59,7 +70,7 @@ class SideBar extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.exit_to_app, color: Theme.of(context).primaryColor),
             title: Text('Exit', style: textStyle(context)),
-            onTap: () => exit(0),
+            onTap: () => onPressedExit(context),
           ),
         ],
       ),
