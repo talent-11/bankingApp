@@ -15,20 +15,14 @@ class TransactionsView extends StatelessWidget {
   Widget decorateTransaction(BuildContext context, TransactionModel transaction) {
     return Row(
       children: [
-        Icon(
-          Icons.account_circle,
-          color: Theme.of(context).primaryColor,
-          size: 60.0,
-        ),
+        Icon(Icons.account_circle, color: Theme.of(context).primaryColor, size: 60.0),
         Expanded(
           flex: 1,
           child: Padding(
             padding: const EdgeInsets.only(left: 12),
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 6),
-              decoration: const BoxDecoration(
-                border: Border(bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0))
-              ),
+              decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xffe8ecef), width: 1.0))),
               child: Row(
                 children: [
                   Expanded(
@@ -60,6 +54,11 @@ class TransactionsView extends StatelessWidget {
     List<Widget> transactionWidgets = [];
     for (var transaction in transactions) {
       transactionWidgets.add(decorateTransaction(context, transaction));
+      if (transaction.paid && !transaction.toMe) {
+        double amount = double.parse(transaction.amount) * 0.02;
+        TransactionModel t = TransactionModel(name: "Contribution", date: transaction.date, amount: amount.toStringAsFixed(2), paid: true, toMe: false);
+        transactionWidgets.add(decorateTransaction(context, t));
+      }
     }
     return Column(
       children: transactionWidgets

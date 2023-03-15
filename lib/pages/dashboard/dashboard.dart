@@ -87,13 +87,21 @@ class _DashboardPageState extends State<DashboardPage> {
         dynamic receiver2 = trans['receiver2'];
 
         bool paid = (sender != null && sender['id'] == me.id) || (me.business != null && sender2 != null && sender2['id'] == me.business!.id);
+        bool toMe = false;
+        if (me.business != null && sender2 == null && receiver == null && sender['id'] == me.id && receiver2['id'] == me.business!.id) {
+          toMe = true;
+        }
+        if (me.business != null && sender == null && receiver2 == null && sender2['id'] == me.business!.id && receiver['id'] == me.id) {
+          toMe = true;
+        }
         String receiverName = paid ? receiver != null ? receiver['name'] : receiver2['name'] : sender != null ? sender['name'] : sender2['name'];
         context.read<TransactionsProvider>().addTransaction(
           TransactionModel(
             name: receiverName,
             date: DateFormat('MMM d').format(DateTime.parse(trans['created_at'])),
             amount: trans['amount'],
-            paid: paid
+            paid: paid,
+            toMe: toMe
           )
         );
       }

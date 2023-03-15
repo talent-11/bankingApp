@@ -14,12 +14,14 @@ class TransactionModel {
     required this.date,
     required this.amount,
     required this.paid,
+    required this.toMe,
   });
 
   String name;
   String amount;
   String date;
   bool paid;
+  bool toMe;
 }
 
 // class TransactionModel {
