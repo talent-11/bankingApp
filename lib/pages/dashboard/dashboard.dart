@@ -76,6 +76,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
     String url = ApiConstants.transaction + "?id=" + (selectedAccountType == Ext.business ? me.business!.id.toString() : me.id.toString()) + "&type=" + selectedAccountType;
     Response? response = await ApiService().get(url, me.token);
+    
+    if (!mounted) return;
+
     setState(() => _app.loading = false);
 
     if (response != null && response.statusCode == 200) {

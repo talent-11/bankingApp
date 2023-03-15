@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import 'package:fotoc/models/transaction_model.dart';
-import 'package:fotoc/providers/transactions_provider.dart';
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -13,9 +12,11 @@ import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/models/transaction_model.dart';
 import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/providers/settings_provider.dart';
+import 'package:fotoc/providers/transactions_provider.dart';
 
 
 class AppState {
@@ -209,7 +210,14 @@ class _ScanPayPageState extends State<ScanPayPage> {
               decoration: inputDecoration(context),
               keyboardType: TextInputType.number,
               initialValue: _amount,
-              onChanged: (val) => setState(() => _amount = val),
+              onChanged: (val) => setState(() => _amount = val.replaceAll(',', '')),
+              inputFormatters: [
+                CurrencyTextInputFormatter(
+                  decimalDigits: 2,
+                  locale: 'en',
+                  symbol: '',
+                )
+              ],
               // validator: (value) {
               //   if (value == null || value.isEmpty || double.parse(value) == 0) {
               //     return 'Please enter amount';
