@@ -131,9 +131,9 @@ class Bank {
   );
 
   Map<String, dynamic> toJson() => {
-        "checking": checking,
-        "saving": saving,
-      };
+    "checking": checking,
+    "saving": saving,
+  };
 }
 
 class BusinessModel {
