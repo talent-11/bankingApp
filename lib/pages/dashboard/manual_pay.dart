@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:fotoc/models/transaction_model.dart';
+import 'package:fotoc/providers/transactions_provider.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -85,6 +88,15 @@ class _ManualPayPageState extends State<ManualPayPage> {
           _me.bank!.checking - double.parse(Ext.formatCurrency.format(double.parse(_amount) * (1 + fee)))
         );
       }
+      context.read<TransactionsProvider>().addTransaction(
+        TransactionModel(
+          name: _app.receiverName,
+          date: DateFormat('MMM d').format(DateTime.now()),
+          amount: _amount,
+          paid: true,
+          toMe: _me.business != null && (_me.business!.id == _app.receiverId || _me.id == _app.receiverId)
+        )
+      );
       // context.read<AccountProvider>().setAccount(me);
       context.read<SettingsProvider>().setTabIndex(0);
     } else if (response.statusCode == 400) {

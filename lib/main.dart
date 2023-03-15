@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:fotoc/models/transaction_model.dart';
 import 'package:fotoc/providers/transactions_provider.dart';
+import 'package:intl/intl.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
@@ -94,11 +96,21 @@ class MyApp extends StatelessWidget {
           );
           if (notification.data!["type"] == Notifications.transaction) {
             double checking = double.parse(notification.data!["balance"]);
+            double amount = double.parse(notification.data!["amount"]);
             if (notification.data!["account_type"] == Ext.business) {
               context.read<AccountProvider>().updateBusinessAccountBank(checking);
             } else {
               context.read<AccountProvider>().updateAccountBank(checking);
             }
+            context.read<TransactionsProvider>().addTransaction(
+              TransactionModel(
+                name: notification.data!["sender_name"],
+                date: DateFormat('MMM d').format(DateTime.now()),
+                amount: amount.toStringAsFixed(2),
+                paid: false,
+                toMe: false
+              )
+            );
           }
         });
 

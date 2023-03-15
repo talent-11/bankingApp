@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:fotoc/models/transaction_model.dart';
+import 'package:fotoc/providers/transactions_provider.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -72,6 +75,16 @@ class _ScanPayPageState extends State<ScanPayPage> {
         me.bank!.checking -= double.parse(Ext.formatCurrency.format(double.parse(_amount) * (1 + fee)));
       }
       context.read<AccountProvider>().setAccount(me);
+      
+      context.read<TransactionsProvider>().addTransaction(
+        TransactionModel(
+          name: widget.receiver.name!,
+          date: DateFormat('MMM d').format(DateTime.now()),
+          amount: _amount,
+          paid: true,
+          toMe: me.business != null && (me.business!.id == widget.receiver.id || me.id == widget.receiver.id)
+        )
+      );
 
       Navigator.pop(context);
     } else if (response.statusCode == 400) {
