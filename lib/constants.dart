@@ -9,8 +9,8 @@ class ApiConstants {
   static String signup = '/account/register';
   static String businessSignup = '/account/business/register';
   static String businessUpdate = '/account/business/update';
-  static String reVerify = '/account/re-verify';
-  static String businessReVerify = '/account/business/re-verify';
+  static String resendEmail = '/account/resend-email';
+  static String businessResendEmail = '/account/business/resend-email';
   static String profile = '/account/update';
   static String changePassword = '/account/change-password';
   static String upgrade = '/account/upgrade';
@@ -42,4 +42,10 @@ class Ext {
   static String female = "Female";
   static List<String> businessType = ["Corp", "LLC", "Sole Proprietor"];
   static List<String> businessOrIndustry = ["Restaurant", "Construction", "Software developer", "Shipping"];
+}
+
+class Error {
+  static String id = "id";
+  static String phone = "phone";
+  static String email = "email";
 }

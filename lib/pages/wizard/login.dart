@@ -84,7 +84,15 @@ class _LoginPageState extends State<LoginPage> {
         }
       );
     } else if (response.statusCode == 403) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SignupAlmostPage(from: 'login', email: userEmail)));
+      dynamic res = json.decode(response.body);
+
+      if (res["error"] == Error.phone) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep1Page()));
+      } else if (res["error"] == Error.id) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep2Page()));
+      } else if (res["error"] == Error.email) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SignupAlmostPage(from: 'login', email: userEmail)));
+      }
     }
   }
 

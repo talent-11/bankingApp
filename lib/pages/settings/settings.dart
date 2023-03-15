@@ -101,6 +101,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void onPressedLogout(BuildContext context) {
+    context.read<AccountProvider>().setAccount(AccountModel());
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const LoginPage()), (route) => false);
   }
 

@@ -57,7 +57,7 @@ class _AccountSwitchPageState extends State<AccountSwitchPage> {
     String params = jsonEncode(<String, dynamic>{ 'email': _me.business!.email });
 
     setState(() { _loading = true; });
-    Response? response = await ApiService().post(ApiConstants.businessReVerify, token, params);
+    Response? response = await ApiService().post(ApiConstants.businessResendEmail, token, params);
     setState(() { _loading = false; });
 
     if (response == null) {

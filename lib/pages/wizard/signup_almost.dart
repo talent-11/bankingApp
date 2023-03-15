@@ -39,7 +39,7 @@ class _SignupAlmostPageState extends State<SignupAlmostPage> {
     String params = jsonEncode(<String, dynamic>{
       'email': widget.email,
     });
-    Response? response = await ApiService().post(ApiConstants.reVerify, '', params);
+    Response? response = await ApiService().post(ApiConstants.resendEmail, '', params);
     setState(() => _loading = false);
 
     if (response == null) {
