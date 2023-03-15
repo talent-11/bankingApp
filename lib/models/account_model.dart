@@ -70,7 +70,9 @@ class AccountModel {
     gender: json["gender"],
     birth: json["birth"],
     marital: json["marital"],
-    bank: Bank.fromJson(json["bank"]),
+    bank: json["business"] != null
+      ? Bank.fromJson(json["bank"])
+      : null,
     business: json["business"] != null
       ? BusinessModel.fromJson(json["business"])
       : null,

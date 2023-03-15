@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fotoc/pages/notification/notifications_list.dart';
+import 'package:fotoc/providers/transactions_provider.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -47,7 +48,6 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   final _app = AppState(AccountModel(), false);
-  List<TransactionModel> _transactions = [];
   final TextEditingController _controller = TextEditingController();
   String _searchString = "";
 
@@ -55,8 +55,8 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     
-    // Future.delayed(const Duration(milliseconds: 10), getTransactions);
-    getTransactions();
+    Future.delayed(const Duration(milliseconds: 10), getTransactions);
+    // getTransactions();
   }
 
   @override
@@ -69,7 +69,7 @@ class _DashboardPageState extends State<DashboardPage> {
   getTransactions() async {
     if (_app.loading) return;
 
-    _transactions = [];
+    context.read<TransactionsProvider>().removeAllTransactions();
     setState(() => _app.loading = true);
     AccountModel me = Provider.of<AccountProvider>(context, listen: false).account;
     String selectedAccountType = Provider.of<SettingsProvider>(context, listen: false).bizzAccount;
@@ -88,7 +88,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
         bool paid = (sender != null && sender['id'] == me.id) || (me.business != null && sender2 != null && sender2['id'] == me.business!.id);
         String receiverName = paid ? receiver != null ? receiver['name'] : receiver2['name'] : sender != null ? sender['name'] : sender2['name'];
-        _transactions.add(
+        context.read<TransactionsProvider>().addTransaction(
           TransactionModel(
             name: receiverName,
             date: DateFormat('MMM d').format(DateTime.parse(trans['created_at'])),
@@ -327,7 +327,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
     widgets.add(Padding(padding: const EdgeInsets.only(top: 32), child: decorateButtons(context)));
 
-    widgets.add(Padding(padding: const EdgeInsets.fromLTRB(20, 16, 20, 0), child: TransactionsView(transactions: _transactions)));
+    widgets.add(Padding(padding: const EdgeInsets.fromLTRB(20, 16, 20, 0), child: TransactionsView(transactions: Provider.of<TransactionsProvider>(context, listen: false).transactions)));
     
     return widgets;
   }
