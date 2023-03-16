@@ -67,13 +67,7 @@ class _LoginPageState extends State<LoginPage> {
       context.read<AccountProvider>().setAccount(user);
       context.read<AccountProvider>().login(true);
 
-      if (user.phone == null) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep1Page()));
-      } else if (user.verifiedId == null) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep2Page()));
-      } else {
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const MainTabsPage()), (route) => false);
-      }
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const MainTabsPage()), (route) => false);
     } else if (response.statusCode == 400) {
       showDialog(
         context: context, 
@@ -84,13 +78,16 @@ class _LoginPageState extends State<LoginPage> {
         }
       );
     } else if (response.statusCode == 403) {
-      dynamic res = json.decode(response.body);
+      dynamic result = json.decode(response.body);
+      AccountModel user = AccountModel.fromJson(result['me']);
+      user.token = result['token'];
+      context.read<AccountProvider>().setAccount(user);
 
-      if (res["error"] == Error.phone) {
+      if (result["error"] == Error.phone) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep1Page()));
-      } else if (res["error"] == Error.id) {
+      } else if (result["error"] == Error.id) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const VerifyStep2Page()));
-      } else if (res["error"] == Error.email) {
+      } else if (result["error"] == Error.email) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SignupAlmostPage(from: 'login', email: userEmail)));
       }
     }

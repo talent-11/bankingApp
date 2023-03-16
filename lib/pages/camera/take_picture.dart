@@ -40,7 +40,6 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
     super.dispose();
   }
 
-  
   Future<void> onPressedUpload(BuildContext context) async {
     if (_loading) return;
 
@@ -58,7 +57,6 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
     }
   }
 
-  
   Future initCamera(CameraDescription cameraDescription) async {
     // To display the current output from the Camera,
     // create a CameraController.

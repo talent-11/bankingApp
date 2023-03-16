@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
-import 'package:fotoc/pages/statement/statement_scan.dart';
 
 const descriptions = [
   "Once you click this button, you will not be able to go back and make any changes, and you will have completed your one time matching of funds.",

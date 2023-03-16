@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 
 class RadioText extends StatelessWidget {
-  const RadioText(
+  RadioText(
     {
       Key? key,
       required this.label,
       required this.groupValue,
+      this.disabled,
+      this.textColor,
       required this.onChanged,
     }
   ) : super(key: key);
   
   final String label;
   final String groupValue;
+  bool? disabled;
+  Color? textColor;
   final Function onChanged;
 
   @override
@@ -23,11 +27,11 @@ class RadioText extends StatelessWidget {
           activeColor: Theme.of(context).primaryColor,
           value: label,
           groupValue: groupValue,
-          onChanged: (value) => onChanged(value),
+          onChanged: disabled == true ? null : (value) => onChanged(value),
         ),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodyText1,
+          style: TextStyle(color: textColor ?? const Color(0xff98a9bc), fontSize: 14),
         )
       ],
     );

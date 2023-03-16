@@ -24,6 +24,7 @@ class AccountModel {
     this.gender,
     this.birth,
     this.marital,
+    this.fundMatched,
     this.bank,
     this.business,
     // required this.website,
@@ -48,6 +49,7 @@ class AccountModel {
   String? gender;
   String? birth;
   String? marital;
+  bool? fundMatched;
   Bank? bank = Bank(checking: 0, saving: 0);
   BusinessModel? business;
 
@@ -70,7 +72,8 @@ class AccountModel {
     gender: json["gender"],
     birth: json["birth"],
     marital: json["marital"],
-    bank: json["business"] != null
+    fundMatched: json["fund_matched"],
+    bank: json["bank"] != null
       ? Bank.fromJson(json["bank"])
       : null,
     business: json["business"] != null

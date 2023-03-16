@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
-import 'package:fotoc/services/api_service.dart';
-import 'package:http/http.dart';
 
 class DisplayPictureScreen extends StatefulWidget {
   final String imagePath;
@@ -18,9 +16,23 @@ class DisplayPictureScreen extends StatefulWidget {
 }
 
 class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
+  bool _loading = false;
 
   void retake() {
+    if (_loading) return;
     Navigator.of(context).pop();
+  }
+
+  Future<void> onPressedUpload(BuildContext context) async {
+    if (_loading) return;
+    
+    setState(() {
+      _loading = true;
+    });
+    await widget.action();
+    // setState(() {
+    //   _loading = false;
+    // });
   }
 
   List<Widget> decorateBody(BuildContext context) {
@@ -59,8 +71,11 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
               child: SizedBox(
                 height: 48.0,
                 child: FotocButton(
+                  loading: _loading,
                   buttonText: widget.actionText,
-                  onPressed: widget.action,
+                  onPressed: () {
+                    onPressedUpload(context);
+                  },
                 )
               )
             ),

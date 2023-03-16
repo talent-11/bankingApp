@@ -1,9 +1,12 @@
 // import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fotoc/pages/statement/statement_already.dart';
 import 'package:provider/provider.dart';
 
 import 'package:fotoc/constants.dart';
+import 'package:fotoc/models/account_model.dart';
+import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/providers/settings_provider.dart';
 import 'package:fotoc/pages/dashboard/manual_pay.dart';
 import 'package:fotoc/pages/dashboard/dashboard.dart';
@@ -21,27 +24,16 @@ class MainTabsPage extends StatefulWidget {
 class _MainTabsPageState extends State<MainTabsPage> {
   // int _selectedIndex = 0;
   // bool _isBizz = true;
-  // bool alreadyMatched = false;
+  late AccountModel _me;
 
-  // @override
-  // void initState() {
-  //   super.initState();
+  @override
+  void initState() {
+    super.initState();
     
-  //   Future.delayed(const Duration(milliseconds: 10), _getStatements);
-  // }
-
-  // _getStatements() async {
-  //   Response? response = await ApiService().get(ApiConstants.statement, app.me.token);
-
-  //   if (response != null && response.statusCode == 200) {
-  //     List<dynamic> data = json.decode(response.body);
-  //     if (data.isNotEmpty) {
-  //       setState(() {
-  //         alreadyMatched = true;
-  //       });
-  //     }
-  //   }
-  // }
+    setState(() {
+      _me = Provider.of<AccountProvider>(context, listen: false).account;
+    });
+  }
 
   void onPressedTabItem(int index) {
     setState(() {
@@ -62,7 +54,11 @@ class _MainTabsPageState extends State<MainTabsPage> {
     pages.add(const DashboardPage());
     pages.add(const AccountSwitchPage());
     pages.add(const ManualPayPage());
-    pages.add(const Icon(Icons.account_balance_wallet, size: 150));
+    if (!_me.fundMatched!) {
+      pages.add(const Icon(Icons.account_balance_wallet, size: 150));
+    } else {
+      pages.add(const StatementAlreadyPage());
+    }
     pages.add(const SettingsPage());
 
     return pages;
@@ -71,9 +67,6 @@ class _MainTabsPageState extends State<MainTabsPage> {
   List<BottomNavigationBarItem> getBottomIcons() {
     List<BottomNavigationBarItem> icons = [];
     icons.add(const BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: "Dashboard"));
-    // if (alreadyMatched == false) {
-    //   icons.add(const BottomNavigationBarItem(icon: Icon(Icons.credit_card), label: "Match Funds"));
-    // }
     icons.add(
       BottomNavigationBarItem(
         icon: Icon(context.watch<SettingsProvider>().bizzAccount == Ext.individual ? Icons.account_balance : Icons.account_balance_outlined), 

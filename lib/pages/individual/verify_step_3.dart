@@ -6,6 +6,7 @@ import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/pages/statement/statement_Information.dart';
 import 'package:fotoc/pages/wallet/wallet_tabs.dart';
+import 'package:fotoc/pages/wizard/login.dart';
 // import 'package:fotoc/components/wizard/footer.dart';
 
 const description = "Review";
@@ -27,7 +28,8 @@ class _VerifyStep3PageState extends State<VerifyStep3Page> {
   }
 
   void onPressedLater(BuildContext context) {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const MainTabsPage()), (route) => false);
+    // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const MainTabsPage()), (route) => false);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginPage()));
   }
 
   @override

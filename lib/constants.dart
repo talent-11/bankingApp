@@ -19,7 +19,7 @@ class ApiConstants {
   static String pay = '/transaction/pay';
   static String upload = '/service/upload';
   static String ocrStatement = '/service/ocr/statement';
-  static String ocrIdCard = '/service/ocr/master';
+  static String ocrIdCard = '/service/ocr/card';
   static String notifications = '/service/notifications';
 }
 
@@ -28,8 +28,9 @@ class Notifications {
 }
 
 class Folders {
-  static String masterCards = 'cards/master';
-  static String slaveCards = 'cards/slave';
+  static String idCard = 'cards/id';
+  static String dlCard = 'cards/dl';
+  static String ptCard = 'cards/pt';
   static String statements = 'statements';
   static String profiles = 'profiles';
 }
@@ -48,4 +49,13 @@ class Error {
   static String id = "id";
   static String phone = "phone";
   static String email = "email";
+}
+
+class CardType {
+  static String idFull = "I.D.";
+  static String dlFull = "Driver License";
+  static String ptFull = "Passport";
+  static String id = "id";
+  static String dl = "dl";
+  static String pt = "pt";
 }
