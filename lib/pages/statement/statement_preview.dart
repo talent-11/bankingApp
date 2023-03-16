@@ -1,17 +1,16 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/constants.dart';
 import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/models/statement_model.dart';
 import 'package:fotoc/pages/statement/statement_final.dart';
-import 'package:fotoc/pages/statement/statement_scan.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/providers/statement_provider.dart';
 import 'package:fotoc/services/api_service.dart';
 
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart';
 
