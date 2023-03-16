@@ -10,6 +10,7 @@ import 'package:fotoc/components/wizard/footer.dart';
 import 'package:fotoc/components/wizard/text_input_field.dart';
 import 'package:fotoc/pages/wallet/wallet_tabs.dart';
 import 'package:fotoc/pages/wizard/signup_almost.dart';
+import 'package:fotoc/pages/wizard/forgot_password.dart';
 import 'package:fotoc/pages/individual/verify_step_0.dart';
 import 'package:fotoc/pages/individual/verify_step_1.dart';
 import 'package:fotoc/pages/individual/verify_step_2.dart';
@@ -102,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void onPressedRecover(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/wizard/recover');
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ForgotPasswordPage()));
   }
 
   void onPressedSignup(BuildContext context) {

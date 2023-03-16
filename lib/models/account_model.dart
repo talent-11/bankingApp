@@ -155,6 +155,7 @@ class BusinessModel {
     this.doo,
     this.type,
     this.boi,
+    this.fundMatched,
     this.bank
   });
 
@@ -172,6 +173,7 @@ class BusinessModel {
   String? doo;
   String? type;
   String? boi;
+  bool? fundMatched;
   Bank? bank = Bank(checking: 0, saving: 0);
 
   factory BusinessModel.fromJson(Map<String, dynamic> json) => BusinessModel(
@@ -189,6 +191,7 @@ class BusinessModel {
     doo: json["doo"],
     type: json["type"],
     boi: json["boi"],
+    fundMatched: json["fund_matched"],
     bank: Bank.fromJson(json["bank"]),
   );
 }

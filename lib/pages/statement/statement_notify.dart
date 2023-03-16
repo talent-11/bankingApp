@@ -26,7 +26,7 @@ class _StatementNotifyPageState extends State<StatementNotifyPage> {
 
   void onPressedContinue(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      context.read<StatementProvider>().setStatement(StatementModel(name: _name, bankName: _bankName, balance: _balance, year: _year));
+      context.read<StatementProvider>().addStatement(StatementModel(name: _name, bankName: _bankName, balance: _balance, year: _year));
       Navigator.push(context, MaterialPageRoute(builder: (_) => const StatementScanPage()));
     }
   }

@@ -2,12 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:fotoc/models/statement_model.dart';
 
 class StatementProvider with ChangeNotifier {
-  StatementModel _statement = StatementModel();
+  List<StatementModel> _statements = [];
 
-  StatementModel get statement => _statement;
+  List<StatementModel> get statements => _statements;
+  StatementModel get currentStatement => _statements.last;
 
-  void setStatement(StatementModel statement) {
-    _statement = statement;
+  void addStatement(StatementModel statement) {
+    _statements.add(statement);
+    notifyListeners();
+  }
+
+  void removeStatements() {
+    _statements = [];
     notifyListeners();
   }
 }

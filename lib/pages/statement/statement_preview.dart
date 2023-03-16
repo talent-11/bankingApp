@@ -46,7 +46,7 @@ class _StatementPreviewPageState extends State<StatementPreviewPage> {
     super.initState();
 
     AccountModel me = Provider.of<AccountProvider>(context, listen: false).account;
-    StatementModel statement = Provider.of<StatementProvider>(context, listen: false).statement;
+    StatementModel statement = Provider.of<StatementProvider>(context, listen: false).currentStatement;
     setState(() { _me = me; _statement = statement; });
     
     Future.delayed(const Duration(milliseconds: 10), _getOcrData);

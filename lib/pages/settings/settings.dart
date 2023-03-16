@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:fotoc/components/ui/error_dialog.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/constants.dart';
@@ -8,15 +5,12 @@ import 'package:fotoc/models/account_model.dart';
 import 'package:fotoc/pages/settings/business_profile.dart';
 import 'package:fotoc/pages/settings/individual_profile.dart';
 import 'package:fotoc/pages/settings/password_change.dart';
-import 'package:fotoc/pages/statement/statement_Information.dart';
 import 'package:fotoc/pages/wizard/login.dart';
 import 'package:fotoc/providers/account_provider.dart';
 import 'package:fotoc/providers/settings_provider.dart';
-import 'package:fotoc/services/api_service.dart';
 import 'package:fotoc/pages/wizard/sidebar.dart';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -30,7 +24,6 @@ class _SettingsPageState extends State<SettingsPage> {
   final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   late AccountModel _me;
   late bool _isBizzAccount;
-  // bool _alreadyMatched = false;
 
   @override
   void initState() {
@@ -40,33 +33,13 @@ class _SettingsPageState extends State<SettingsPage> {
       _me = Provider.of<AccountProvider>(context, listen: false).account;
       _isBizzAccount = Provider.of<SettingsProvider>(context, listen: false).bizzAccount == Ext.business;
     });
-    // Future.delayed(const Duration(milliseconds: 10), _getStatements);
   }
 
   canCloseAccount(Bank bank) {
     return bank.checking <= 0 && bank.saving <= 0;
   }
 
-  // void _getStatements() async {
-  //   Response? response = await ApiService().get(ApiConstants.statement, _me.token);
-  //   if (response != null && response.statusCode == 200) {
-  //     List<dynamic> data = json.decode(response.body);
-  //     if (data.isNotEmpty) {
-  //       setState(() {
-  //         _alreadyMatched = true;
-  //       });
-  //     }
-  //   }
-  // }
-
-  // void onPressedMatch(BuildContext context) {
-  //   Navigator.push(context, MaterialPageRoute(builder: (_) => const StatementInformationPage()));
-  // }
-
   void onPressedUpdateProfile(BuildContext context) {
-    if (_isBizzAccount) {
-
-    }
     Navigator.push(context, MaterialPageRoute(builder: (_) => _isBizzAccount ? const BusinessProfilePage() : const IndividualProfilePage()));
   }
 
@@ -165,10 +138,6 @@ class _SettingsPageState extends State<SettingsPage> {
     );
     widgets.add(Text(_isBizzAccount ? _me.business!.name! : _me.name!, style: Theme.of(context).textTheme.headline1));
     widgets.add(const SizedBox(height: 32));
-    // if (_alreadyMatched == false) {
-    //   widgets.add(decorateMenuItem(context, "Match Funds", () {onPressedMatch(context);}));
-    //   widgets.add(const SizedBox(height: 1));
-    // }
     widgets.add(decorateMenuItem(context, "Update Profile", () { onPressedUpdateProfile(context); }));
     widgets.add(const SizedBox(height: 1));
     if (!_isBizzAccount) {

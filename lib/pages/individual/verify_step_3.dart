@@ -4,8 +4,7 @@ import 'package:fotoc/components/gradient_rectangle.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/constants.dart';
-import 'package:fotoc/pages/statement/statement_Information.dart';
-import 'package:fotoc/pages/wallet/wallet_tabs.dart';
+import 'package:fotoc/pages/statement/statement_information.dart';
 import 'package:fotoc/pages/wizard/login.dart';
 // import 'package:fotoc/components/wizard/footer.dart';
 

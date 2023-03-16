@@ -32,7 +32,7 @@ class _StatementAlreadyPageState extends State<StatementAlreadyPage> {
       drawer: const SideBar(),
       body: Column(
         children: [
-          const LogoBar(),
+          LogoBar(iconButton: menuButton(context)),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

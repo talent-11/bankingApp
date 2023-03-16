@@ -34,7 +34,7 @@ class _StatementScanPageState extends State<StatementScanPage> {
   void initState() {
     super.initState();
 
-    StatementModel statement = Provider.of<StatementProvider>(context, listen: false).statement;
+    StatementModel statement = Provider.of<StatementProvider>(context, listen: false).currentStatement;
     setState(() { _statement = statement; });
   }
 

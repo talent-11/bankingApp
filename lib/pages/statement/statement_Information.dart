@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:fotoc/components/ui/logo_bar.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/text_spans.dart';
+import 'package:fotoc/pages/statement/statement_about_cash.dart';
 import 'package:fotoc/pages/statement/statement_notify.dart';
+import 'package:fotoc/pages/wizard/sidebar.dart';
 
 const titles = [
   "How do I get the money I have now into FOTOC Bank?",
@@ -19,7 +21,9 @@ const descriptions = [
 ];
 
 class StatementInformationPage extends StatefulWidget {
-  const StatementInformationPage({Key? key}) : super(key: key);
+  const StatementInformationPage({Key? key, this.from}) : super(key: key);
+
+  final String? from;
 
   @override
   State<StatementInformationPage> createState() => _StatementInformationPageState();
@@ -27,18 +31,29 @@ class StatementInformationPage extends StatefulWidget {
 
 class _StatementInformationPageState extends State<StatementInformationPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
 
   void onPressedMatch(BuildContext context) {
     Navigator.push(context, MaterialPageRoute(builder: (_) => const StatementNotifyPage()));
   }
 
   void onPressedAboutCash(BuildContext context) {
-    Navigator.pushNamed(context, '/statement/about-cash');
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const StatementAboutCashPage()));
+  }
+
+  void onPressedBar(BuildContext context) {
+    _scaffoldState.currentState?.openDrawer();
   }
 
   void onPressedBack(BuildContext context) {
     Navigator.pop(context);
   }
+
+  IconButton menuButton(BuildContext context) => IconButton(
+    icon: const Icon(Icons.menu, size: 32.0),
+    onPressed: () => onPressedBar(context), 
+    color: Colors.white,
+  );
 
   IconButton backButton(BuildContext context) => IconButton(
     icon: const Icon(Icons.arrow_back_ios, size: 32.0),
@@ -177,9 +192,11 @@ class _StatementInformationPageState extends State<StatementInformationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldState,
+      drawer: const SideBar(),
       body: Column(
         children: [
-          LogoBar(iconButton: backButton(context)),
+          LogoBar(iconButton: widget.from == 'tab'? menuButton(context) : backButton(context)),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),

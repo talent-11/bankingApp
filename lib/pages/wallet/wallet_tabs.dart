@@ -1,7 +1,6 @@
 // import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fotoc/pages/statement/statement_already.dart';
 import 'package:provider/provider.dart';
 
 import 'package:fotoc/constants.dart';
@@ -12,6 +11,8 @@ import 'package:fotoc/pages/dashboard/manual_pay.dart';
 import 'package:fotoc/pages/dashboard/dashboard.dart';
 import 'package:fotoc/pages/business/account_switch.dart';
 import 'package:fotoc/pages/settings/settings.dart';
+import 'package:fotoc/pages/statement/statement_information.dart';
+import 'package:fotoc/pages/statement/statement_already.dart';
 
 
 class MainTabsPage extends StatefulWidget {
@@ -51,14 +52,15 @@ class _MainTabsPageState extends State<MainTabsPage> {
 
   List<Widget> getPages() {
     List<Widget> pages = [];
+
     pages.add(const DashboardPage());
     pages.add(const AccountSwitchPage());
     pages.add(const ManualPayPage());
-    if (!_me.fundMatched!) {
-      pages.add(const Icon(Icons.account_balance_wallet, size: 150));
-    } else {
-      pages.add(const StatementAlreadyPage());
-    }
+
+    bool isBusiness = Provider.of<SettingsProvider>(context, listen: false).bizzAccount == Ext.business;
+    bool matched = isBusiness ? _me.business!.fundMatched! : _me.fundMatched!;
+    pages.add(matched ? const StatementAlreadyPage() : const StatementInformationPage(from: 'tab'));
+    
     pages.add(const SettingsPage());
 
     return pages;
@@ -73,7 +75,6 @@ class _MainTabsPageState extends State<MainTabsPage> {
         label: context.watch<SettingsProvider>().bizzAccount == Ext.individual ? "Bizz-Acct" : Ext.individual
       )
     );
-    // icons.add(const BottomNavigationBarItem(icon: Icon(Icons.account_balance), label: "Bizz-Acct"));
     icons.add(const BottomNavigationBarItem(icon: Icon(Icons.payments), label: "Pay/Request"));
     icons.add(const BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet), label: "Match Funds"));
     icons.add(const BottomNavigationBarItem(icon: Icon(Icons.account_circle_rounded), label: "Me"));
