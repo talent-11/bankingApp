@@ -20,16 +20,16 @@ const descriptions = [
   " (You must first have an Individual Verified Account to open/obtain a Verified Business Account). At some point (your choice) after signing up for/obtaining a verified Business account with FOTOC Bank, our system will scan (OCR) the document that you provide. Provide us with a year-end financial statement (only one year-end financial statement for each Business will be accepted) for any year 2019 or after (Pick your highest net sales year-end statement for maximum benefit) and your Business account will receive 10% of that year's net annual sales - credited to your account at FOTOC Bank.",
 ];
 
-class StatementInformationPage extends StatefulWidget {
-  const StatementInformationPage({Key? key, this.from}) : super(key: key);
+class StatementStartPage extends StatefulWidget {
+  const StatementStartPage({Key? key, this.from}) : super(key: key);
 
   final String? from;
 
   @override
-  State<StatementInformationPage> createState() => _StatementInformationPageState();
+  State<StatementStartPage> createState() => _StatementStartPageState();
 }
 
-class _StatementInformationPageState extends State<StatementInformationPage> {
+class _StatementStartPageState extends State<StatementStartPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
 

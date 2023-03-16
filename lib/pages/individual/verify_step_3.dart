@@ -4,7 +4,7 @@ import 'package:fotoc/components/gradient_rectangle.dart';
 import 'package:fotoc/components/wizard/button.dart';
 import 'package:fotoc/components/wizard/dots.dart';
 import 'package:fotoc/constants.dart';
-import 'package:fotoc/pages/statement/statement_information.dart';
+import 'package:fotoc/pages/statement/statement_start.dart';
 import 'package:fotoc/pages/wizard/login.dart';
 // import 'package:fotoc/components/wizard/footer.dart';
 
@@ -23,7 +23,7 @@ class VerifyStep3Page extends StatefulWidget {
 
 class _VerifyStep3PageState extends State<VerifyStep3Page> {
   void onPressedYes(BuildContext context) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const StatementInformationPage()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const StatementStartPage()));
   }
 
   void onPressedLater(BuildContext context) {

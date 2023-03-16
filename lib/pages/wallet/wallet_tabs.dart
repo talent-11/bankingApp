@@ -11,7 +11,7 @@ import 'package:fotoc/pages/dashboard/manual_pay.dart';
 import 'package:fotoc/pages/dashboard/dashboard.dart';
 import 'package:fotoc/pages/business/account_switch.dart';
 import 'package:fotoc/pages/settings/settings.dart';
-import 'package:fotoc/pages/statement/statement_information.dart';
+import 'package:fotoc/pages/statement/statement_start.dart';
 import 'package:fotoc/pages/statement/statement_already.dart';
 
 
@@ -59,7 +59,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
 
     bool isBusiness = Provider.of<SettingsProvider>(context, listen: false).bizzAccount == Ext.business;
     bool matched = isBusiness ? _me.business!.fundMatched! : _me.fundMatched!;
-    pages.add(matched ? const StatementAlreadyPage() : const StatementInformationPage(from: 'tab'));
+    pages.add(matched ? const StatementAlreadyPage() : const StatementStartPage(from: 'tab'));
     
     pages.add(const SettingsPage());
 
