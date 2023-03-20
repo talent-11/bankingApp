@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fotoc/components/ui/confirm_dialog.dart';
+import 'package:fotoc/pages/wizard/help.dart';
 
 class SideBar extends StatelessWidget {
   const SideBar({Key? key}) : super(key: key);
@@ -9,7 +10,14 @@ class SideBar extends StatelessWidget {
   TextStyle textStyle(BuildContext context) => TextStyle(color: Theme.of(context).primaryColor);
 
   void onPressedMenuItem(BuildContext context, String kind) {
-    Navigator.pushNamed(context, '/wizard/$kind');
+    Navigator.of(context).pop();
+    switch(kind) {
+      case 'help':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpPage()));
+        break;
+      default:
+        break;
+    }
   }
 
   void onPressedExit(BuildContext context) {

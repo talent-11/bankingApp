@@ -147,7 +147,7 @@ class MyApp extends StatelessWidget {
             headline2: TextStyle(fontSize: 18.0, color: Color(0xff252631), fontWeight: FontWeight.w400),
             headline3: TextStyle(fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.bold),
             headline4: TextStyle(fontSize: 14.0, color: Colors.white, fontWeight: FontWeight.w500),
-            headline5: TextStyle(fontSize: 15.0, height: 1.4, color: Color(0xff252631), fontWeight: FontWeight.w400),
+            headline5: TextStyle(fontSize: 15.0, color: Color(0xff252631), fontWeight: FontWeight.w400, height: 1.4),
             headline6: TextStyle(fontSize: 14.0, color: Color(0xff252631), fontWeight: FontWeight.w500),
             bodyText1: TextStyle(fontSize: 14.0, color: Color(0xff98a9bc), height: 1.4),
             bodyText2: TextStyle(fontSize: 12.0, color: Color(0xff98a9bc), height: 1.2),
